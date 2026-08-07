@@ -112,6 +112,58 @@ body::after{
 
 .content{max-width:1400px;margin:0 auto;padding:10px 20px 40px;display:flex;gap:24px;align-items:flex-start}
 .content-main{flex:1;min-width:0}
+.content-left{flex:1;min-width:0;display:flex;flex-direction:column}
+
+/* ===== 米兰达权利卡片 ===== */
+.miranda-card{
+  background:linear-gradient(135deg,#0d1620 0%,#111a2b 100%);
+  border:1px solid rgba(201,168,76,.25);
+  border-left:3px solid var(--lspd-gold);
+  border-radius:8px;
+  padding:20px 24px;
+  margin-bottom:16px;
+  position:relative;
+  overflow:hidden;
+}
+.miranda-card::before{
+  content:'';position:absolute;top:0;right:0;
+  width:120px;height:120px;
+  background:radial-gradient(circle,rgba(201,168,76,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.miranda-header{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:14px;padding-bottom:10px;
+  border-bottom:1px solid rgba(201,168,76,.15);
+}
+.miranda-header svg{width:18px;height:18px;color:var(--lspd-gold);flex-shrink:0}
+.miranda-title{
+  font-size:15px;font-weight:700;letter-spacing:1px;
+  color:var(--lspd-gold);text-transform:uppercase;
+}
+.miranda-subtitle{
+  font-size:10px;color:var(--dim);margin-left:auto;letter-spacing:.5px;
+}
+.miranda-body{display:flex;flex-direction:column;gap:10px}
+.miranda-line{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:15px;line-height:1.7;color:var(--text);
+}
+.miranda-line .miranda-num{
+  flex-shrink:0;width:22px;height:22px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);
+  border-radius:4px;font-size:11px;font-weight:700;color:var(--lspd-gold);
+  margin-top:2px;
+}
+.miranda-line .miranda-text{flex:1}
+.miranda-line .miranda-text strong{color:var(--lspd-gold);font-weight:600}
+.miranda-footer{
+  margin-top:12px;padding-top:10px;
+  border-top:1px solid rgba(201,168,76,.1);
+  font-size:11px;color:var(--dim);text-align:right;
+  font-style:italic;letter-spacing:.3px;
+}
 
 /* ===== 修正案侧边栏 ===== */
 .amendments-sidebar{
@@ -440,6 +492,9 @@ body.has-panel{padding-bottom:340px}
   .template-area{font-size:10px;min-height:160px}
   .corner-watermark{font-size:12px !important}
   .amendments-sidebar{display:none}
+  .miranda-card{padding:14px 16px}
+  .miranda-line{font-size:13px}
+  .miranda-title{font-size:13px}
 }
 @media(max-width:700px) and (orientation:portrait){
   .header-top{flex-wrap:wrap}
@@ -9900,7 +9955,35 @@ gg==" alt="City of LS" class="logo-city" title="City of Los Santos">
 </div>
 
 <div class="content" id="content">
-  <div class="content-main" id="content-main"></div>
+  <div class="content-left">
+    <div class="miranda-card">
+      <div class="miranda-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7v6c0 5.5 3.8 10.7 10 12 6.2-1.3 10-6.5 10-12V7l-10-5z"/><path d="M12 8v4M12 16h.01"/></svg>
+        <span class="miranda-title">米兰达权利警告</span>
+        <span class="miranda-subtitle">Miranda Warning</span>
+      </div>
+      <div class="miranda-body">
+        <div class="miranda-line">
+          <span class="miranda-num">1</span>
+          <span class="miranda-text">你有权<strong>保持沉默</strong>。</span>
+        </div>
+        <div class="miranda-line">
+          <span class="miranda-num">2</span>
+          <span class="miranda-text">你所说的每一句话都<strong>可能在法庭上</strong>作为对你不利的证据。</span>
+        </div>
+        <div class="miranda-line">
+          <span class="miranda-num">3</span>
+          <span class="miranda-text">你有权<strong>聘请律师</strong>，并可在讯问时要求律师在场。</span>
+        </div>
+        <div class="miranda-line">
+          <span class="miranda-num">4</span>
+          <span class="miranda-text">如果你无力聘请律师，将<strong>为你指定</strong>一名公职律师。</span>
+        </div>
+      </div>
+      <div class="miranda-footer">Miranda v. Arizona, 384 U.S. 436 (1966)</div>
+    </div>
+    <div class="content-main" id="content-main"></div>
+  </div>
   <aside class="amendments-sidebar" id="amendments-sidebar">
     <div class="amend-title">美国宪法修正案</div>
     <div class="amend-sub">执法者实用指南</div>
