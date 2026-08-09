@@ -110,9 +110,16 @@ body::after{
 }
 .info .sep{color:var(--border-glow)}
 
-.content{max-width:1400px;margin:0 auto;padding:10px 20px 40px;display:flex;gap:24px;align-items:flex-start}
+.content{max-width:1600px;margin:0 auto;padding:10px 20px 40px;display:flex;gap:24px;align-items:flex-start}
 .content-main{flex:1;min-width:0}
 .content-left{flex:1;min-width:0;display:flex;flex-direction:column}
+
+/* ===== 米兰达左侧栏 ===== */
+.miranda-sidebar{
+  width:260px;flex-shrink:0;
+  position:sticky;top:10px;
+  align-self:flex-start;
+}
 
 /* ===== 米兰达权利卡片 ===== */
 .miranda-card{
@@ -121,7 +128,6 @@ body::after{
   border-left:3px solid var(--lspd-gold);
   border-radius:8px;
   padding:20px 24px;
-  margin-bottom:16px;
   position:relative;
   overflow:hidden;
 }
@@ -163,6 +169,47 @@ body::after{
   border-top:1px solid rgba(201,168,76,.1);
   font-size:11px;color:var(--dim);text-align:right;
   font-style:italic;letter-spacing:.3px;
+}
+
+/* ===== 服刑计算器 ===== */
+.calc-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:6px;padding:14px 16px;margin-top:12px;
+}
+.calc-title{
+  font-size:12px;font-weight:700;color:var(--accent-glow);
+  letter-spacing:.5px;margin-bottom:10px;text-align:center;
+}
+.calc-row{
+  display:flex;align-items:center;gap:6px;margin-bottom:8px;
+}
+.calc-row label{
+  font-size:11px;color:var(--dim);white-space:nowrap;min-width:28px;
+}
+.calc-row input{
+  flex:1;width:0;
+  background:var(--panel);border:1px solid var(--border);
+  color:var(--text);font-size:13px;padding:6px 8px;
+  border-radius:4px;text-align:center;font-family:inherit;
+  outline:none;transition:border-color .2s;
+}
+.calc-row input:focus{border-color:var(--accent)}
+.calc-row input::-webkit-inner-spin-button{opacity:1}
+.calc-row .calc-unit{font-size:11px;color:var(--dim);white-space:nowrap}
+.calc-result{
+  background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(96,165,250,.04));
+  border:1px solid rgba(59,130,246,.25);border-radius:6px;
+  padding:10px;text-align:center;margin-top:6px;
+}
+.calc-result .calc-months{
+  font-size:24px;font-weight:800;color:var(--accent-glow);
+  line-height:1.2;
+}
+.calc-result .calc-label{
+  font-size:10px;color:var(--dim);letter-spacing:.5px;
+}
+.calc-result .calc-detail{
+  font-size:10px;color:var(--dim);margin-top:2px;
 }
 
 /* ===== 修正案侧边栏 ===== */
@@ -492,6 +539,7 @@ body.has-panel{padding-bottom:340px}
   .template-area{font-size:10px;min-height:160px}
   .corner-watermark{font-size:12px !important}
   .amendments-sidebar{display:none}
+  .miranda-sidebar{position:static;width:100%}
   .miranda-card{padding:14px 16px}
   .miranda-line{font-size:13px}
   .miranda-title{font-size:13px}
@@ -9955,7 +10003,7 @@ gg==" alt="City of LS" class="logo-city" title="City of Los Santos">
 </div>
 
 <div class="content" id="content">
-  <div class="content-left">
+  <aside class="miranda-sidebar">
     <div class="miranda-card">
       <div class="miranda-header">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7v6c0 5.5 3.8 10.7 10 12 6.2-1.3 10-6.5 10-12V7l-10-5z"/><path d="M12 8v4M12 16h.01"/></svg>
@@ -9982,6 +10030,26 @@ gg==" alt="City of LS" class="logo-city" title="City of Los Santos">
       </div>
       <div class="miranda-footer">Miranda v. Arizona, 384 U.S. 436 (1966)</div>
     </div>
+    <div class="calc-card">
+      <div class="calc-title">服刑月数计算器</div>
+      <div class="calc-row">
+        <label>年</label>
+        <input type="number" id="calc-years" value="0" min="0" max="999" oninput="calcSentence()">
+        <span class="calc-unit">年</span>
+      </div>
+      <div class="calc-row">
+        <label>月</label>
+        <input type="number" id="calc-months" value="0" min="0" max="11" oninput="calcSentence()">
+        <span class="calc-unit">月</span>
+      </div>
+      <div class="calc-result">
+        <div class="calc-months" id="calc-total">0</div>
+        <div class="calc-label">总计服刑月数</div>
+        <div class="calc-detail" id="calc-breakdown"></div>
+      </div>
+    </div>
+  </aside>
+  <div class="content-left">
     <div class="content-main" id="content-main"></div>
   </div>
   <aside class="amendments-sidebar" id="amendments-sidebar">
@@ -10875,6 +10943,19 @@ const SENTENCING = {
     updateReportText();
   };
 })();
+
+  /* ===== 服刑计算器 ===== */
+  function calcSentence() {
+    var y = parseInt(document.getElementById('calc-years').value) || 0;
+    var m = parseInt(document.getElementById('calc-months').value) || 0;
+    if (y < 0) y = 0; if (m < 0) m = 0;
+    var total = y * 12 + m;
+    document.getElementById('calc-total').textContent = total;
+    var bd = '';
+    if (y > 0) bd += y + '年';
+    if (m > 0) bd += (bd ? ' ' : '') + m + '个月';
+    document.getElementById('calc-breakdown').textContent = bd || '';
+  }
 </script>
 <div class="corner-watermark">by Bradford</div>
 </body>
