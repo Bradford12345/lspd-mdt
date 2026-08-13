@@ -407,6 +407,15 @@ body.has-panel{padding-bottom:340px}
 }
 .sentencing-dialog-cancel:hover{border-color:var(--dim);color:var(--text)}
 
+/* ===== 量刑罪名 → 法条详情弹窗 ===== */
+.sentencing-item .s-name{cursor:pointer;transition:color .15s}
+.sentencing-item .s-name:hover{color:var(--lspd-gold)}
+#law-dialog .sentencing-dialog-content{max-width:560px;max-height:72vh;overflow-y:auto}
+#law-dialog .sentencing-dialog-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.law-block{margin-bottom:12px}
+.law-block .lb-label{color:var(--lspd-gold);font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:3px}
+.law-block .lb-text{color:var(--text);font-size:13px;line-height:1.7}
+
 /* ===== 网站快捷方式按钮（仅网站显示） ===== */
 .shortcut-btn{
   display:flex;align-items:center;gap:5px;
@@ -6138,6 +6147,15 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPn/Ekp/XvgVAAAAAElFTkSuQmCC" alt="LSPD" title="
   </div>
 </div>
 
+<!-- 法条详情弹窗 -->
+<div class="sentencing-dialog" id="law-dialog">
+  <div class="sentencing-dialog-content">
+    <div class="sentencing-dialog-title" id="law-d-title"></div>
+    <div id="law-d-body"></div>
+    <button class="sentencing-dialog-cancel" id="law-d-cancel">关闭</button>
+  </div>
+</div>
+
 <!-- 警用报告弹窗 -->
 <div class="report-overlay" id="report-overlay">
   <div class="report-modal">
@@ -6592,7 +6610,7 @@ const SENTENCING = {
       var artName = item.artName.length > 18 ? item.artName.substring(0,16)+'..' : item.artName;
       html += '<div class="sentencing-item">';
       html += '<span class="s-del" data-idx="'+i+'">x</span>';
-      html += '<span class="s-name">'+esc(artName)+'</span>';
+      html += '<span class="s-name" data-artid="'+item.artId+'" title="点击查看法条">'+esc(artName)+'</span>';
       if (item.isMulti) {
         var sData = SENTENCING[item.artId];
         var opts = '';
@@ -6630,6 +6648,15 @@ const SENTENCING = {
           sentencingPanel.classList.add('collapsed');
           document.body.classList.remove('has-panel');
         }
+      });
+    }
+
+    // 委托罪名点击 → 弹出法条详情
+    var nameEls = sentencingList.querySelectorAll('.s-name');
+    for (var ne = 0; ne < nameEls.length; ne++) {
+      nameEls[ne].addEventListener('click', function(e) {
+        e.stopPropagation();
+        showLawDetail(this.dataset.artid);
       });
     }
 
@@ -6700,6 +6727,31 @@ const SENTENCING = {
         pendingArtId = null;
       });
     }
+  }
+
+  // 法条详情弹窗
+  var lawDialog = document.getElementById('law-dialog');
+  function showLawDetail(artId) {
+    var art = null;
+    for (var i = 0; i < arts.length; i++) { if (arts[i].id == artId) { art = arts[i]; break; } }
+    if (!art) return;
+    document.getElementById('law-d-title').textContent = art.name;
+    var html = '';
+    html += '<div class="law-block"><div class="lb-label">罪名分类</div><div class="lb-text">'+esc(art.category || '其他')+'</div></div>';
+    if (art.penalty) html += '<div class="law-block"><div class="lb-label">处罚标准</div><div class="lb-text">'+esc(art.penalty)+'</div></div>';
+    if (art.description) html += '<div class="law-block"><div class="lb-label">法条内容</div><div class="lb-text">'+esc(art.description)+'</div></div>';
+    if (art.chapter) html += '<div class="law-block"><div class="lb-label">所属章节</div><div class="lb-text">'+esc(art.chapter)+'</div></div>';
+    if (art.law) html += '<div class="law-block"><div class="lb-label">所属法律</div><div class="lb-text">'+esc(art.law)+'</div></div>';
+    document.getElementById('law-d-body').innerHTML = html;
+    lawDialog.classList.add('show');
+  }
+  if (lawDialog) {
+    document.getElementById('law-d-cancel').addEventListener('click', function() {
+      lawDialog.classList.remove('show');
+    });
+    lawDialog.addEventListener('click', function(e) {
+      if (e.target === lawDialog) lawDialog.classList.remove('show');
+    });
   }
 
   function addToSentencing(artId, levelIdx) {
