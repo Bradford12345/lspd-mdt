@@ -501,6 +501,25 @@ body.has-panel{padding-bottom:340px}
   outline:none;
 }
 .report-dept-select:focus{border-color:var(--blue)}
+.report-officer-row{
+  display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;
+}
+.report-officer-row label{
+  color:var(--muted);font-size:13px;white-space:nowrap;
+}
+.report-officer-input{
+  flex:1;min-width:80px;background:#0a0e14;color:var(--blue);
+  border:1px solid #2a3450;border-radius:6px;padding:8px 10px;
+  font-size:13px;font-family:inherit;outline:none;
+}
+.report-officer-input:focus{border-color:var(--lspd-gold)}
+.save-officer-btn{
+  background:linear-gradient(135deg,var(--lspd-gold),#b8860b);
+  color:#0a0e14;border:none;border-radius:6px;padding:8px 14px;
+  font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;
+}
+.save-officer-btn:hover{filter:brightness(1.1)}
+.save-officer-btn.saved{background:#2e7d32;color:#fff}
 
 /* ===== 手机适配 ===== */
 @media(max-width:700px){
@@ -6115,6 +6134,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPn/Ekp/XvgVAAAAAElFTkSuQmCC" alt="LSPD" title="
     <div class="template-section">
       <div class="template-label">量刑报告模板</div>
       <div class="template-hint">添加量刑后会自动填入罪名、刑期和罚款，可直接复制使用</div>
+      <div class="report-officer-row">
+        <label>姓名</label>
+        <input type="text" class="report-officer-input" id="template-name" placeholder="输入警员姓名">
+        <label>警号</label>
+        <input type="text" class="report-officer-input" id="template-badge" placeholder="输入警号">
+        <button class="save-officer-btn" id="template-save-officer">保存</button>
+      </div>
       <div class="report-dept-row">
         <label>隶属部门</label>
         <select class="report-dept-select" id="template-dept">
@@ -6172,6 +6198,13 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPn/Ekp/XvgVAAAAAElFTkSuQmCC" alt="LSPD" title="
         <option value="GND">密申罗分局-GND</option>
         <option value="内务部（IA）">密申罗分局-内务部（IA）</option>
       </select>
+    </div>
+    <div class="report-officer-row">
+      <label>姓名</label>
+      <input type="text" class="report-officer-input" id="report-name" placeholder="输入警员姓名">
+      <label>警号</label>
+      <input type="text" class="report-officer-input" id="report-badge" placeholder="输入警号">
+      <button class="save-officer-btn" id="report-save-officer">保存</button>
     </div>
     <textarea id="report-textarea" readonly></textarea>
     <button class="copy-btn" id="report-copy-btn">复制报告</button>
@@ -6522,6 +6555,62 @@ const SENTENCING = {
     }
   });
 
+  // ===== 警员信息保存/恢复 =====
+  var OFFICER_KEY = 'lspd_officer_info';
+  function officerFields() {
+    return {
+      name: document.getElementById('template-name'),
+      badge: document.getElementById('template-badge'),
+      rName: document.getElementById('report-name'),
+      rBadge: document.getElementById('report-badge')
+    };
+  }
+  function loadOfficer() {
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem(OFFICER_KEY) || 'null'); } catch(e) {}
+    if (!saved) return;
+    var f = officerFields();
+    if (f.name) f.name.value = saved.name || '';
+    if (f.badge) f.badge.value = saved.badge || '';
+    if (f.rName) f.rName.value = saved.name || '';
+    if (f.rBadge) f.rBadge.value = saved.badge || '';
+  }
+  function saveOfficer(btn) {
+    var f = officerFields();
+    var data = { name: f.name ? f.name.value : '', badge: f.badge ? f.badge.value : '' };
+    try { localStorage.setItem(OFFICER_KEY, JSON.stringify(data)); } catch(e) {}
+    if (btn) {
+      btn.textContent = '已保存';
+      btn.classList.add('saved');
+      setTimeout(function() { btn.textContent = '保存'; btn.classList.remove('saved'); }, 1500);
+    }
+  }
+  loadOfficer();
+  var tNameEl = document.getElementById('template-name');
+  var tBadgeEl = document.getElementById('template-badge');
+  var rNameEl = document.getElementById('report-name');
+  var rBadgeEl = document.getElementById('report-badge');
+  if (tNameEl) tNameEl.addEventListener('input', function() {
+    if (rNameEl) rNameEl.value = this.value;
+    updateTemplate();
+  });
+  if (tBadgeEl) tBadgeEl.addEventListener('input', function() {
+    if (rBadgeEl) rBadgeEl.value = this.value;
+    updateTemplate();
+  });
+  if (rNameEl) rNameEl.addEventListener('input', function() {
+    if (tNameEl) tNameEl.value = this.value;
+    updateReportText();
+  });
+  if (rBadgeEl) rBadgeEl.addEventListener('input', function() {
+    if (tBadgeEl) tBadgeEl.value = this.value;
+    updateReportText();
+  });
+  var tsaveBtn = document.getElementById('template-save-officer');
+  if (tsaveBtn) tsaveBtn.addEventListener('click', function() { saveOfficer(this); });
+  var rsaveBtn = document.getElementById('report-save-officer');
+  if (rsaveBtn) rsaveBtn.addEventListener('click', function() { saveOfficer(this); });
+
   function updateTemplate() {
     var names = [];
     var tp = 0, tf = 0;
@@ -6535,8 +6624,10 @@ const SENTENCING = {
     var nameStr = names.join(' ');
     var deptEl = document.getElementById('template-dept');
     var dept = deptEl ? deptEl.value : '中央巡逻分局';
-    var text = '姓名：\n';
-    text += '警号：\n';
+    var oName = (document.getElementById('template-name') || {}).value || '';
+    var oBadge = (document.getElementById('template-badge') || {}).value || '';
+    var text = '姓名：' + oName + '\n';
+    text += '警号：' + oBadge + '\n';
     text += '隶属警局：密申罗分局-' + dept + '\n';
     text += '-----------------------------------------------------\n';
     text += '罪名：' + nameStr + '\n';
@@ -6911,8 +7002,10 @@ const SENTENCING = {
     var months = Math.round(tp * 12);
     var nameStr = names.length > 0 ? names.join(' ') : '';
     var dept = reportDept ? reportDept.value : '中央巡逻分局';
-    var text = '姓名：\n';
-    text += '警号：\n';
+    var oName = (document.getElementById('report-name') || {}).value || '';
+    var oBadge = (document.getElementById('report-badge') || {}).value || '';
+    var text = '姓名：' + oName + '\n';
+    text += '警号：' + oBadge + '\n';
     text += '隶属警局：密申罗分局-' + dept + '\n';
     text += '-----------------------------------------------------\n';
     text += '罪名：' + nameStr + '\n';
