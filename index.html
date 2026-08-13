@@ -6,21 +6,22 @@
 <title>LSPD MDT - 执法数据库</title>
 <style>
 :root {
-  --bg: #070b14;
-  --panel: #0c1320;
-  --card: #111a2b;
-  --border: #1a2847;
-  --border-glow: #1e3a5f;
-  --text: #c8d4e4;
-  --dim: #5a6d85;
-  --accent: #3b82f6;
-  --accent-glow: #60a5fa;
-  --red: #ef4444;
-  --green: #22c55e;
-  --yellow: #eab308;
-  --orange: #f97316;
-  --purple: #a855f7;
-  --lspd-gold: #c9a84c;
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --card: #ffffff;
+  --border: #c8d4e0;
+  --border-glow: #a0b4c8;
+  --text: #1a1a1a;
+  --dim: #5a7a9c;
+  --accent: #1a3a5c;
+  --accent-glow: #2a5a8c;
+  --red: #c0392b;
+  --green: #1a3a5c;
+  --yellow: #1a3a5c;
+  --orange: #1a3a5c;
+  --purple: #1a3a5c;
+  --lspd-gold: #1a3a5c;
+  --blue: #3b6fa0;
 }
 html{scroll-behavior:smooth}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -32,32 +33,30 @@ body{
 }
 body::after{
   content:'';position:fixed;top:0;left:0;width:100%;height:100%;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);
+  background:none;
   pointer-events:none;z-index:9999;
 }
 .header{
-  background:linear-gradient(180deg,#0a1525 0%,var(--panel) 100%);
-  border-bottom:1px solid var(--border-glow);
+  background:linear-gradient(180deg,#0c1a2a 0%,#1a3a5c 100%);
+  border-bottom:1px solid #0c1a2a;
   padding:0 20px;position:sticky;top:0;z-index:10;
 }
 .header-top{
   display:flex;align-items:center;gap:16px;padding:10px 0;
-  border-bottom:1px solid var(--border);
+  border-bottom:1px solid rgba(255,255,255,.1);
 }
 .logo-box{display:flex;align-items:center;gap:10px}
 .logo-box img{height:48px;width:48px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(59,130,246,.3))}
 .header-title{flex:1}
 .header-title h1{
   font-size:18px;font-weight:700;letter-spacing:2px;
-  color:var(--lspd-gold);text-shadow:0 0 12px rgba(201,168,76,.3);
+  color:#fff;text-shadow:none;
 }
-.header-title .sub{
-  font-size:11px;color:var(--dim);letter-spacing:1px;
-}
+
 .header-title .motto{
   font-family:Georgia,'Times New Roman',serif;
   font-style:italic;font-size:13px;letter-spacing:2px;
-  color:var(--lspd-gold);margin:2px 0 4px;
+  color:rgba(255,255,255,.8);margin:2px 0 4px;
   text-shadow:0 0 8px rgba(201,168,76,.25);
 }
 .status-bar{display:flex;align-items:center;gap:12px}
@@ -65,7 +64,7 @@ body::after{
   display:flex;align-items:center;gap:6px;font-size:11px;color:var(--dim);
 }
 .status-dot{
-  width:7px;height:7px;border-radius:50%;background:var(--green);
+  width:7px;height:7px;border-radius:50%;background:var(--accent);
   box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;
 }
 @keyframes pulse{
@@ -77,11 +76,11 @@ body::after{
 .search{display:flex;gap:10px;align-items:center}
 .search input{
   flex:1;min-width:240px;padding:9px 14px;
-  background:var(--card);border:1px solid var(--border);border-radius:4px;
+  background:#fff;border:1px solid #c8d4e0;border-radius:4px;
   color:var(--text);font-size:13px;outline:none;
   font-family:'Consolas','Courier New',monospace;
 }
-.search input:focus{border-color:var(--accent);box-shadow:0 0 8px rgba(59,130,246,.15)}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 8px rgba(26,58,92,.15)}
 .search input::placeholder{color:var(--dim);font-family:inherit}
 .search-btn{
   background:var(--accent);border:none;border-radius:4px;
@@ -93,11 +92,11 @@ body::after{
 .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .tag{
   padding:4px 12px;border-radius:3px;border:1px solid var(--border);
-  background:var(--card);color:var(--dim);font-size:11px;
+  background:#fff;color:var(--dim);font-size:11px;
   cursor:pointer;transition:all .15s;user-select:none;
 }
-.tag:hover{border-color:var(--accent-glow);color:var(--text)}
-.tag.on{background:rgba(59,130,246,.15);border-color:var(--accent);color:var(--accent-glow)}
+.tag:hover{border-color:var(--accent);color:var(--text)}
+.tag.on{background:rgba(26,58,92,.08);border-color:var(--accent);color:var(--accent)}
 .tag.felony.on{background:rgba(239,68,68,.12);border-color:var(--red);color:var(--red)}
 .tag.misd.on{background:rgba(234,179,8,.12);border-color:var(--yellow);color:var(--yellow)}
 .tag.violation.on{background:rgba(34,197,94,.12);border-color:var(--green);color:var(--green)}
@@ -129,8 +128,8 @@ body::after{
 
 /* ===== 米兰达权利卡片 ===== */
 .miranda-card{
-  background:linear-gradient(135deg,#0d1620 0%,#111a2b 100%);
-  border:1px solid rgba(201,168,76,.25);
+  background:linear-gradient(135deg,#fff 0%,#f5f7fa 100%);
+  border:1px solid rgba(26,58,92,.2);
   border-left:3px solid var(--lspd-gold);
   border-radius:8px;
   padding:20px 24px;
@@ -146,12 +145,12 @@ body::after{
 .miranda-header{
   display:flex;align-items:center;gap:8px;
   margin-bottom:14px;padding-bottom:10px;
-  border-bottom:1px solid rgba(201,168,76,.15);
+  border-bottom:1px solid rgba(26,58,92,.1);
 }
-.miranda-header svg{width:18px;height:18px;color:var(--lspd-gold);flex-shrink:0}
+.miranda-header svg{width:18px;height:18px;color:var(--accent);flex-shrink:0}
 .miranda-title{
   font-size:15px;font-weight:700;letter-spacing:1px;
-  color:var(--lspd-gold);text-transform:uppercase;
+  color:var(--accent);text-transform:uppercase;
 }
 .miranda-subtitle{
   font-size:10px;color:var(--dim);margin-left:auto;letter-spacing:.5px;
@@ -164,22 +163,22 @@ body::after{
 .miranda-line .miranda-num{
   flex-shrink:0;width:22px;height:22px;
   display:flex;align-items:center;justify-content:center;
-  background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);
-  border-radius:4px;font-size:11px;font-weight:700;color:var(--lspd-gold);
+  background:rgba(26,58,92,.08);border:1px solid rgba(26,58,92,.3);
+  border-radius:4px;font-size:11px;font-weight:700;color:var(--accent);
   margin-top:2px;
 }
 .miranda-line .miranda-text{flex:1}
-.miranda-line .miranda-text strong{color:var(--lspd-gold);font-weight:600}
+.miranda-line .miranda-text strong{color:var(--accent);font-weight:600}
 .miranda-footer{
   margin-top:12px;padding-top:10px;
-  border-top:1px solid rgba(201,168,76,.1);
+  border-top:1px solid rgba(26,58,92,.08);
   font-size:11px;color:var(--dim);text-align:right;
   font-style:italic;letter-spacing:.3px;
 }
 
 /* ===== 服刑计算器 ===== */
 .calc-card{
-  background:var(--card);border:1px solid var(--border);
+  background:#fff;border:1px solid #c8d4e0;
   border-radius:6px;padding:14px 16px;margin-top:12px;
 }
 .calc-title{
@@ -194,7 +193,7 @@ body::after{
 }
 .calc-row input{
   flex:1;width:0;
-  background:var(--panel);border:1px solid var(--border);
+  background:#fff;border:1px solid #c8d4e0;
   color:var(--text);font-size:13px;padding:6px 8px;
   border-radius:4px;text-align:center;font-family:inherit;
   outline:none;transition:border-color .2s;
@@ -203,7 +202,7 @@ body::after{
 .calc-row input::-webkit-inner-spin-button{opacity:1}
 .calc-row .calc-unit{font-size:11px;color:var(--dim);white-space:nowrap}
 .calc-result{
-  background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(96,165,250,.04));
+  background:linear-gradient(135deg,rgba(26,58,92,.06),rgba(42,90,140,.03));
   border:1px solid rgba(59,130,246,.25);border-radius:6px;
   padding:10px;text-align:center;margin-top:6px;
 }
@@ -221,7 +220,7 @@ body::after{
 /* ===== 修正案侧边栏 ===== */
 .amendments-sidebar{
   width:340px;flex-shrink:0;
-  background:var(--card);border:1px solid var(--border);
+  background:#fff;border:1px solid #c8d4e0;
   border-radius:6px;padding:16px;
   max-height:calc(100vh - 180px);overflow-y:auto;
   position:sticky;top:10px;
@@ -229,7 +228,7 @@ body::after{
 .amendments-sidebar::-webkit-scrollbar{width:4px}
 .amendments-sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 .amend-title{
-  color:var(--lspd-gold);font-size:16px;font-weight:700;
+  color:var(--accent);font-size:16px;font-weight:700;
   letter-spacing:1px;text-align:center;margin-bottom:2px;
 }
 .amend-sub{
@@ -238,11 +237,11 @@ body::after{
   border-bottom:1px solid var(--border);
 }
 .amend-item{
-  padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);
+  padding:10px 0;border-bottom:1px solid rgba(200,212,224,.5);
 }
 .amend-item:last-child{border-bottom:none}
 .amend-num{
-  color:var(--lspd-gold);font-size:13px;font-weight:700;
+  color:var(--accent);font-size:13px;font-weight:700;
   margin-bottom:4px;letter-spacing:.5px;
 }
 .amend-tags{
@@ -255,7 +254,7 @@ body::after{
 .amend-note strong{color:var(--orange);font-weight:600}
 
 .card{touch-action:manipulation;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
-  background:var(--card);border:1px solid var(--border);
+  background:#fff;border:1px solid #c8d4e0;
   border-radius:4px;padding:14px 18px;margin-bottom:8px;
   transition:border-color .2s,box-shadow .2s;
   position:relative;overflow:hidden;
@@ -264,7 +263,7 @@ body::after{
   content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
   background:var(--accent);opacity:0;transition:opacity .2s;
 }
-.card:hover{border-color:var(--border-glow);box-shadow:0 0 16px rgba(59,130,246,.06)}
+.card:hover{border-color:var(--accent);box-shadow:0 2px 12px rgba(26,58,92,.08)}
 .card:hover::before{opacity:1}
 .card-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px}
 .card-name{font-size:14px;font-weight:600}
@@ -272,14 +271,14 @@ body::after{
   padding:2px 8px;border-radius:2px;font-size:10px;font-weight:700;
   white-space:nowrap;flex-shrink:0;
 }
-.badge.f{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.25)}
-.badge.m{background:rgba(234,179,8,.12);color:var(--yellow);border:1px solid rgba(234,179,8,.25)}
-.badge.v{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.25)}
-.badge.o{background:rgba(168,85,247,.12);color:var(--purple);border:1px solid rgba(168,85,247,.25)}
+.badge.f{background:rgba(192,57,43,.08);color:var(--red);border:1px solid rgba(192,57,43,.2)}
+.badge.m{background:rgba(26,58,92,.08);color:var(--accent);border:1px solid rgba(26,58,92,.2)}
+.badge.v{background:rgba(59,111,160,.08);color:var(--blue);border:1px solid rgba(59,111,160,.2)}
+.badge.o{background:rgba(26,58,92,.06);color:var(--dim);border:1px solid rgba(26,58,92,.15)}
 .card-p{
   color:var(--orange);font-size:12px;padding:5px 10px;
-  background:rgba(249,115,22,.06);border-radius:3px;margin:6px 0;
-  line-height:1.5;border-left:2px solid rgba(249,115,22,.3);
+  background:rgba(26,58,92,.04);border-radius:3px;margin:6px 0;
+  line-height:1.5;border-left:2px solid rgba(26,58,92,.3);
   font-family:'Consolas','Courier New',monospace;
 }
 .card-d{color:var(--dim);font-size:12px;line-height:1.7}
@@ -293,15 +292,15 @@ body::after{
 .empty{text-align:center;padding:60px 20px;color:var(--dim)}
 .empty .big{font-size:48px;opacity:.2;margin-bottom:12px;color:var(--accent)}
 .ft{padding:6px 14px;border-left:2px solid var(--border);margin:2px 0;font-size:12px;color:var(--dim)}
-.ft.found{border-left-color:var(--accent);background:rgba(59,130,246,.04)}
+.ft.found{border-left-color:var(--accent);background:rgba(26,58,92,.04)}
 
 /* ===== 量刑面板 ===== */
 body.has-panel{padding-bottom:340px}
 .sentencing-panel{
   position:fixed;bottom:0;left:0;right:0;z-index:100;
-  background:linear-gradient(0deg,#060d19 0%,var(--panel) 100%);
+  background:linear-gradient(0deg,#f5f7fa 0%,#fff 100%);
   border-top:2px solid var(--lspd-gold);
-  box-shadow:0 -4px 24px rgba(0,0,0,.5);
+  box-shadow:0 -4px 24px rgba(12,26,42,.12);
   transition:transform .25s ease;
 }
 .sentencing-panel.collapsed{transform:translateY(calc(100% - 38px))}
@@ -310,9 +309,9 @@ body.has-panel{padding-bottom:340px}
   padding:8px 20px;cursor:pointer;user-select:none;
   border-bottom:1px solid var(--border);
 }
-.sentencing-toggle:hover{background:rgba(201,168,76,.04)}
+.sentencing-toggle:hover{background:rgba(26,58,92,.04)}
 .sentencing-toggle .t-label{
-  color:var(--lspd-gold);font-size:12px;font-weight:700;letter-spacing:1px;
+  color:var(--accent);font-size:12px;font-weight:700;letter-spacing:1px;
 }
 .sentencing-toggle .t-count{
   background:var(--accent);color:#fff;font-size:10px;font-weight:700;
@@ -330,19 +329,19 @@ body.has-panel{padding-bottom:340px}
 .sentencing-list{margin-bottom:8px}
 .sentencing-item{touch-action:manipulation;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
   display:flex;align-items:center;gap:10px;
-  padding:6px 10px;background:rgba(255,255,255,.02);
-  border-bottom:1px solid rgba(255,255,255,.03);
+  padding:6px 10px;background:rgba(26,58,92,.02);
+  border-bottom:1px solid rgba(200,212,224,.4);
   font-size:12px;
 }
 .sentencing-item .s-name{flex:1;color:var(--text);font-weight:600;min-width:0}
 .sentencing-item .s-level{color:var(--dim);font-size:10px;white-space:nowrap}
       .sentencing-item .s-level-select{
-        background:#0d1520;border:1px solid var(--border);color:var(--lspd-gold);
+        background:#f5f7fa;border:1px solid var(--border);color:var(--accent);
         font-size:10px;padding:2px 4px;border-radius:3px;cursor:pointer;
         white-space:nowrap;max-width:120px;
       }
-      .sentencing-item .s-level-select:hover{border-color:var(--lspd-gold)}
-      .sentencing-item .s-level-select:focus{outline:none;border-color:var(--lspd-gold)}
+      .sentencing-item .s-level-select:hover{border-color:var(--accent)}
+      .sentencing-item .s-level-select:focus{outline:none;border-color:var(--accent)}
 .sentencing-item .s-prison{
   color:var(--red);font-family:'Consolas','Courier New',monospace;
   white-space:nowrap;min-width:80px;text-align:right;font-size:11px;
@@ -362,7 +361,7 @@ body.has-panel{padding-bottom:340px}
   border:1px solid rgba(201,168,76,.2);border-radius:3px;
   font-family:'Consolas','Courier New',monospace;font-size:13px;
 }
-.sentencing-total .st-label{color:var(--lspd-gold);font-weight:700;letter-spacing:1px}
+.sentencing-total .st-label{color:var(--accent);font-weight:700;letter-spacing:1px}
 .sentencing-total .st-prison{color:var(--red);font-weight:700;margin-left:12px}
 .sentencing-total .st-fine{color:var(--orange);font-weight:700;margin-left:8px}
 .sentencing-clear{
@@ -393,17 +392,17 @@ body.has-panel{padding-bottom:340px}
   box-shadow:0 0 32px rgba(0,0,0,.6);
 }
 .sentencing-dialog-title{
-  color:var(--lspd-gold);font-size:14px;font-weight:700;
+  color:var(--accent);font-size:14px;font-weight:700;
   margin-bottom:4px;letter-spacing:1px;
 }
 .sentencing-dialog-sub{color:var(--dim);font-size:11px;margin-bottom:14px}
 .sentencing-dialog-option{
   display:block;width:100%;padding:8px 14px;margin-bottom:6px;
-  background:var(--card);border:1px solid var(--border);border-radius:3px;
+  background:#fff;border:1px solid #c8d4e0;border-radius:3px;
   color:var(--text);font-size:12px;text-align:left;cursor:pointer;
   transition:all .15s;
 }
-.sentencing-dialog-option:hover{background:rgba(59,130,246,.1);border-color:var(--accent)}
+.sentencing-dialog-option:hover{background:rgba(26,58,92,.08);border-color:var(--accent)}
 .sentencing-dialog-option .opt-label{display:block;color:var(--accent-glow);font-weight:600;margin-bottom:2px}
 .sentencing-dialog-option .opt-desc{display:block;color:var(--dim);font-size:11px}
 .sentencing-dialog-cancel{
@@ -419,33 +418,33 @@ body.has-panel{padding-bottom:340px}
 #law-dialog .sentencing-dialog-content{max-width:560px;max-height:72vh;overflow-y:auto}
 #law-dialog .sentencing-dialog-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .law-block{margin-bottom:12px}
-.law-block .lb-label{color:var(--lspd-gold);font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:3px}
+.law-block .lb-label{color:var(--accent);font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:3px}
 .law-block .lb-text{color:var(--text);font-size:13px;line-height:1.7}
 
 /* ===== 网站快捷方式按钮（仅网站显示） ===== */
 .shortcut-btn{
   display:flex;align-items:center;gap:5px;
-  background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.4);
-  color:var(--green);font-size:12px;font-weight:700;padding:8px 12px;
+  background:rgba(26,58,92,.08);border:1px solid rgba(26,58,92,.3);
+  color:var(--accent);font-size:12px;font-weight:700;padding:8px 12px;
   border-radius:6px;cursor:pointer;text-decoration:none;letter-spacing:.5px;
   white-space:nowrap;transition:all .2s;font-family:inherit;
 }
-.shortcut-btn:hover{background:rgba(34,197,94,.22);border-color:var(--green)}
+.shortcut-btn:hover{background:rgba(26,58,92,.15);border-color:var(--accent)}
 .shortcut-btn svg{width:14px;height:14px}
 
 /* ===== 警用报告按钮 ===== */
 .report-btn{
-  background:linear-gradient(135deg,#1e3a5f,#0f1c2e);
-  border:1px solid var(--lspd-gold);
-  color:var(--lspd-gold);
+  background:linear-gradient(135deg,#1a3a5c,#0c1a2a);
+  border:1px solid #1a3a5c;
+  color:#ffffff;
   padding:8px 14px;border-radius:6px;cursor:pointer;
   font-size:13px;font-weight:700;letter-spacing:1px;
   white-space:nowrap;transition:all .2s;
   display:flex;align-items:center;gap:6px;
 }
 .report-btn:hover{
-  background:var(--lspd-gold);color:#0a0e14;
-  box-shadow:0 0 12px rgba(212,175,55,.4);
+  background:linear-gradient(135deg,#2a5a8c,#1a3a5c);color:#fff;
+  box-shadow:0 2px 12px rgba(26,58,92,.2);
 }
 .report-badge{
   display:inline-block;background:#c0392b;color:#fff;
@@ -470,7 +469,7 @@ body.has-panel{padding-bottom:340px}
   border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:16px;
 }
 .report-modal-title{
-  color:var(--lspd-gold);font-size:16px;font-weight:700;letter-spacing:1px;
+  color:var(--accent);font-size:16px;font-weight:700;letter-spacing:1px;
 }
 .report-warn{
   background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.4);
@@ -481,7 +480,7 @@ body.has-panel{padding-bottom:340px}
   color:#e74c3c;font-size:12px;font-weight:600;letter-spacing:.5px;
 }
 .report-modal textarea{
-  width:100%;min-height:240px;background:#0a0e14;color:var(--blue);
+  width:100%;min-height:240px;background:#f5f7fa;color:var(--accent);
   border:1px solid var(--border);border-radius:6px;padding:12px;
   font-family:Consolas,'Courier New',monospace;font-size:13px;line-height:1.7;
   resize:vertical;letter-spacing:.5px;
@@ -490,42 +489,42 @@ body.has-panel{padding-bottom:340px}
   margin-top:12px;width:100%;padding:10px;font-size:14px;
 }
 .report-close{
-  background:none;border:none;color:var(--muted);font-size:22px;
+  background:none;border:none;color:var(--dim);font-size:22px;
   cursor:pointer;line-height:1;padding:0 4px;
 }
-.report-close:hover{color:var(--lspd-gold)}
+.report-close:hover{color:var(--accent)}
 .report-dept-row{
   display:flex;align-items:center;gap:10px;margin-bottom:14px;
 }
 .report-dept-row label{
-  color:var(--muted);font-size:13px;white-space:nowrap;
+  color:var(--dim);font-size:13px;white-space:nowrap;
 }
 .report-dept-select{
-  flex:1;background:#0a0e14;color:var(--blue);
+  flex:1;background:#f5f7fa;color:var(--accent);
   border:1px solid var(--lspd-gold);border-radius:6px;
   padding:8px 10px;font-size:13px;font-family:inherit;cursor:pointer;
   outline:none;
 }
-.report-dept-select:focus{border-color:var(--blue)}
+.report-dept-select:focus{border-color:var(--accent)}
 .report-officer-row{
   display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;
 }
 .report-officer-row label{
-  color:var(--muted);font-size:13px;white-space:nowrap;
+  color:var(--dim);font-size:13px;white-space:nowrap;
 }
 .report-officer-input{
-  flex:1;min-width:80px;background:#0a0e14;color:var(--blue);
+  flex:1;min-width:80px;background:#f5f7fa;color:var(--accent);
   border:1px solid #2a3450;border-radius:6px;padding:8px 10px;
   font-size:13px;font-family:inherit;outline:none;
 }
-.report-officer-input:focus{border-color:var(--lspd-gold)}
+.report-officer-input:focus{border-color:var(--accent)}
 .save-officer-btn{
-  background:linear-gradient(135deg,var(--lspd-gold),#b8860b);
+  background:linear-gradient(135deg,var(--accent),#0c1a2a);
   color:#0a0e14;border:none;border-radius:6px;padding:8px 14px;
   font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;
 }
-.save-officer-btn:hover{filter:brightness(1.1)}
-.save-officer-btn.saved{background:#2e7d32;color:#fff}
+.save-officer-btn:hover{filter:brightness(1.08)}
+.save-officer-btn.saved{background:var(--accent);color:#fff}
 
 /* ===== 手机适配 ===== */
 @media(max-width:700px){
@@ -563,7 +562,7 @@ body.has-panel{padding-bottom:340px}
 @media(max-width:400px){
   .logo-box img{height:26px}
   .header-title h1{font-size:11px}
-  .header-title .sub{display:none}
+  
   .header-title .motto{display:none}
   .report-btn span:not(.report-badge){display:none}
   .report-btn{padding:6px 8px}
@@ -590,7 +589,7 @@ body.has-panel{padding-bottom:340px}
   background:rgba(212,175,55,.06);border-radius:6px;padding:12px;
 }
 .template-label{
-  color:var(--lspd-gold);font-size:13px;font-weight:700;margin-bottom:4px;
+  color:var(--accent);font-size:13px;font-weight:700;margin-bottom:4px;
   text-transform:uppercase;letter-spacing:1px;
 }
 .template-hint{
@@ -604,7 +603,7 @@ body.has-panel{padding-bottom:340px}
   padding:10px;border-radius:4px;resize:vertical;min-height:200px;
   white-space:pre;
 }
-.template-area:focus{outline:none;border-color:var(--lspd-gold)}
+.template-area:focus{outline:none;border-color:var(--accent)}
 .copy-btn{
   margin-top:6px;padding:5px 16px;background:var(--lspd-gold);
   color:#070b14;border:none;border-radius:3px;cursor:pointer;
@@ -617,37 +616,36 @@ body.has-panel{padding-bottom:340px}
 /* 欢迎提示弹窗 */
 .welcome-overlay{
   position:fixed;top:0;left:0;right:0;bottom:0;
-  background:rgba(0,0,0,.7);z-index:9999;
+  background:rgba(12,26,42,.5);z-index:9999;
   display:none;align-items:center;justify-content:center;
   animation:fadeIn .2s ease;
 }
 .welcome-overlay.show{display:flex}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .welcome-box{
-  background:linear-gradient(145deg,#0d1520,#111b2e);
-  border:2px solid var(--lspd-gold);border-radius:10px;
+  background:#ffffff;border:1px solid #c8d4e0;border-radius:10px;
   padding:0;max-width:440px;width:90%;
-  box-shadow:0 0 40px rgba(212,175,55,.3),0 8px 32px rgba(0,0,0,.6);
+  box-shadow:0 8px 40px rgba(12,26,42,.15);
   overflow:hidden;animation:slideUp .3s ease;
 }
 @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
 .welcome-header{
-  background:linear-gradient(90deg,rgba(212,175,55,.15),rgba(212,175,55,.05));
+  background:linear-gradient(90deg,rgba(26,58,92,.06),rgba(26,58,92,.02));
   padding:14px 20px;display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid rgba(212,175,55,.2);
+  border-bottom:1px solid #c8d4e0;
 }
 .welcome-title{
-  color:var(--lspd-gold);font-size:15px;font-weight:700;
+  color:var(--accent);font-size:15px;font-weight:700;
   letter-spacing:1px;text-transform:uppercase;
 }
 .welcome-close{
   width:28px;height:28px;border-radius:50%;
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  background:#f5f7fa;border:1px solid #c8d4e0;
   color:var(--dim);font-size:16px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   transition:all .15s;line-height:1;
 }
-.welcome-close:hover{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.4);color:#ef4444}
+.welcome-close:hover{background:rgba(192,57,43,.1);border-color:rgba(192,57,43,.3);color:var(--red)}
 .welcome-body{padding:20px}
 .welcome-body p{margin:0 0 12px;font-size:13px;line-height:1.7;color:var(--text)}
 .welcome-body p:last-child{margin-bottom:0}
@@ -659,22 +657,22 @@ body.has-panel{padding-bottom:340px}
   display:flex;align-items:center;justify-content:center;
   font-size:11px;font-weight:700;flex-shrink:0;
 }
-.welcome-body .tip-icon.green{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);color:var(--green)}
-.welcome-body .tip-icon.gold{background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.3);color:var(--lspd-gold)}
+.welcome-body .tip-icon.green{background:rgba(26,58,92,.08);border:1px solid rgba(59,111,160,.3);color:var(--blue)}
+.welcome-body .tip-icon.gold{background:rgba(26,58,92,.08);border:1px solid rgba(26,58,92,.25);color:var(--accent)}
 .welcome-body .tip-text{font-size:13px;line-height:1.6;color:var(--text);padding-top:1px}
-.welcome-body .tip-text b{color:var(--lspd-gold)}
+.welcome-body .tip-text b{color:var(--accent)}
 .welcome-noshow{
   display:none;margin-top:16px;width:100%;padding:9px;
-  background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.35);
-  color:var(--lspd-gold);font-size:12px;font-weight:700;cursor:pointer;
+  background:rgba(26,58,92,.06);border:1px solid #c8d4e0;
+  color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;
   border-radius:6px;letter-spacing:1px;font-family:inherit;transition:all .15s;
 }
-.welcome-noshow:hover{background:rgba(212,175,55,.2)}
+.welcome-noshow:hover{background:rgba(26,58,92,.12);border-color:var(--accent)}
 
 /* 水印（左上角，淡色固定，不可选中/点击） */
 .corner-watermark{
   position:fixed;top:8px;left:12px;
-  font-size:13px;color:rgba(212,175,55,.32);
+  font-size:13px;color:rgba(26,58,92,.25);
   font-family:'Consolas','Courier New',monospace;letter-spacing:2px;font-weight:700;
   pointer-events:none;z-index:9990;user-select:none;
   text-shadow:0 1px 2px rgba(0,0,0,.6);
@@ -693,8 +691,8 @@ body.has-panel{padding-bottom:340px}
     </div>
     <div class="welcome-body">
       <div class="tip-row">
-        <span class="tip-icon green">+</span>
-        <span class="tip-text">点击法条右侧的绿色 <b>+量刑</b> 按钮，可将该罪名加入量刑清单</span>
+        <span class="tip-icon">+</span>
+        <span class="tip-text">点击法条右侧的 <b>+量刑</b> 按钮，可将该罪名加入量刑清单</span>
       </div>
       <div class="tip-row">
         <span class="tip-icon gold">T</span>
@@ -5963,7 +5961,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPn/Ekp/XvgVAAAAAElFTkSuQmCC" alt="LSPD" title="
     <div class="header-title">
       <h1>LSPD MDT</h1>
       <div class="motto">"To Protect and to Serve"</div>
-      <div class="sub">圣安地列斯州法典检索终端 / 仅限执法人员使用</div>
     </div>
       <button class="report-btn" id="report-btn">
         <span>警用报告</span>
@@ -5972,9 +5969,6 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPn/Ekp/XvgVAAAAAElFTkSuQmCC" alt="LSPD" title="
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18h16M12 3v12m0 0l-4-4m4 4l4-4"/></svg>
         <span>添加到桌面</span>
       </button>
-    <div class="status-bar">
-      <div class="status-item"><span class="status-dot"></span>系统在线</div>
-    </div>
   </div>
 </div>
 
