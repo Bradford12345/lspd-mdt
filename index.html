@@ -556,7 +556,9 @@ body.has-panel{padding-bottom:340px}
   .welcome-box{width:92% !important;padding:16px !important}
   .welcome-box h2{font-size:16px !important}
   .welcome-box li{font-size:12px !important}
-  .corner-watermark{font-size:14px !important}
+  .site-footer{padding:20px 12px}
+  .site-footer img{height:32px;width:32px}
+  .site-footer .foot-brand{font-size:14px}
   .tab{font-size:12px;padding:6px 12px}
   #q{font-size:14px}
   #search-btn{font-size:13px;padding:8px 14px}
@@ -575,7 +577,7 @@ body.has-panel{padding-bottom:340px}
   .badge{font-size:9px}
   .sentencing-panel{max-height:65vh}
   .template-area{font-size:10px;min-height:160px}
-  .corner-watermark{font-size:12px !important}
+  .site-footer .foot-tag{display:none}
   .amendments-sidebar{display:none}
   .miranda-sidebar{position:static;width:100%}
   .miranda-card{padding:14px 16px}
@@ -602,8 +604,8 @@ body.has-panel{padding-bottom:340px}
 }
 .template-hint::before{content:"i";display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--lspd-gold);color:#070b14;font-size:10px;font-weight:700;font-style:normal;flex-shrink:0;}
 .template-area{
-  width:100%;background:#050810;border:1px solid var(--border);
-  color:var(--text);font:12px/1.8 'Consolas','Courier New',monospace;
+  width:100%;background:#ffffff;border:1px solid var(--border);
+  color:#1a1a1a;font:12px/1.8 'Consolas','Courier New',monospace;
   padding:10px;border-radius:4px;resize:vertical;min-height:200px;
   white-space:pre;
 }
@@ -667,20 +669,33 @@ body.has-panel{padding-bottom:340px}
 .welcome-body .tip-text{font-size:13px;line-height:1.6;color:var(--text);padding-top:1px}
 .welcome-body .tip-text b{color:var(--accent)}
 .welcome-noshow{
-  display:none;margin-top:16px;width:100%;padding:9px;
-  background:rgba(26,58,92,.06);border:1px solid #c8d4e0;
-  color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;
-  border-radius:6px;letter-spacing:1px;font-family:inherit;transition:all .15s;
+  display:block;margin:18px auto 0;padding:3px 2px 5px;width:auto;
+  background:none;border:none;border-bottom:1px solid #c3cbd4;
+  color:#9aa4ae;font-size:11px;font-weight:400;cursor:pointer;
+  letter-spacing:1px;font-family:inherit;transition:color .15s,border-color .15s;
 }
-.welcome-noshow:hover{background:rgba(26,58,92,.12);border-color:var(--accent)}
+.welcome-noshow:hover{color:var(--accent);border-bottom-color:var(--accent)}
 
-/* 水印（左上角，淡色固定，不可选中/点击） */
-.corner-watermark{
-  position:fixed;top:8px;left:12px;
-  font-size:13px;color:rgba(26,58,92,.25);
-  font-family:'Consolas','Courier New',monospace;letter-spacing:2px;font-weight:700;
-  pointer-events:none;z-index:9990;user-select:none;
-  text-shadow:0 1px 2px rgba(0,0,0,.6);
+/* 页脚水印（页面最底部） */
+.site-footer{
+  margin-top:30px;padding:26px 20px;text-align:center;
+  background:linear-gradient(180deg,#ffffff 0%,#f0f4f8 100%);
+  border-top:2px solid var(--accent);
+}
+.site-footer-inner{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  flex-wrap:wrap;
+}
+.site-footer img{
+  height:42px;width:42px;object-fit:contain;
+  filter:drop-shadow(0 2px 4px rgba(26,58,92,.3));
+}
+.site-footer .foot-brand{
+  font-family:Georgia,'Times New Roman',serif;font-style:italic;
+  font-size:16px;letter-spacing:2px;color:var(--accent);font-weight:700;
+}
+.site-footer .foot-tag{
+  font-size:11px;color:var(--dim);letter-spacing:1px;
 }
 
 </style>
@@ -1823,6 +1838,12 @@ const SENTENCING = {
     document.getElementById('calc-breakdown').textContent = bd || '';
   }
 </script>
-<div class="corner-watermark">by Bradford</div>
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <img src="assets/lspd_badge.png" alt="LSPD">
+    <span class="foot-brand">by Bradford</span>
+    <span class="foot-tag">LSPD MDT &middot; To Protect and to Serve</span>
+  </div>
+</footer>
 </body>
 </html>
