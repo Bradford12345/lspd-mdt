@@ -2162,6 +2162,7 @@ const SENTENCING = {
 
   function showComplaint() {
     if (!complaintPanel) return;
+    warmCloudFn();               // 预热云函数，避免冷启动卡顿
     portalInner.style.display = 'none';
     complaintPanel.classList.add('show');
     if (complaintHeader) complaintHeader.classList.add('show');
@@ -2355,6 +2356,24 @@ const SENTENCING = {
       if (t && t.closest && t.closest('.ft')) { e.preventDefault(); return; }
     }
   });
+
+  /* ===== 云函数预热：提前把冷启动实例热起来，提交投诉不再卡 ===== */
+  var __warmed = false;
+  function warmCloudFn() {
+    if (__warmed) return;
+    __warmed = true;
+    try {
+      fetch('https://bryant-d6g0lr5jrd4c95f00.service.tcloudbase.com/submitComplaint', {
+        method: 'GET',
+        mode: 'cors'
+      }).catch(function(){});
+    } catch (e) {}
+  }
+  if (document.readyState === 'complete') {
+    warmCloudFn();
+  } else {
+    window.addEventListener('load', warmCloudFn);
+  }
 </script>
 <footer class="site-footer">
   <div class="site-footer-inner">
