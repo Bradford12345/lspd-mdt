@@ -793,6 +793,13 @@ body.has-panel{padding-bottom:340px}
   box-shadow:0 0 24px rgba(201,168,76,.35),0 0 48px rgba(59,130,246,.2);
   transform:translateY(-4px);
 }
+/* 投诉 / 加入我们：重点卡片加大 */
+.portal-card.portal-card-lg{padding:44px 24px;gap:14px}
+.portal-card.portal-card-lg .pc-icon{width:64px;height:64px}
+.portal-card.portal-card-lg .pc-icon svg{width:64px;height:64px}
+.portal-card.portal-card-lg .pc-title{font-size:22px}
+.portal-card.portal-card-lg .pc-desc{font-size:13px}
+.portal-card.portal-card-lg .pc-status{font-size:12px;padding:5px 16px}
 .pc-icon{width:52px;height:52px;color:#c9a84c;filter:drop-shadow(0 0 8px rgba(201,168,76,.5))}
 .pc-icon svg{width:52px;height:52px}
 .pc-title{font-size:18px;font-weight:700;letter-spacing:2px}
@@ -801,20 +808,21 @@ body.has-panel{padding-bottom:340px}
 .pc-status.dev{color:#d8c08a;border-color:rgba(201,168,76,.5)}
 .portal-foot{color:#8a9aa8;font-size:11px;letter-spacing:2px;margin-top:40px}
 .portal-toast{
-  position:absolute;bottom:48px;left:50%;transform:translateX(-50%);
+  position:fixed;bottom:48px;left:50%;transform:translateX(-50%);
   background:rgba(12,26,42,.95);border:1px solid rgba(201,168,76,.6);
   color:#fff;padding:10px 22px;font-size:13px;letter-spacing:1px;white-space:nowrap;
-  display:none;box-shadow:0 0 16px rgba(201,168,76,.3);pointer-events:none;z-index:1;
+  display:none;box-shadow:0 0 16px rgba(201,168,76,.3);pointer-events:none;z-index:6000;
 }
 .portal-toast.show{display:block;animation:fadeIn .2s ease}
-/* 投诉表单（三级页面） */
+/* 投诉/征募表单：fixed 全屏压在 portal-overlay 之上，避免法典内容露出 */
 .complaint-panel{
-  display:none;min-height:100%;max-width:960px;width:92%;margin:0 auto;box-sizing:border-box;
-  padding:28px 48px 48px;text-align:left;
+  position:fixed;inset:0;z-index:5500;overflow-y:auto;box-sizing:border-box;
+  display:none;background:#ffffff;padding:100px 48px 48px;text-align:left;
 }
 .complaint-panel.show{display:block}
-/* 投诉页顶部同款上方栏（无按钮），全屏铺满、默认隐藏 */
-.complaint-header{display:none}
+.complaint-panel > *{max-width:960px;margin-left:auto;margin-right:auto}
+/* 投诉页顶部同款上方栏（无按钮），fixed 顶部压在 panel 之上 */
+.complaint-header{display:none;position:fixed;top:0;left:0;right:0;z-index:5501}
 .complaint-header.show{display:block}
 .complaint-head{
   display:flex;align-items:center;gap:16px;margin-bottom:26px;
@@ -865,7 +873,7 @@ body.has-panel{padding-bottom:340px}
 .cf-btn.back{background:#fff;color:#000000;border:2px solid #012c49}
 .cf-btn.back:hover{background:#012c49;color:#fff}
 @media(max-width:640px){
-  .complaint-panel{padding:16px 24px 40px}
+  .complaint-panel{padding:88px 24px 40px}
   .complaint-form{padding:20px 16px}
   .enlist-options{grid-template-columns:1fr;gap:14px}
   .enlist-option{padding:22px 16px}
@@ -933,6 +941,12 @@ body.has-panel{padding-bottom:340px}
   .portal-card{padding:20px 14px}
   .pc-icon{width:40px;height:40px}
   .pc-icon svg{width:40px;height:40px}
+  .portal-card.portal-card-lg{padding:30px 18px;gap:14px}
+  .portal-card.portal-card-lg .pc-icon{width:52px;height:52px}
+  .portal-card.portal-card-lg .pc-icon svg{width:52px;height:52px}
+  .portal-card.portal-card-lg .pc-title{font-size:21px}
+  .portal-card.portal-card-lg .pc-desc{font-size:13px}
+  .portal-card.portal-card-lg .pc-status{font-size:12px;padding:5px 16px}
 }
 @media(max-width:400px){
   .home-btn span{display:none}
@@ -969,13 +983,13 @@ body.has-panel{padding-bottom:340px}
         <span class="pc-title">法律检索系统</span>
         <span class="pc-status">公开可用</span>
       </button>
-      <button class="portal-card" type="button" data-module="complaint" title="投诉我们的雇员">
+      <button class="portal-card portal-card-lg" type="button" data-module="complaint" title="投诉我们的雇员">
         <span class="pc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
         <span class="pc-title">投诉我们的雇员</span>
         <span class="pc-desc">监督我们的执法</span>
         <span class="pc-status">公开可用</span>
       </button>
-      <button class="portal-card" type="button" data-module="enlist" title="加入我们 / 入职 / 调转">
+      <button class="portal-card portal-card-lg" type="button" data-module="enlist" title="加入我们 / 入职 / 调转">
         <span class="pc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></span>
         <span class="pc-title">加入我们</span>
         <span class="pc-desc">入职申请 / 调转申请</span>
@@ -2357,8 +2371,7 @@ const SENTENCING = {
   function showComplaint() {
     if (!complaintPanel) return;
     warmCloudFn();               // 预热云函数，避免冷启动卡顿
-    portal.classList.remove('show');   // 隐藏门户全屏容器，露出面板
-    portalInner.style.display = 'none';
+    portalInner.style.display = 'none';   // 门户 overlay 保持全屏白底，面板 fixed 盖在其上
     complaintPanel.classList.add('show');
     if (complaintHeader) complaintHeader.classList.add('show');
     window.scrollTo(0, 0);
@@ -2367,7 +2380,6 @@ const SENTENCING = {
     if (!complaintPanel) return;
     complaintPanel.classList.remove('show');
     if (complaintHeader) complaintHeader.classList.remove('show');
-    portal.classList.add('show');       // 恢复门户全屏容器
     portalInner.style.display = '';
     window.scrollTo(0, 0);
   }
@@ -2382,8 +2394,7 @@ const SENTENCING = {
   function showEnlist() {
     if (!enlistPanel) return;
     warmCloudFn();               // 预热云函数（投诉 + 征募两个端点）
-    portal.classList.remove('show');   // 隐藏门户全屏容器，露出面板
-    portalInner.style.display = 'none';
+    portalInner.style.display = 'none';   // 门户 overlay 保持全屏白底，面板 fixed 盖在其上
     enlistPanel.classList.add('show');
     if (enlistHeader) enlistHeader.classList.add('show');
     showEnlistStep('choose');
@@ -2393,7 +2404,6 @@ const SENTENCING = {
     if (!enlistPanel) return;
     enlistPanel.classList.remove('show');
     if (enlistHeader) enlistHeader.classList.remove('show');
-    portal.classList.add('show');       // 恢复门户全屏容器
     portalInner.style.display = '';
     window.scrollTo(0, 0);
   }
