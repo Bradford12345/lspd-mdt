@@ -950,10 +950,10 @@ body.has-panel{padding-bottom:340px}
     <div class="portal-title">LOS SANTOS POLICE DEPARTMENT</div>
     <div class="portal-motto">"To Protect and to Serve"</div>
     <div class="portal-slider" id="portal-slider">
-      <img class="ps-item active" src="assets/slide_1.jpg" alt="LSPD">
-      <img class="ps-item" src="assets/slide_2.jpg" alt="LSPD">
-      <img class="ps-item" src="assets/slide_4.jpg" alt="LSPD">
-      <img class="ps-item" src="assets/slide_5.jpg" alt="LSPD">
+      <img class="ps-item active" src="assets/slide_1.jpg" alt="LSPD" width="1440" height="987">
+      <img class="ps-item" data-src="assets/slide_2.jpg" alt="LSPD" width="1440" height="1058">
+      <img class="ps-item" data-src="assets/slide_4.jpg" alt="LSPD" width="1440" height="745">
+      <img class="ps-item" data-src="assets/slide_5.jpg" alt="LSPD" width="1440" height="764">
       <div class="ps-dots">
         <span class="ps-dot active"></span>
         <span class="ps-dot"></span>
@@ -2613,21 +2613,31 @@ const SENTENCING = {
     });
   });
 
-  // ===== 照片轮播（8秒自动渐入切换）=====
+  // ===== 照片轮播（8秒自动渐入切换，图片按需懒加载）=====
   (function(){
     var slider = document.getElementById('portal-slider');
     if (!slider) return;
     var items = slider.querySelectorAll('.ps-item');
     var dots  = slider.querySelectorAll('.ps-dot');
     var idx = 0, timer = null;
+    function loadImg(el){
+      var src = el.getAttribute('data-src');
+      if (src && !el.src) el.src = src;   // 首次显示时才加载，懒加载
+    }
     function go(n){
       items[idx].classList.remove('active');
       dots[idx].classList.remove('active');
       idx = (n + items.length) % items.length;
+      loadImg(items[idx]);
       items[idx].classList.add('active');
       dots[idx].classList.add('active');
+      // 预加载下一张，切换更顺滑
+      var nxt = items[(idx + 1) % items.length];
+      loadImg(nxt);
     }
     function next(){ go(idx + 1); }
+    loadImg(items[0]);
+    loadImg(items[1]);
     timer = setInterval(next, 8000);
     // 点击小圆点手动切换，切换后重置计时
     dots.forEach(function(dot, i){
