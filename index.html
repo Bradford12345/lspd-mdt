@@ -15,15 +15,15 @@
   --border-glow: #a0b4c8;
   --text: #1a1a1a;
   --dim: #5a7a9c;
-  --accent: #1a3a5c;
-  --accent-glow: #2a5a8c;
+  --accent: #012c49;
+  --accent-glow: #33558c;
   --red: #c0392b;
-  --green: #1a3a5c;
-  --yellow: #1a3a5c;
-  --orange: #1a3a5c;
-  --purple: #1a3a5c;
-  --lspd-gold: #1a3a5c;
-  --blue: #3b6fa0;
+  --green: #012c49;
+  --yellow: #012c49;
+  --orange: #012c49;
+  --purple: #012c49;
+  --lspd-gold: #012c49;
+  --blue: #33558c;
 }
 html{scroll-behavior:smooth}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -39,8 +39,8 @@ body::after{
   pointer-events:none;z-index:9999;
 }
 .header{
-  background:linear-gradient(180deg,#0c1a2a 0%,#1a3a5c 100%);
-  border-bottom:1px solid #0c1a2a;
+  background:#012c49;
+  border-bottom:1px solid #001d33;
   padding:0 20px;position:sticky;top:0;z-index:10;
 }
 .header-top{
@@ -52,7 +52,7 @@ body::after{
 .header-title{flex:1}
 .header-title h1{
   font-size:18px;font-weight:700;letter-spacing:2px;
-  color:#fff;text-shadow:none;
+  color:#fff;text-shadow:none;white-space:nowrap;
 }
 
 .header-title .motto{
@@ -193,7 +193,7 @@ body::after{
 .calc-row input::-webkit-inner-spin-button{opacity:1}
 .calc-row .calc-unit{font-size:11px;color:var(--dim);white-space:nowrap}
 .calc-result{
-  background:linear-gradient(135deg,rgba(26,58,92,.06),rgba(42,90,140,.03));
+  background:#f5f7fa;
   border:1px solid rgba(59,130,246,.25);border-radius:0;
   padding:10px;text-align:center;margin-top:6px;
 }
@@ -411,23 +411,23 @@ body.has-panel{padding-bottom:340px}
 /* ===== 网站快捷方式按钮（仅网站显示） ===== */
 .shortcut-btn{
   display:flex;align-items:center;gap:5px;
-  background:#ffffff;border:2px solid #1a3a5c;
-  color:#1a3a5c;font-size:12px;font-weight:700;padding:8px 12px;
+  background:#ffffff;border:2px solid #012c49;
+  color:#012c49;font-size:12px;font-weight:700;padding:8px 12px;
   border-radius:0;cursor:pointer;text-decoration:none;letter-spacing:.5px;
   white-space:nowrap;transition:all .2s;font-family:inherit;
 }
-.shortcut-btn:hover{background:#1a3a5c;border-color:#0c1a2a;color:#fff}
+.shortcut-btn:hover{background:#012c49;border-color:#001d33;color:#fff}
 .shortcut-btn svg{width:14px;height:14px}
 
 /* ===== 警用报告按钮 ===== */
 .report-btn{
   display:flex;align-items:center;gap:5px;
-  background:#ffffff;border:2px solid #1a3a5c;
-  color:#1a3a5c;font-size:12px;font-weight:700;padding:8px 12px;
+  background:#ffffff;border:2px solid #012c49;
+  color:#012c49;font-size:12px;font-weight:700;padding:8px 12px;
   border-radius:0;cursor:pointer;text-decoration:none;letter-spacing:.5px;
   white-space:nowrap;transition:all .2s;font-family:inherit;
 }
-.report-btn:hover{background:#1a3a5c;border-color:#0c1a2a;color:#fff}
+.report-btn:hover{background:#012c49;border-color:#001d33;color:#fff}
 .report-btn svg{width:14px;height:14px;flex-shrink:0}
 .report-badge{
   display:inline-block;background:#c0392b;color:#fff;
@@ -484,7 +484,7 @@ body.has-panel{padding-bottom:340px}
 }
 .report-dept-select{
   flex:1;background:#fff;color:#1a1a1a;
-  border:1px solid #1a3a5c;border-radius:0;
+  border:1px solid #012c49;border-radius:0;
   padding:8px 10px;font-size:13px;font-family:inherit;cursor:pointer;
   outline:none;
 }
@@ -497,18 +497,18 @@ body.has-panel{padding-bottom:340px}
 }
 .report-officer-input{
   flex:1;min-width:80px;background:#fff;color:#1a1a1a;
-  border:1px solid #1a3a5c;border-radius:0;padding:8px 10px;
+  border:1px solid #012c49;border-radius:0;padding:8px 10px;
   font-size:13px;font-family:inherit;outline:none;
 }
 .report-officer-input:focus{border-color:var(--accent)}
 .save-officer-btn{
-  background:#1a3a5c;
+  background:#012c49;
   color:#ffffff;border:none;border-radius:0;padding:8px 14px;
   font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;
   transition:all .2s;
 }
-.save-officer-btn:hover{background:#0c1a2a}
-.save-officer-btn.saved{background:#0c1a2a;color:#fff}
+.save-officer-btn:hover{background:#001d33}
+.save-officer-btn.saved{background:#001d33;color:#fff}
 
 /* ===== 手机适配 ===== */
 @media(max-width:700px){
@@ -591,12 +591,12 @@ body.has-panel{padding-bottom:340px}
 }
 .template-area:focus{outline:none;border-color:var(--accent)}
 .copy-btn{
-  margin-top:6px;padding:8px 20px;background:#1a3a5c;
+  margin-top:6px;padding:8px 20px;background:#012c49;
   color:#ffffff;border:none;border-radius:0;cursor:pointer;
   font-weight:700;font-size:13px;letter-spacing:1px;
   transition:all .2s;
 }
-.copy-btn:hover{background:#0c1a2a}
+.copy-btn:hover{background:#001d33}
 .copy-btn:active{transform:scale(.97)}
 
 
@@ -617,7 +617,7 @@ body.has-panel{padding-bottom:340px}
 }
 @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
 .welcome-header{
-  background:linear-gradient(90deg,rgba(26,58,92,.06),rgba(26,58,92,.02));
+  background:#f5f7fa;
   padding:14px 20px;display:flex;align-items:center;justify-content:space-between;
   border-bottom:1px solid #c8d4e0;
 }
@@ -677,10 +677,326 @@ body.has-panel{padding-bottom:340px}
 .site-footer .foot-tag{
   font-size:11px;color:var(--dim);letter-spacing:1px;
 }
+.site-footer-account{
+  margin-top:10px;font-size:11px;color:#777;letter-spacing:.5px;
+}
+.site-footer-account a{
+  color:#999;text-decoration:none;margin-left:8px;
+}
+.site-footer-account a:hover{color:var(--accent)}
+
+/* ===== 账号登录（CloudBase 真账号系统） ===== */
+.auth-overlay{
+  position:fixed;inset:0;z-index:10000;
+  background:#012c49;
+  display:none;align-items:center;justify-content:center;
+}
+.auth-card{
+  width:360px;max-width:90vw;box-sizing:border-box;
+  background:#ffffff;color:#1a1a1a;
+  border:2px solid #012c49;padding:28px 26px;text-align:center;
+}
+.auth-card img{height:60px;width:60px;object-fit:contain;margin-bottom:10px}
+.auth-title{font-size:20px;font-weight:700;color:#000;letter-spacing:3px}
+.auth-sub{font-size:12px;color:#888;margin-top:4px;margin-bottom:16px;letter-spacing:2px}
+.auth-tabs{display:flex;border:1px solid #d8dde3;margin-bottom:14px}
+.auth-tab{
+  flex:1;padding:8px 0;font-size:12px;font-weight:700;cursor:pointer;
+  background:#fff;color:#666;border:none;letter-spacing:2px;transition:all .15s;
+  font-family:inherit;
+}
+.auth-tab.on{background:#012c49;color:#fff}
+.auth-field{
+  width:100%;box-sizing:border-box;padding:10px 12px;font-size:13px;
+  border:1px solid #bbb;background:#fff;color:#000;border-radius:0;
+  outline:none;margin-bottom:10px;font-family:inherit;
+}
+.auth-field:focus{border-color:#012c49}
+.auth-btn{
+  width:100%;margin-top:4px;padding:10px;font-size:13px;font-weight:700;
+  background:#012c49;color:#fff;border:none;border-radius:0;cursor:pointer;letter-spacing:3px;
+  font-family:inherit;
+}
+.auth-btn:hover{background:#001d33}
+.auth-btn:disabled{opacity:.6;cursor:wait}
+.auth-msg{font-size:12px;margin-top:10px;min-height:16px;line-height:1.5}
+.auth-msg.err{color:#c0392b}
+.auth-msg.ok{color:#1a5c3a}
+.auth-hint{font-size:10px;color:#aaa;margin-top:12px;letter-spacing:.5px;line-height:1.6}
+
+/* ===== 门户首页（一级界面） ===== */
+.portal-overlay{
+  position:fixed;inset:0;z-index:5000;
+  background:#ffffff;
+  display:none;overflow-y:auto;
+}
+.portal-overlay.show{display:block}
+.portal-inner{
+  min-height:100%;max-width:960px;width:92%;margin:0 auto;box-sizing:border-box;
+  text-align:center;padding:28px 48px 48px;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  background:#ffffff;
+}
+.portal-badge{margin-top:34px}
+.portal-badge img{
+  width:120px;height:120px;object-fit:contain;
+  filter:drop-shadow(0 0 18px rgba(201,168,76,.55));
+}
+.portal-title{
+  color:#012c49;font-size:30px;font-weight:800;letter-spacing:6px;
+  margin-top:18px;
+  font-family:Impact,'Arial Black',sans-serif;
+}
+.portal-sub{color:#5a7a9c;font-size:13px;letter-spacing:4px;margin-top:6px;text-transform:uppercase}
+.portal-motto{
+  font-family:Georgia,'Times New Roman',serif;font-style:italic;
+  color:#b08d2e;font-size:24px;letter-spacing:3px;margin-top:14px;
+}
+.portal-slider{
+  width:100%;position:relative;
+  aspect-ratio:21/9;overflow:hidden;background:#0a0f16;
+  border:1px solid rgba(90,140,200,.35);
+  box-shadow:0 0 30px rgba(59,130,246,.15);
+  margin-top:20px;
+}
+.portal-slider .ps-item{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;opacity:0;transition:opacity 1.6s ease-in-out;
+  pointer-events:none;
+}
+.portal-slider .ps-item.active{opacity:1}
+.portal-slider .ps-dots{
+  position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+  display:flex;gap:8px;z-index:2;
+}
+.portal-slider .ps-dot{
+  width:8px;height:8px;border-radius:0;background:rgba(255,255,255,.25);
+  border:1px solid rgba(255,255,255,.15);transition:background .4s;
+}
+.portal-slider .ps-dot.active{background:rgba(201,168,76,.85);border-color:rgba(201,168,76,.5)}
+@media(max-width:640px){
+  .portal-inner{padding:16px 24px 40px}
+  .portal-badge{margin-top:22px}
+}
+.portal-modules{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px;width:100%}
+.portal-card{
+  background:#012c49;
+  border:1px solid rgba(90,140,200,.35);border-radius:0;
+  padding:32px 20px;color:#fff;cursor:pointer;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  font-family:inherit;transition:border-color .2s,box-shadow .2s,transform .2s;
+}
+.portal-card:hover{
+  border-color:rgba(201,168,76,.85);
+  box-shadow:0 0 24px rgba(201,168,76,.35),0 0 48px rgba(59,130,246,.2);
+  transform:translateY(-4px);
+}
+.pc-icon{width:52px;height:52px;color:#c9a84c;filter:drop-shadow(0 0 8px rgba(201,168,76,.5))}
+.pc-icon svg{width:52px;height:52px}
+.pc-title{font-size:18px;font-weight:700;letter-spacing:2px}
+.pc-desc{font-size:12px;color:#5a7a9c;line-height:1.6}
+.pc-status{font-size:11px;padding:3px 12px;border:1px solid rgba(59,130,246,.5);color:#7db4f0;letter-spacing:1px}
+.pc-status.dev{color:#d8c08a;border-color:rgba(201,168,76,.5)}
+.portal-foot{color:#8a9aa8;font-size:11px;letter-spacing:2px;margin-top:40px}
+.portal-toast{
+  position:absolute;bottom:48px;left:50%;transform:translateX(-50%);
+  background:rgba(12,26,42,.95);border:1px solid rgba(201,168,76,.6);
+  color:#fff;padding:10px 22px;font-size:13px;letter-spacing:1px;white-space:nowrap;
+  display:none;box-shadow:0 0 16px rgba(201,168,76,.3);pointer-events:none;z-index:1;
+}
+.portal-toast.show{display:block;animation:fadeIn .2s ease}
+/* 投诉表单（三级页面） */
+.complaint-panel{
+  display:none;min-height:100%;max-width:960px;width:92%;margin:0 auto;box-sizing:border-box;
+  padding:28px 48px 48px;text-align:left;
+}
+.complaint-panel.show{display:block}
+/* 投诉页顶部同款上方栏（无按钮），全屏铺满、默认隐藏 */
+.complaint-header{display:none}
+.complaint-header.show{display:block}
+.complaint-head{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+.complaint-title{color:#000000;font-size:20px;font-weight:800;letter-spacing:3px}
+.complaint-sub{color:#000000;font-size:12px;letter-spacing:2px;margin-top:4px;text-transform:uppercase}
+.complaint-form{background:#fff;border:1px solid #d8dde3;padding:32px 36px}
+.cf-field{margin-bottom:18px}
+.cf-label{display:block;font-size:13px;font-weight:700;color:#000000;margin-bottom:8px;letter-spacing:1px}
+.cf-label .req{color:#c0392b;margin-left:2px}
+.cf-input,.cf-textarea{
+  width:100%;box-sizing:border-box;padding:10px 12px;font-size:13px;
+  border:1px solid #bbb;background:#fff;color:#000;border-radius:0;
+  outline:none;font-family:inherit;
+}
+.cf-input:focus,.cf-textarea:focus{border-color:#012c49}
+.cf-textarea{min-height:120px;resize:vertical;line-height:1.6}
+.cf-required{
+  margin-top:20px;padding-top:14px;border-top:1px dashed #d8dde3;
+  font-size:12px;color:#888;
+}
+.cf-required b{color:#c0392b}
+.cf-actions{display:flex;gap:12px;margin-top:24px}
+.cf-btn{
+  padding:10px 28px;font-size:13px;font-weight:700;border:none;border-radius:0;
+  cursor:pointer;letter-spacing:2px;font-family:inherit;transition:all .15s;
+}
+.cf-btn.submit{background:#012c49;color:#fff}
+.cf-btn.submit:hover{background:#001d33}
+.cf-btn.back{background:#fff;color:#000000;border:2px solid #012c49}
+.cf-btn.back:hover{background:#012c49;color:#fff}
+@media(max-width:640px){
+  .complaint-panel{padding:16px 24px 40px}
+  .complaint-form{padding:20px 16px}
+}
+/* 返回首页按钮（与 report-btn/shortcut-btn 同款） */
+.home-btn{
+  display:flex;align-items:center;gap:5px;
+  background:#ffffff;border:2px solid #012c49;
+  color:#012c49;font-size:12px;font-weight:700;padding:8px 12px;
+  border-radius:0;cursor:pointer;text-decoration:none;letter-spacing:.5px;
+  white-space:nowrap;transition:all .2s;font-family:inherit;
+}
+.home-btn:hover{background:#012c49;border-color:#001d33;color:#fff}
+.home-btn svg{width:14px;height:14px;flex-shrink:0}
+/* 表单内返回按钮文字改黑（不影响法典页的返回首页按钮） */
+#complaint-back{color:#000000}
+@media(max-width:700px){
+  .portal-modules{grid-template-columns:1fr;gap:14px;margin-top:28px}
+  .portal-badge img{width:84px;height:84px}
+  .portal-title{font-size:20px;letter-spacing:3px}
+  .portal-card{padding:20px 14px}
+  .pc-icon{width:40px;height:40px}
+  .pc-icon svg{width:40px;height:40px}
+}
+@media(max-width:400px){
+  .home-btn span{display:none}
+  .home-btn{padding:6px 8px}
+}
 
 </style>
 </head>
 <body>
+
+<!-- 门户首页（一级界面） -->
+<div class="portal-overlay show" id="portal-overlay">
+  <div class="portal-inner">
+    <div class="portal-badge">
+      <img src="assets/lspd_badge.png" alt="LSPD" title="Los Santos Police Department">
+    </div>
+    <div class="portal-title">LOS SANTOS POLICE DEPARTMENT</div>
+    <div class="portal-motto">"To Protect and to Serve"</div>
+    <div class="portal-slider" id="portal-slider">
+      <img class="ps-item active" src="assets/slide_1.jpg" alt="LSPD">
+      <img class="ps-item" src="assets/slide_2.jpg" alt="LSPD">
+      <img class="ps-item" src="assets/slide_4.jpg" alt="LSPD">
+      <img class="ps-item" src="assets/slide_5.jpg" alt="LSPD">
+      <div class="ps-dots">
+        <span class="ps-dot active"></span>
+        <span class="ps-dot"></span>
+        <span class="ps-dot"></span>
+        <span class="ps-dot"></span>
+      </div>
+    </div>
+    <div class="portal-modules">
+      <button class="portal-card" type="button" data-module="law" title="法条检索 / 全文 / 米兰达 / 修正案 / 量刑">
+        <span class="pc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+        <span class="pc-title">法律检索系统</span>
+        <span class="pc-status">公开可用</span>
+      </button>
+      <button class="portal-card" type="button" data-module="complaint" title="投诉我们的雇员">
+        <span class="pc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+        <span class="pc-title">投诉我们的雇员</span>
+        <span class="pc-desc">监督我们的执法</span>
+        <span class="pc-status">公开可用</span>
+      </button>
+      <button class="portal-card" type="button" data-module="enlist" title="开发中，敬请期待">
+        <span class="pc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></span>
+        <span class="pc-title">加入我们</span>
+        <span class="pc-desc">一份均等的就业机会</span>
+        <span class="pc-status dev">开发中</span>
+      </button>
+    </div>
+    <div class="portal-foot">By Bradford</div>
+  </div>
+
+  <!-- 投诉页顶部同款上方栏（无按钮，全屏铺满） -->
+  <div class="header complaint-header" id="complaint-header">
+    <div class="header-top">
+      <div class="logo-box">
+        <img src="assets/lspd_badge.png" alt="LSPD" title="Los Santos Police Department">
+      </div>
+      <div class="header-title">
+        <h1>Los Santos Police Department</h1>
+        <div class="motto">"To Protect and to Serve"</div>
+      </div>
+      <button class="home-btn" id="complaint-header-back" type="button" title="返回上一级">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>返回上一级</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 投诉表单（三级页面） -->
+  <div class="complaint-panel" id="complaint-panel">
+    <div class="complaint-head">
+      <div>
+        <div class="complaint-title">投诉我们的雇员</div>
+        <div class="complaint-sub">Citizen Complaint Form</div>
+      </div>
+    </div>
+    <div class="complaint-form">
+      <div class="cf-field">
+        <label class="cf-label" for="cf-name">警员姓名（非必填项）</label>
+        <input class="cf-input" type="text" id="cf-name" placeholder="请输入警员姓名" maxlength="30">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="cf-badge">警员警号（非必填项）</label>
+        <input class="cf-input" type="text" id="cf-badge" placeholder="请输入警员警号" maxlength="20">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="cf-phone">手机号</label>
+        <input class="cf-input" type="tel" id="cf-phone" placeholder="请输入手机号（仅数字与符号）" maxlength="30" autocomplete="off">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="cf-time">事件发生时间<span class="req">*</span></label>
+        <input class="cf-input" type="datetime-local" id="cf-time">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="cf-desc">事发经过<span class="req">*</span></label>
+        <textarea class="cf-textarea" id="cf-desc" placeholder="请详细描述事件经过…"></textarea>
+      </div>
+      <div class="cf-actions">
+        <button class="cf-btn submit" type="button" id="cf-submit">提 交</button>
+        <button class="cf-btn back" type="button" id="cf-cancel">取 消</button>
+      </div>
+    </div>
+  </div>
+  <div class="portal-toast" id="portal-toast">开发中，敬请期待</div>
+</div>
+
+<!-- 账号登录（真账号系统） -->
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-card">
+    <img src="assets/lspd_badge.png" alt="LSPD">
+    <div class="auth-title">LSPD MDT</div>
+    <div class="auth-sub">警员身份验证</div>
+    <div class="auth-tabs">
+      <button class="auth-tab on" id="auth-tab-login" type="button">登 录</button>
+      <button class="auth-tab" id="auth-tab-reg" type="button">注 册</button>
+    </div>
+    <div id="auth-form-login">
+      <input class="auth-field" type="email" id="auth-email-l" placeholder="邮箱" autocomplete="email">
+      <input class="auth-field" type="password" id="auth-pwd-l" placeholder="密码" autocomplete="current-password">
+      <button class="auth-btn" id="auth-btn-l" type="button">登 录</button>
+    </div>
+    <div id="auth-form-reg" style="display:none">
+      <input class="auth-field" type="email" id="auth-email-r" placeholder="邮箱（登录凭证）" autocomplete="email">
+      <input class="auth-field" type="password" id="auth-pwd-r" placeholder="密码（8-32位，含字母和数字）" autocomplete="new-password">
+      <input class="auth-field" type="password" id="auth-pwd-r2" placeholder="确认密码" autocomplete="new-password">
+      <button class="auth-btn" id="auth-btn-r" type="button">注 册</button>
+    </div>
+    <div class="auth-msg" id="auth-msg"></div>
+    <div class="auth-hint">注册后请前往邮箱点击激活链接<br>Los Santos Police Department</div>
+  </div>
+</div>
 
 <!-- 欢迎提示弹窗 -->
 <div class="welcome-overlay" id="welcome-overlay">
@@ -698,22 +1014,18 @@ body.has-panel{padding-bottom:340px}
   </div>
 </div>
 
-<div class="header">
+<div class="header" id="law-header">
   <div class="header-top">
     <div class="logo-box">
       <img src="assets/lspd_badge.png" alt="LSPD" title="Los Santos Police Department">
     </div>
     <div class="header-title">
-      <h1>LSPD MDT</h1>
+      <h1>Los Santos Police Department</h1>
       <div class="motto">"To Protect and to Serve"</div>
     </div>
-      <button class="report-btn" id="report-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        <span>警用报告</span>
-      </button>
-      <button class="shortcut-btn" id="shortcut-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 18h16M12 3v12m0 0l-4-4m4 4l4-4"/></svg>
-        <span>添加到桌面</span>
+      <button class="home-btn" id="law-back" type="button" title="返回上一级">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>返回上一级</span>
       </button>
   </div>
 </div>
@@ -1687,11 +1999,7 @@ const SENTENCING = {
     }
   }
 
-  if (window.pywebview && window.pywebview.whenReady) {
-    window.pywebview.whenReady().then(initWelcome);
-  } else {
-    initWelcome();
-  }
+  // 欢迎弹窗不在加载时触发：改由首次进入二级界面（法律检索系统）时触发，见下方门户逻辑 enterModule()
 
   if (welcomeClose) {
     welcomeClose.addEventListener('click', hideWelcome);
@@ -1799,6 +2107,142 @@ const SENTENCING = {
     origUpdatePanel();
     updateReportText();
   };
+
+  // ===== 门户首页逻辑 =====
+  var portal = document.getElementById('portal-overlay');
+  var portalToast = document.getElementById('portal-toast');
+  var entered = false;      // 是否已进入过二级界面（防重复弹欢迎）
+  var toastTimer = null;
+
+  function showToast(msg) {
+    if (!portalToast) return;
+    portalToast.textContent = msg;
+    portalToast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ portalToast.classList.remove('show'); }, 2200);
+  }
+
+  function enterModule(name) {
+    if (name === 'law') {
+      portal.classList.remove('show');                 // 隐藏门户 → 显示二级界面
+      window.scrollTo(0, 0);
+      if (!entered) { entered = true; initWelcome(); } // 首次进入才弹欢迎
+    } else if (name === 'complaint') {
+      showComplaint();
+    } else {
+      showToast('开发中，敬请期待');
+    }
+  }
+
+  // ===== 投诉表单（三级页面）=====
+  var complaintPanel = document.getElementById('complaint-panel');
+  var complaintHeader = document.getElementById('complaint-header');
+  var portalInner = portal.querySelector('.portal-inner');
+
+  function showComplaint() {
+    if (!complaintPanel) return;
+    portalInner.style.display = 'none';
+    complaintPanel.classList.add('show');
+    if (complaintHeader) complaintHeader.classList.add('show');
+    window.scrollTo(0, 0);
+  }
+  function hideComplaint() {
+    if (!complaintPanel) return;
+    complaintPanel.classList.remove('show');
+    if (complaintHeader) complaintHeader.classList.remove('show');
+    portalInner.style.display = '';
+    window.scrollTo(0, 0);
+  }
+
+  var complaintBack = document.getElementById('complaint-header-back');
+  var cfCancel = document.getElementById('cf-cancel');
+  var cfSubmit = document.getElementById('cf-submit');
+  var cfPhone = document.getElementById('cf-phone');
+  // 手机号允许输入所有数字与符号，拦截汉字和英文字母
+  if (cfPhone) {
+    cfPhone.addEventListener('input', function(){
+      this.value = this.value.replace(/[\u4e00-\u9fa5a-zA-Z]/g, '');
+    });
+  }
+  if (complaintBack) complaintBack.addEventListener('click', showPortal);
+  if (cfCancel) cfCancel.addEventListener('click', hideComplaint);
+  if (cfSubmit) {
+    cfSubmit.addEventListener('click', function(){
+      var t = document.getElementById('cf-time').value;
+      var d = document.getElementById('cf-desc').value.trim();
+      if (!t) { showToast('请填写事件发生时间'); return; }
+      if (!d) { showToast('请填写事发经过'); return; }
+      // 提交给管理员：自动删除手机号里的所有符号，只保留数字
+      var phone = cfPhone ? cfPhone.value.replace(/[^0-9]/g, '') : '';
+      console.log('[LSPD-MDT] complaint submitted:', { phone: phone });
+      showToast('投诉已提交，感谢您的反馈');
+      document.getElementById('cf-name').value = '';
+      document.getElementById('cf-badge').value = '';
+      if (cfPhone) cfPhone.value = '';
+      document.getElementById('cf-time').value = '';
+      document.getElementById('cf-desc').value = '';
+      setTimeout(hideComplaint, 800);
+    });
+  }
+
+  function showPortal() {
+    portal.classList.add('show');                      // 显示门户 → 隐藏二级界面
+    hideComplaint();                                   // 若在投诉页，先回到门户首页
+    hideWelcome();                                     // 防止欢迎弹窗悬浮在门户之上
+    if (reportOverlay) reportOverlay.classList.remove('show');
+    window.scrollTo(0, 0);
+  }
+
+  portal.addEventListener('click', function(e) {
+    var card = e.target.closest('.portal-card');
+    if (card) enterModule(card.dataset.module);
+  });
+
+  var lawBack = document.getElementById('law-back');
+  if (lawBack) lawBack.addEventListener('click', showPortal);
+
+  // 顶部栏：仅点击警徽或标题文字（h1）回首页（法律检索页 + 投诉页）
+  var lawHeader = document.getElementById('law-header');
+  var complaintHeaderEl = document.getElementById('complaint-header');
+  [lawHeader, complaintHeaderEl].forEach(function(hd){
+    if (!hd) return;
+    var logo = hd.querySelector('.logo-box');
+    var title = hd.querySelector('h1');
+    if (logo) logo.style.cursor = 'pointer';
+    if (title) title.style.cursor = 'pointer';
+    hd.addEventListener('click', function(e){
+      if (e.target.closest('.logo-box') || e.target.closest('h1')) {
+        showPortal();
+      }
+    });
+  });
+
+  // ===== 照片轮播（8秒自动渐入切换）=====
+  (function(){
+    var slider = document.getElementById('portal-slider');
+    if (!slider) return;
+    var items = slider.querySelectorAll('.ps-item');
+    var dots  = slider.querySelectorAll('.ps-dot');
+    var idx = 0, timer = null;
+    function go(n){
+      items[idx].classList.remove('active');
+      dots[idx].classList.remove('active');
+      idx = (n + items.length) % items.length;
+      items[idx].classList.add('active');
+      dots[idx].classList.add('active');
+    }
+    function next(){ go(idx + 1); }
+    timer = setInterval(next, 8000);
+    // 点击小圆点手动切换，切换后重置计时
+    dots.forEach(function(dot, i){
+      dot.addEventListener('click', function(){
+        if (i === idx) return;
+        go(i);
+        clearInterval(timer);
+        timer = setInterval(next, 8000);
+      });
+    });
+  })();
 })();
 
   /* ===== 服刑计算器 ===== */
@@ -1853,6 +2297,170 @@ const SENTENCING = {
     <span class="foot-brand">by Bradford</span>
     <span class="foot-tag">LSPD MDT &middot; To Protect and to Serve</span>
   </div>
+  <div class="site-footer-account" id="account-bar" style="display:none">
+    <span id="account-email"></span>
+    <a href="#" id="auth-logout">退出登录</a>
+  </div>
 </footer>
+<script src="https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js"></script>
+<script>
+// ===== 真账号系统（CloudBase 邮箱注册/登录）=====
+(function(){
+  // 环境 ID：在腾讯云开发控制台创建环境后获得，填入即可启用登录；留空则跳过登录
+  var ENV_ID = '';
+  // 可选：新版 SDK 需要 publishable key 时填这里（控制台-环境-API密钥）
+  var PUBLISHABLE_KEY = '';
+
+  var overlay = document.getElementById('auth-overlay');
+  var msgBox = document.getElementById('auth-msg');
+  var accountBar = document.getElementById('account-bar');
+  var accountEmail = document.getElementById('account-email');
+  var logoutLink = document.getElementById('auth-logout');
+
+  // 未配置环境或 SDK 未加载：不启用登录，直接放行
+  if (!ENV_ID || typeof cloudbase === 'undefined') {
+    if (overlay) overlay.style.display = 'none';
+    return;
+  }
+
+  var app;
+  try {
+    var initOpts = { env: ENV_ID };
+    if (PUBLISHABLE_KEY) initOpts.accessKey = PUBLISHABLE_KEY;
+    app = cloudbase.init(initOpts);
+  } catch(e) {
+    if (overlay) overlay.style.display = 'none';
+    return;
+  }
+  var auth = app.auth();
+
+  function showMsg(txt, ok){
+    if (!msgBox) return;
+    msgBox.textContent = txt || '';
+    msgBox.className = 'auth-msg' + (ok ? ' ok' : (txt ? ' err' : ''));
+  }
+
+  function friendly(err){
+    var m = (err && err.message) ? String(err.message) : '操作失败，请重试';
+    if (/password|密码/i.test(m) && /incorrect|wrong|error|不正确|错误/i.test(m)) return '密码错误，请重试';
+    if (/not.?exist|未注册|不存在/i.test(m) && /user|email|account|用户|账号/i.test(m)) return '该邮箱未注册';
+    if (/already.?exist|已注册|已存在/i.test(m)) return '该邮箱已注册，请直接登录';
+    if (/verif|激活/i.test(m)) return '请先前往邮箱点击激活链接';
+    if (/domain|whitelist|安全域名|来源|referrer/i.test(m)) return '站点未通过安全验证，请联系管理员添加域名';
+    if (/network|timeout|超时|fetch/i.test(m)) return '网络连接失败，请稍后重试';
+    if (/signup|sign-up|注册/i.test(m) && !/已注册/.test(m)) return '注册失败：' + m;
+    return m;
+  }
+
+  function getLoginState(){
+    if (typeof auth.getCurrentUser === 'function') {
+      return auth.getCurrentUser().then(function(u){ return u; }).catch(function(){ return null; });
+    }
+    return auth.getLoginState().catch(function(){ return null; });
+  }
+
+  function onAuthed(state){
+    var user = state && state.user ? state.user : state;
+    if (overlay) overlay.style.display = 'none';
+    if (accountBar) {
+      accountBar.style.display = 'block';
+      if (accountEmail && user) accountEmail.textContent = '已登录：' + (user.email || user.uid || '');
+    }
+  }
+
+  function switchTab(which){
+    var l = document.getElementById('auth-form-login');
+    var r = document.getElementById('auth-form-reg');
+    var tl = document.getElementById('auth-tab-login');
+    var tr = document.getElementById('auth-tab-reg');
+    if (!l || !r || !tl || !tr) return;
+    if (which === 'reg') {
+      r.style.display = 'block'; l.style.display = 'none';
+      tr.className = 'auth-tab on'; tl.className = 'auth-tab';
+    } else {
+      l.style.display = 'block'; r.style.display = 'none';
+      tl.className = 'auth-tab on'; tr.className = 'auth-tab';
+    }
+    showMsg('');
+  }
+
+  function doLogin(){
+    var email = (document.getElementById('auth-email-l').value || '').trim();
+    var pwd = document.getElementById('auth-pwd-l').value || '';
+    if (!email || !pwd) { showMsg('请输入邮箱和密码'); return; }
+    var btn = document.getElementById('auth-btn-l');
+    btn.disabled = true; btn.textContent = '验证中...';
+    auth.signInWithEmailAndPassword(email, pwd).then(function(state){
+      showMsg('登录成功', true);
+      setTimeout(function(){ onAuthed(state); }, 300);
+    }).catch(function(err){
+      showMsg(friendly(err));
+    }).then(function(){
+      btn.disabled = false; btn.textContent = '登 录';
+    });
+  }
+
+  function doReg(){
+    var email = (document.getElementById('auth-email-r').value || '').trim();
+    var pwd = document.getElementById('auth-pwd-r').value || '';
+    var pwd2 = document.getElementById('auth-pwd-r2').value || '';
+    if (!email || !pwd) { showMsg('请填写邮箱和密码'); return; }
+    if (pwd.length < 8 || pwd.length > 32 || !/[a-zA-Z]/.test(pwd) || !/\d/.test(pwd)) {
+      showMsg('密码需 8-32 位，且同时包含字母和数字'); return;
+    }
+    if (pwd !== pwd2) { showMsg('两次输入的密码不一致'); return; }
+    var btn = document.getElementById('auth-btn-r');
+    btn.disabled = true; btn.textContent = '提交中...';
+    auth.signUpWithEmailAndPassword(email, pwd).then(function(){
+      showMsg('注册成功！验证邮件已发送至 ' + email + '，请前往邮箱点击激活链接后登录', true);
+      switchTab('login');
+      document.getElementById('auth-email-l').value = email;
+      document.getElementById('auth-email-r').value = '';
+      document.getElementById('auth-pwd-r').value = '';
+      document.getElementById('auth-pwd-r2').value = '';
+    }).catch(function(err){
+      showMsg(friendly(err));
+    }).then(function(){
+      btn.disabled = false; btn.textContent = '注 册';
+    });
+  }
+
+  var tabLogin = document.getElementById('auth-tab-login');
+  var tabReg = document.getElementById('auth-tab-reg');
+  if (tabLogin) tabLogin.addEventListener('click', function(){ switchTab('login'); });
+  if (tabReg) tabReg.addEventListener('click', function(){ switchTab('reg'); });
+
+  var btnL = document.getElementById('auth-btn-l');
+  var btnR = document.getElementById('auth-btn-r');
+  var elL = document.getElementById('auth-email-l');
+  var pwdL = document.getElementById('auth-pwd-l');
+  var elR = document.getElementById('auth-email-r');
+  var pwdR2 = document.getElementById('auth-pwd-r2');
+  if (btnL) btnL.addEventListener('click', doLogin);
+  if (btnR) btnR.addEventListener('click', doReg);
+  if (elL) elL.addEventListener('keydown', function(e){ if (e.key === 'Enter') doLogin(); });
+  if (pwdL) pwdL.addEventListener('keydown', function(e){ if (e.key === 'Enter') doLogin(); });
+  if (elR) elR.addEventListener('keydown', function(e){ if (e.key === 'Enter') doReg(); });
+  if (pwdR2) pwdR2.addEventListener('keydown', function(e){ if (e.key === 'Enter') doReg(); });
+
+  if (logoutLink) {
+    logoutLink.addEventListener('click', function(e){
+      e.preventDefault();
+      auth.signOut().then(function(){
+        location.reload();
+      }).catch(function(){ location.reload(); });
+    });
+  }
+
+  getLoginState().then(function(state){
+    if (state) {
+      onAuthed(state);
+    } else {
+      overlay.style.display = 'flex';
+      setTimeout(function(){ var f = document.getElementById('auth-email-l'); if (f) f.focus(); }, 60);
+    }
+  });
+})();
+</script>
 </body>
 </html>
