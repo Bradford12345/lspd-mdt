@@ -677,10 +677,56 @@ body.has-panel{padding-bottom:340px}
 .site-footer .foot-tag{
   font-size:11px;color:var(--dim);letter-spacing:1px;
 }
+.site-footer .foot-logout{
+  font-size:10px;color:#aaa;text-decoration:none;letter-spacing:.5px;
+}
+.site-footer .foot-logout:hover{color:var(--accent)}
+
+/* ===== 登录界面 ===== */
+.login-overlay{
+  position:fixed;inset:0;z-index:10000;
+  background:linear-gradient(180deg,#0a0f16 0%,#101826 100%);
+  display:none;align-items:center;justify-content:center;
+}
+.login-card{
+  width:340px;max-width:88vw;box-sizing:border-box;
+  background:#ffffff;color:#1a1a1a;
+  border:2px solid #1a3a5c;padding:34px 30px;text-align:center;
+}
+.login-card img{height:64px;width:64px;object-fit:contain;margin-bottom:12px}
+.login-title{font-size:20px;font-weight:700;color:#000;letter-spacing:3px}
+.login-sub{font-size:12px;color:#888;margin-top:4px;margin-bottom:22px;letter-spacing:2px}
+.login-card input[type=password]{
+  width:100%;box-sizing:border-box;padding:10px 12px;font-size:14px;
+  border:1px solid #bbb;background:#fff;color:#000;border-radius:0;
+  outline:none;text-align:center;letter-spacing:2px;
+}
+.login-card input[type=password]:focus{border-color:#1a3a5c}
+.login-btn{
+  width:100%;margin-top:14px;padding:10px;font-size:13px;font-weight:700;
+  background:#1a3a5c;color:#fff;border:none;border-radius:0;cursor:pointer;letter-spacing:3px;
+}
+.login-btn:hover{background:#0c1a2a}
+.login-btn:disabled{opacity:.6;cursor:wait}
+.login-err{font-size:12px;color:#c0392b;margin-top:10px;min-height:16px}
+.login-hint{font-size:10px;color:#aaa;margin-top:14px;letter-spacing:.5px}
 
 </style>
 </head>
 <body>
+
+<!-- 登录界面 -->
+<div class="login-overlay" id="login-overlay">
+  <div class="login-card">
+    <img src="assets/lspd_badge.png" alt="LSPD">
+    <div class="login-title">LSPD MDT</div>
+    <div class="login-sub">警员身份验证</div>
+    <input type="password" id="login-pwd" placeholder="请输入访问密码" autocomplete="off">
+    <button class="login-btn" id="login-btn">登 录</button>
+    <div class="login-err" id="login-err"></div>
+    <div class="login-hint">Los Santos Police Department</div>
+  </div>
+</div>
 
 <!-- 欢迎提示弹窗 -->
 <div class="welcome-overlay" id="welcome-overlay">
@@ -1852,7 +1898,62 @@ const SENTENCING = {
     <img src="assets/lspd_badge.png" alt="LSPD">
     <span class="foot-brand">by Bradford</span>
     <span class="foot-tag">LSPD MDT &middot; To Protect and to Serve</span>
+    <a href="#" id="logout-link" class="foot-logout">退出登录</a>
   </div>
 </footer>
+<script>
+// ===== 登录验证（密码锁）=====
+(function(){
+  // 密码 LSPD2026 的 SHA-256。改密码：算出新密码的 SHA-256 替换下面这行即可
+  var PASS_HASH = 'f2576cc19967d6b7e87bb4d963f16c75687469ba302d48396b958dd27b544713';
+  var AUTH_KEY = 'lspd_auth_v1';
+  var overlay = document.getElementById('login-overlay');
+  var pwdInput = document.getElementById('login-pwd');
+  var errBox = document.getElementById('login-err');
+  var btn = document.getElementById('login-btn');
+  if (!overlay) return;
+  function sha256(str){
+    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)).then(function(buf){
+      return Array.from(new Uint8Array(buf)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+    });
+  }
+  function tryLogin(){
+    var v = pwdInput.value;
+    if (!v) { errBox.textContent = '请输入密码'; return; }
+    btn.disabled = true; btn.textContent = '验证中...';
+    sha256(v).then(function(h){
+      if (h === PASS_HASH) {
+        try { localStorage.setItem(AUTH_KEY, '1'); } catch(e) {}
+        overlay.style.display = 'none';
+        errBox.textContent = '';
+      } else {
+        errBox.textContent = '密码错误，请重试';
+        pwdInput.value = ''; pwdInput.focus();
+      }
+    }).catch(function(){
+      errBox.textContent = '验证失败，请重试';
+    }).then(function(){
+      btn.disabled = false; btn.textContent = '登 录';
+    });
+  }
+  btn.addEventListener('click', tryLogin);
+  pwdInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryLogin(); });
+  var authed = false;
+  try { authed = localStorage.getItem(AUTH_KEY) === '1'; } catch(e) {}
+  if (authed) { overlay.style.display = 'none'; }
+  else {
+    overlay.style.display = 'flex';
+    setTimeout(function(){ pwdInput.focus(); }, 60);
+  }
+  var logoutLink = document.getElementById('logout-link');
+  if (logoutLink) {
+    logoutLink.addEventListener('click', function(e){
+      e.preventDefault();
+      try { localStorage.removeItem(AUTH_KEY); } catch(e2) {}
+      location.reload();
+    });
+  }
+})();
+</script>
 </body>
 </html>
