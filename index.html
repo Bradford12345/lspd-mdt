@@ -592,7 +592,9 @@ body.has-panel{padding-bottom:340px}
 .template-label{
   color:var(--accent);font-size:13px;font-weight:700;margin-bottom:4px;
   text-transform:uppercase;letter-spacing:1px;
+  display:flex;align-items:center;gap:6px;
 }
+.template-label svg{width:15px;height:15px;flex-shrink:0}
 .template-hint{
   color:var(--dim);font-size:11px;margin-bottom:8px;
   display:flex;align-items:center;gap:4px;
@@ -896,7 +898,10 @@ body.has-panel{padding-bottom:340px}
     <button class="sentencing-clear" id="sentencing-clear">清空清单</button>
 
     <div class="template-section">
-      <div class="template-label">量刑报告模板</div>
+      <div class="template-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>
+        量刑报告模板
+      </div>
       <div class="template-hint">添加量刑后会自动填入罪名、刑期和罚款，可直接复制使用</div>
       <div class="report-officer-row">
         <label>姓名</label>
