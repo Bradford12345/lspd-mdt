@@ -398,6 +398,22 @@ body.has-panel{padding-bottom:340px}
   color:#666;font-size:11px;cursor:pointer;
 }
 .sentencing-dialog-cancel:hover{border-color:#000;color:#000}
+/* 申请提交成功弹窗（盖在 portal 面板之上） */
+#enlist-success-dialog{z-index:5700}
+#enlist-success-dialog .sentencing-dialog-content{text-align:center;padding:28px 24px}
+#enlist-success-dialog .enlist-success-text{
+  color:#000;font-size:14px;line-height:1.9;margin:12px 0 18px;
+}
+#enlist-success-dialog .enlist-success-text a{
+  color:#000;font-weight:700;text-decoration:underline;word-break:break-all;
+}
+#enlist-success-dialog .enlist-success-btn{
+  display:block;width:100%;padding:10px;
+  background:#000;border:1px solid #000;border-radius:0;
+  color:#fff;font-size:14px;letter-spacing:2px;cursor:pointer;
+  transition:all .15s;
+}
+#enlist-success-dialog .enlist-success-btn:hover{background:#1a1a1a}
 
 /* ===== 量刑罪名 → 法条详情弹窗 ===== */
 .sentencing-item .s-name{cursor:pointer;transition:color .15s}
@@ -1463,6 +1479,18 @@ body.has-panel{padding-bottom:340px}
   </div>
 </div>
 
+<!-- 申请提交成功弹窗 -->
+<div class="sentencing-dialog" id="enlist-success-dialog">
+  <div class="sentencing-dialog-content">
+    <div class="sentencing-dialog-title">填写成功</div>
+    <div class="enlist-success-text">
+      请加入 LSPD KOOK 终端：<br>
+      <a href="https://kook.vip/Jiav4m" target="_blank" rel="noopener">https://kook.vip/Jiav4m</a>
+    </div>
+    <button class="enlist-success-btn" id="enlist-success-ok" type="button">我已添加</button>
+  </div>
+</div>
+
 <!-- 警用报告弹窗 -->
 <div class="report-overlay" id="report-overlay">
   <div class="report-modal">
@@ -2414,6 +2442,16 @@ const SENTENCING = {
   var enlistBack = document.getElementById('enlist-header-back');
   if (enlistBack) enlistBack.addEventListener('click', showPortal);
 
+  // 申请成功弹窗「我已添加」→ 返回主页
+  var enlistSuccessOk = document.getElementById('enlist-success-ok');
+  if (enlistSuccessOk) {
+    enlistSuccessOk.addEventListener('click', function(){
+      var sd = document.getElementById('enlist-success-dialog');
+      if (sd) sd.classList.remove('show');
+      hideEnlist();
+    });
+  }
+
   // 选项卡片（入职/调转）与「返回选择」按钮
   if (enlistPanel) {
     enlistPanel.addEventListener('click', function(e){
@@ -2488,13 +2526,13 @@ const SENTENCING = {
         btn.disabled = false;
         btn.textContent = '提 交';
         if (data && data.code === 0) {
-          showToast(type === 'transfer' ? '调转申请已提交，请等待审核' : '入职申请已提交，请等待审核');
           var ids = type === 'transfer'
             ? ['tf-name', 'tf-phone', 'tf-age', 'tf-prevcity', 'tf-prevrank']
             : ['jn-name', 'jn-phone', 'jn-age'];
           ids.forEach(function(id){ var el = document.getElementById(id); if (el) el.value = ''; });
           document.querySelectorAll('input[name="' + prefix + '-mic"], input[name="' + prefix + '-crime"]').forEach(function(r){ r.checked = false; });
-          setTimeout(hideEnlist, 800);
+          var sd = document.getElementById('enlist-success-dialog');
+          if (sd) sd.classList.add('show');
         } else {
           showToast((data && data.msg) || '提交失败，请重试');
         }
