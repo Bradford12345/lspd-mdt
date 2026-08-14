@@ -818,33 +818,26 @@ body.has-panel{padding-bottom:340px}
 .complaint-title{color:#000000;font-size:20px;font-weight:800;letter-spacing:3px}
 .complaint-sub{color:#000000;font-size:12px;letter-spacing:2px;margin-top:4px;text-transform:uppercase}
 .complaint-form{background:#fff;border:1px solid #d8dde3;padding:32px 36px}
-.cf-field{margin-bottom:18px}
-.cf-label{display:block;font-size:13px;font-weight:700;color:#000000;margin-bottom:8px;letter-spacing:1px}
-.cf-label .req{color:#c0392b;margin-left:2px}
-.cf-input,.cf-textarea{
-  width:100%;box-sizing:border-box;padding:10px 12px;font-size:13px;
-  border:1px solid #bbb;background:#fff;color:#000;border-radius:0;
-  outline:none;font-family:inherit;
+.cf-survey-tip{
+  font-size:12px;color:#666;margin-bottom:14px;padding-bottom:14px;
+  border-bottom:1px dashed #d8dde3;letter-spacing:1px;
 }
-.cf-input:focus,.cf-textarea:focus{border-color:#012c49}
-.cf-textarea{min-height:120px;resize:vertical;line-height:1.6}
-.cf-required{
-  margin-top:20px;padding-top:14px;border-top:1px dashed #d8dde3;
-  font-size:12px;color:#888;
+.cf-survey-box{
+  width:100%;height:640px;overflow:hidden;border:1px solid #e3e7ec;
+  background:#f7f8fa;position:relative;
 }
-.cf-required b{color:#c0392b}
+.cf-survey-frame{width:100%;height:100%;border:0;display:block}
 .cf-actions{display:flex;gap:12px;margin-top:24px}
 .cf-btn{
   padding:10px 28px;font-size:13px;font-weight:700;border:none;border-radius:0;
   cursor:pointer;letter-spacing:2px;font-family:inherit;transition:all .15s;
 }
-.cf-btn.submit{background:#012c49;color:#fff}
-.cf-btn.submit:hover{background:#001d33}
 .cf-btn.back{background:#fff;color:#000000;border:2px solid #012c49}
 .cf-btn.back:hover{background:#012c49;color:#fff}
 @media(max-width:640px){
   .complaint-panel{padding:16px 24px 40px}
   .complaint-form{padding:20px 16px}
+  .cf-survey-box{height:520px}
 }
 /* 返回首页按钮（与 report-btn/shortcut-btn 同款） */
 .home-btn{
@@ -943,29 +936,12 @@ body.has-panel{padding-bottom:340px}
       </div>
     </div>
     <div class="complaint-form">
-      <div class="cf-field">
-        <label class="cf-label" for="cf-name">警员姓名（非必填项）</label>
-        <input class="cf-input" type="text" id="cf-name" placeholder="请输入警员姓名" maxlength="30">
-      </div>
-      <div class="cf-field">
-        <label class="cf-label" for="cf-badge">警员警号（非必填项）</label>
-        <input class="cf-input" type="text" id="cf-badge" placeholder="请输入警员警号" maxlength="20">
-      </div>
-      <div class="cf-field">
-        <label class="cf-label" for="cf-phone">手机号</label>
-        <input class="cf-input" type="tel" id="cf-phone" placeholder="请输入手机号（仅数字与符号）" maxlength="30" autocomplete="off">
-      </div>
-      <div class="cf-field">
-        <label class="cf-label" for="cf-time">事件发生时间<span class="req">*</span></label>
-        <input class="cf-input" type="datetime-local" id="cf-time">
-      </div>
-      <div class="cf-field">
-        <label class="cf-label" for="cf-desc">事发经过<span class="req">*</span></label>
-        <textarea class="cf-textarea" id="cf-desc" placeholder="请详细描述事件经过…"></textarea>
+      <div class="cf-survey-tip">填写后提交即可，我们会尽快处理您的反馈。</div>
+      <div class="cf-survey-box">
+        <iframe class="cf-survey-frame" src="https://wj.qq.com/s2/27588953/rjs6" frameborder="0" scrolling="yes" allowfullscreen loading="lazy"></iframe>
       </div>
       <div class="cf-actions">
-        <button class="cf-btn submit" type="button" id="cf-submit">提 交</button>
-        <button class="cf-btn back" type="button" id="cf-cancel">取 消</button>
+        <button class="cf-btn back" type="button" id="cf-cancel">返 回</button>
       </div>
     </div>
   </div>
@@ -2156,34 +2132,8 @@ const SENTENCING = {
 
   var complaintBack = document.getElementById('complaint-header-back');
   var cfCancel = document.getElementById('cf-cancel');
-  var cfSubmit = document.getElementById('cf-submit');
-  var cfPhone = document.getElementById('cf-phone');
-  // 手机号允许输入所有数字与符号，拦截汉字和英文字母
-  if (cfPhone) {
-    cfPhone.addEventListener('input', function(){
-      this.value = this.value.replace(/[\u4e00-\u9fa5a-zA-Z]/g, '');
-    });
-  }
   if (complaintBack) complaintBack.addEventListener('click', showPortal);
   if (cfCancel) cfCancel.addEventListener('click', hideComplaint);
-  if (cfSubmit) {
-    cfSubmit.addEventListener('click', function(){
-      var t = document.getElementById('cf-time').value;
-      var d = document.getElementById('cf-desc').value.trim();
-      if (!t) { showToast('请填写事件发生时间'); return; }
-      if (!d) { showToast('请填写事发经过'); return; }
-      // 提交给管理员：自动删除手机号里的所有符号，只保留数字
-      var phone = cfPhone ? cfPhone.value.replace(/[^0-9]/g, '') : '';
-      console.log('[LSPD-MDT] complaint submitted:', { phone: phone });
-      showToast('投诉已提交，感谢您的反馈');
-      document.getElementById('cf-name').value = '';
-      document.getElementById('cf-badge').value = '';
-      if (cfPhone) cfPhone.value = '';
-      document.getElementById('cf-time').value = '';
-      document.getElementById('cf-desc').value = '';
-      setTimeout(hideComplaint, 800);
-    });
-  }
 
   function showPortal() {
     portal.classList.add('show');                      // 显示门户 → 隐藏二级界面
