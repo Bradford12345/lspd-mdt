@@ -279,7 +279,7 @@ body::after{
 .hl{background:rgba(59,130,246,.25);border-radius:0;padding:0 2px;color:#fff}
 .empty{text-align:center;padding:60px 20px;color:var(--dim)}
 .empty .big{font-size:48px;opacity:.2;margin-bottom:12px;color:var(--accent)}
-.ft{padding:6px 14px;border-left:2px solid var(--border);margin:2px 0;font-size:12px;color:var(--dim)}
+.ft{padding:6px 14px;border-left:2px solid var(--border);margin:2px 0;font-size:12px;color:var(--dim);-webkit-user-select:none;-moz-user-select:none;user-select:none}
 .ft.found{border-left-color:var(--accent);background:rgba(26,58,92,.04)}
 
 /* ===== 量刑面板 ===== */
@@ -1823,6 +1823,30 @@ const SENTENCING = {
     if ((e.ctrlKey && e.shiftKey) && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) { e.preventDefault(); return; } // Ctrl+Shift+I/J/C
     if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83)) { e.preventDefault(); return; } // Ctrl+U / Ctrl+S
     if (e.keyCode === 114) { e.preventDefault(); return; }                 // F5（部分浏览器防刷新源码）
+  });
+
+  /* ===== 法律全文原文复制防护：仅作用于「全文」tab 的原文 ===== */
+  function inFullText(el) {
+    while (el && el !== document.body) {
+      if (el.classList && el.classList.contains('ft')) return true;
+      el = el.parentNode;
+    }
+    return false;
+  }
+  document.addEventListener('selectstart', function(e) {
+    if (inFullText(e.target)) e.preventDefault();
+  });
+  document.addEventListener('copy', function(e) {
+    if (inFullText(e.target)) e.preventDefault();
+  });
+  document.addEventListener('cut', function(e) {
+    if (inFullText(e.target)) e.preventDefault();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && (e.keyCode === 65)) {                              // Ctrl+A 全选：若焦点在全文原文内则拦截
+      var t = e.target;
+      if (t && t.closest && t.closest('.ft')) { e.preventDefault(); return; }
+    }
   });
 </script>
 <footer class="site-footer">
