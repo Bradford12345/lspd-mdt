@@ -970,8 +970,19 @@ body.has-panel{padding-bottom:340px}
   .home-btn{padding:6px 8px}
 }
 
-</style>
 
+
+
+/* ===== 子页面排版修复：面板/头部改文档流，不再 fixed 盖层 ===== */
+html,body{background:#f2f4f7;min-height:100%}
+.complaint-panel{
+  position:static;inset:auto;z-index:auto;
+  display:block;min-height:calc(100vh - 172px);
+  padding:40px 48px 48px;
+}
+.complaint-panel.show{display:block}
+.complaint-header{display:block;position:sticky;top:0;z-index:10}
+.complaint-header.show{display:block}
 </style>
 </head>
 
