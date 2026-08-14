@@ -1316,10 +1316,22 @@ html,body{background:#f2f4f7;min-height:100%}
 
   var jnSubmit = document.getElementById('jn-submit');
   var tfSubmit = document.getElementById('tf-submit');
+  if (jnSubmit) jnSubmit.addEventListener('click', function(){ submitApplication('join'); });
+  if (tfSubmit) tfSubmit.addEventListener('click', function(){ submitApplication('transfer'); });
 
   // 子页面直接显示征募面板
   showEnlist();
 
+  // 云函数预热
+  var __warmed = false;
+  function warmCloudFn() {
+    if (__warmed) return;
+    __warmed = true;
+    try {
+      fetch('https://bryant-d6g0lr5jrd4c95f00.service.tcloudbase.com/submitComplaint', { method: 'GET', mode: 'cors' }).catch(function(){});
+      fetch('https://bryant-d6g0lr5jrd4c95f00.service.tcloudbase.com/joinApplication', { method: 'GET', mode: 'cors' }).catch(function(){});
+    } catch (e) {}
+  }
   warmCloudFn();
 })();
 </script>
