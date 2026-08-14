@@ -149,10 +149,9 @@ body::after{
   margin-bottom:14px;padding-bottom:10px;
   border-bottom:1px solid rgba(26,58,92,.1);
 }
-.miranda-header svg{width:18px;height:18px;color:var(--accent);flex-shrink:0}
 .miranda-title{
   font-size:15px;font-weight:700;letter-spacing:1px;
-  color:var(--accent);text-transform:uppercase;
+  color:#000000;text-transform:uppercase;
 }
 .miranda-subtitle{
   font-size:10px;color:var(--dim);margin-left:auto;letter-spacing:.5px;
@@ -223,6 +222,10 @@ body::after{
 .amendments-sidebar::-webkit-scrollbar{width:4px}
 .amendments-sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:0;font-size:16px;font-weight:700;
   letter-spacing:1px;text-align:center;margin-bottom:2px;
+}
+.amend-title{
+  font-size:15px;font-weight:700;letter-spacing:1px;
+  color:#000000;margin-bottom:4px;text-transform:uppercase;
 }
 .amend-item{
   padding:10px 0;border-bottom:1px solid rgba(200,212,224,.5);
@@ -749,7 +752,6 @@ body.has-panel{padding-bottom:340px}
   <aside class="miranda-sidebar">
     <div class="miranda-card">
       <div class="miranda-header">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7v6c0 5.5 3.8 10.7 10 12 6.2-1.3 10-6.5 10-12V7l-10-5z"/><path d="M12 8v4M12 16h.01"/></svg>
         <span class="miranda-title">米兰达权利警告</span>
         <span class="miranda-subtitle">Miranda Warning</span>
       </div>
