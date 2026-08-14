@@ -693,19 +693,10 @@ body.has-panel{padding-bottom:340px}
       <button class="welcome-close" id="welcome-close">&times;</button>
     </div>
     <div class="welcome-body">
-      <div class="tip-row">
-        <span class="tip-icon">+</span>
-        <span class="tip-text">点击法条右侧的 <b>+量刑</b> 按钮，可将该罪名加入量刑清单</span>
-      </div>
-      <div class="tip-row">
-        <span class="tip-icon gold">T</span>
-        <span class="tip-text">量刑清单底部有 <b>报告模板</b>，添加罪名后会自动填入罪名、合计刑期和罚款，可一键复制</span>
-      </div>
-      <div class="tip-row">
-        <span class="tip-icon gold">S</span>
-        <span class="tip-text">有多个判罚档位的罪名，可在量刑清单中用 <b>下拉框</b> 切换轻罪/重罪</span>
-      </div>
-      <button class="welcome-noshow" id="welcome-noshow">不再提示</button>
+      <p>点击法条右侧的 <b>+量刑</b> 按钮，可将该罪名加入量刑清单</p>
+      <p>量刑清单底部有 <b>报告模板</b>，添加罪名后会自动填入罪名、合计刑期和罚款，可一键复制</p>
+      <p>有多个判罚档位的罪名，可在量刑清单中用 <b>下拉框</b> 切换轻罪/重罪</p>
+      <button class="welcome-noshow" id="welcome-noshow">不再显示</button>
     </div>
   </div>
 </div>
@@ -6930,7 +6921,6 @@ const SENTENCING = {
   function initWelcome() {
     var isExe = !!(window.pywebview && window.pywebview.api);
     if (isExe) {
-      // exe 模式：根据本地配置决定是否显示，并显示「不再提示」
       if (welcomeNoShow) welcomeNoShow.style.display = 'block';
       if (shortcutBtn) shortcutBtn.style.display = 'none';
       try {
@@ -6942,9 +6932,11 @@ const SENTENCING = {
         }
       } catch(e) { showWelcome(); }
     } else {
-      // 网站模式：每次进入都显示，并显示快捷方式按钮
       if (shortcutBtn) shortcutBtn.style.display = 'flex';
-      showWelcome();
+      if (welcomeNoShow) welcomeNoShow.style.display = 'block';
+      var noShow = false;
+      try { noShow = localStorage.getItem('lspd_noshow') === '1'; } catch(e) {}
+      if (!noShow) showWelcome();
     }
   }
 
@@ -6966,6 +6958,8 @@ const SENTENCING = {
     welcomeNoShow.addEventListener('click', function() {
       if (window.pywebview && window.pywebview.api) {
         try { window.pywebview.api.set_no_show(); } catch(e) {}
+      } else {
+        try { localStorage.setItem('lspd_noshow', '1'); } catch(e) {}
       }
       hideWelcome();
     });
