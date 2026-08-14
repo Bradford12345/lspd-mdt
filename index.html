@@ -814,30 +814,58 @@ body.has-panel{padding-bottom:340px}
 /* 投诉页顶部同款上方栏（无按钮），全屏铺满、默认隐藏 */
 .complaint-header{display:none}
 .complaint-header.show{display:block}
-.complaint-head{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+.complaint-head{
+  display:flex;align-items:center;gap:16px;margin-bottom:26px;
+  padding-bottom:16px;border-bottom:2px solid #012c49;position:relative;
+}
+.complaint-head::after{
+  content:'';position:absolute;left:0;bottom:-2px;width:76px;height:2px;
+  background:linear-gradient(90deg,#c9a84c,rgba(201,168,76,0));
+}
 .complaint-title{color:#000000;font-size:20px;font-weight:800;letter-spacing:3px}
-.complaint-sub{color:#000000;font-size:12px;letter-spacing:2px;margin-top:4px;text-transform:uppercase}
-.complaint-form{background:#fff;border:1px solid #d8dde3;padding:32px 36px}
-.cf-survey-tip{
-  font-size:12px;color:#666;margin-bottom:14px;padding-bottom:14px;
-  border-bottom:1px dashed #d8dde3;letter-spacing:1px;
+.complaint-sub{
+  color:#5a7a9c;font-size:12px;letter-spacing:2px;margin-top:4px;
+  text-transform:uppercase;font-family:Georgia,'Times New Roman',serif;font-style:italic;
 }
-.cf-survey-box{
-  width:100%;height:640px;overflow:hidden;border:1px solid #e3e7ec;
-  background:#f7f8fa;position:relative;
+.complaint-form{
+  background:#fff;border:2px solid #012c49;padding:32px 36px;
+  box-shadow:0 10px 28px rgba(1,44,73,.14),inset 0 0 0 4px #fff,inset 0 0 0 5px #c9a84c;
 }
-.cf-survey-frame{width:100%;height:100%;border:0;display:block}
-.cf-actions{display:flex;gap:12px;margin-top:24px}
+.cf-tip{
+  font-size:12px;color:#33558c;margin-bottom:20px;padding:10px 14px;
+  background:#eef3f8;border-left:4px solid #012c49;letter-spacing:1px;
+  display:flex;align-items:center;gap:8px;
+}
+.cf-tip::before{content:'ℹ';font-size:14px;color:#012c49;flex-shrink:0}
+.cf-field{margin-bottom:20px}
+.cf-label{
+  display:block;font-size:13px;font-weight:700;color:#000000;
+  margin-bottom:8px;letter-spacing:1px;
+}
+.cf-label .req{color:#c0392b;margin-left:2px}
+.cf-input,.cf-textarea{
+  width:100%;box-sizing:border-box;padding:11px 13px;font-size:13px;
+  border:1px solid #b9c6d2;background:#fbfcfd;color:#000;border-radius:0;
+  outline:none;font-family:inherit;transition:border-color .15s,box-shadow .15s;
+}
+.cf-input:focus,.cf-textarea:focus{
+  border-color:#012c49;background:#fff;
+  box-shadow:0 0 0 2px rgba(1,44,73,.12);
+}
+.cf-textarea{min-height:130px;resize:vertical;line-height:1.6}
+.cf-actions{display:flex;gap:12px;margin-top:26px}
 .cf-btn{
-  padding:10px 28px;font-size:13px;font-weight:700;border:none;border-radius:0;
+  padding:11px 30px;font-size:13px;font-weight:700;border:none;border-radius:0;
   cursor:pointer;letter-spacing:2px;font-family:inherit;transition:all .15s;
 }
+.cf-btn.submit{background:#012c49;color:#fff}
+.cf-btn.submit:hover{background:#001d33}
+.cf-btn.submit:disabled{background:#8ba0b3;cursor:not-allowed}
 .cf-btn.back{background:#fff;color:#000000;border:2px solid #012c49}
 .cf-btn.back:hover{background:#012c49;color:#fff}
 @media(max-width:640px){
   .complaint-panel{padding:16px 24px 40px}
   .complaint-form{padding:20px 16px}
-  .cf-survey-box{height:520px}
 }
 /* 返回首页按钮（与 report-btn/shortcut-btn 同款） */
 .home-btn{
@@ -936,12 +964,30 @@ body.has-panel{padding-bottom:340px}
       </div>
     </div>
     <div class="complaint-form">
-      <div class="cf-survey-tip">填写后提交即可，我们会尽快处理您的反馈。</div>
-      <div class="cf-survey-box">
-        <iframe class="cf-survey-frame" src="https://wj.qq.com/s2/27588953/rjs6" frameborder="0" scrolling="yes" allowfullscreen loading="lazy"></iframe>
+      <div class="cf-tip">请如实填写以下信息，提交后我们将尽快调查处理。带 * 为必填项。</div>
+      <div class="cf-field">
+        <label class="cf-label" for="cf-name">警员姓名（选填）</label>
+        <input class="cf-input" type="text" id="cf-name" placeholder="请输入警员姓名" maxlength="30">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="cf-badge">警员警号（选填）</label>
+        <input class="cf-input" type="text" id="cf-badge" placeholder="请输入警员警号" maxlength="20">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="cf-phone">手机号<span class="req">*</span></label>
+        <input class="cf-input" type="tel" id="cf-phone" placeholder="请输入手机号（仅数字与符号）" maxlength="30" autocomplete="off">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="cf-time">事件发生时间<span class="req">*</span></label>
+        <input class="cf-input" type="datetime-local" id="cf-time">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="cf-desc">事发经过<span class="req">*</span></label>
+        <textarea class="cf-textarea" id="cf-desc" placeholder="请详细描述事件经过…"></textarea>
       </div>
       <div class="cf-actions">
-        <button class="cf-btn back" type="button" id="cf-cancel">返 回</button>
+        <button class="cf-btn submit" type="button" id="cf-submit">提 交</button>
+        <button class="cf-btn back" type="button" id="cf-cancel">取 消</button>
       </div>
     </div>
   </div>
@@ -2132,8 +2178,63 @@ const SENTENCING = {
 
   var complaintBack = document.getElementById('complaint-header-back');
   var cfCancel = document.getElementById('cf-cancel');
+  var cfSubmit = document.getElementById('cf-submit');
+  var cfPhone = document.getElementById('cf-phone');
+  // 手机号允许输入所有数字与符号，拦截汉字和英文字母
+  if (cfPhone) {
+    cfPhone.addEventListener('input', function(){
+      this.value = this.value.replace(/[\u4e00-\u9fa5a-zA-Z]/g, '');
+    });
+  }
   if (complaintBack) complaintBack.addEventListener('click', showPortal);
   if (cfCancel) cfCancel.addEventListener('click', hideComplaint);
+  if (cfSubmit) {
+    cfSubmit.addEventListener('click', function(){
+      var t = document.getElementById('cf-time').value;
+      var d = document.getElementById('cf-desc').value.trim();
+      var p = cfPhone ? cfPhone.value.trim() : '';
+      if (!p) { showToast('请填写手机号'); return; }
+      if (!t) { showToast('请填写事件发生时间'); return; }
+      if (!d) { showToast('请填写事发经过'); return; }
+      // 提交给管理员：自动删除手机号里的所有符号，只保留数字
+      var phone = p.replace(/[^0-9]/g, '');
+      var payload = {
+        name: document.getElementById('cf-name').value.trim(),
+        badge: document.getElementById('cf-badge').value.trim(),
+        phone: phone,
+        time: t,
+        desc: d
+      };
+      var btn = cfSubmit;
+      btn.disabled = true;
+      btn.textContent = '提交中...';
+      fetch('https://bryant-d6g0lr5jrd4c95f00.service.tcloudbase.com/submitComplaint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function(res){
+        return res.json();
+      }).then(function(data){
+        btn.disabled = false;
+        btn.textContent = '提 交';
+        if (data && data.code === 0) {
+          showToast('投诉已提交，感谢您的反馈');
+          document.getElementById('cf-name').value = '';
+          document.getElementById('cf-badge').value = '';
+          if (cfPhone) cfPhone.value = '';
+          document.getElementById('cf-time').value = '';
+          document.getElementById('cf-desc').value = '';
+          setTimeout(hideComplaint, 800);
+        } else {
+          showToast((data && data.msg) || '提交失败，请重试');
+        }
+      }).catch(function(){
+        btn.disabled = false;
+        btn.textContent = '提 交';
+        showToast('网络错误，请稍后重试');
+      });
+    });
+  }
 
   function showPortal() {
     portal.classList.add('show');                      // 显示门户 → 隐藏二级界面
