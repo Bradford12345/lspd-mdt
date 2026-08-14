@@ -1,0 +1,2171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法律检索系统 - LSPD MDT</title>
+<link rel="icon" type="image/png" href="assets/favicon-64.png">
+<link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico">
+<style>
+<style>
+:root {
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --card: #ffffff;
+  --border: #c8d4e0;
+  --border-glow: #a0b4c8;
+  --text: #1a1a1a;
+  --dim: #5a7a9c;
+  --accent: #012c49;
+  --accent-glow: #33558c;
+  --red: #c0392b;
+  --green: #012c49;
+  --yellow: #012c49;
+  --orange: #012c49;
+  --purple: #012c49;
+  --lspd-gold: #012c49;
+  --blue: #33558c;
+}
+html{scroll-behavior:smooth}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font:13px/1.6 'Segoe UI',-apple-system,'Microsoft YaHei',sans-serif;
+  overflow-x:hidden;
+}
+body::after{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background:none;
+  pointer-events:none;z-index:9999;
+}
+.header{
+  background:#012c49;
+  border-bottom:1px solid #001d33;
+  padding:0 20px;position:sticky;top:0;z-index:10;
+}
+.header-top{
+  display:flex;align-items:center;gap:16px;padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.logo-box{display:flex;align-items:center;gap:10px}
+.logo-box img{height:48px;width:48px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(59,130,246,.3))}
+.header-title{flex:1}
+.header-title h1{
+  font-size:18px;font-weight:700;letter-spacing:2px;
+  color:#fff;text-shadow:none;white-space:nowrap;
+}
+
+.header-title .motto{
+  font-family:Georgia,'Times New Roman',serif;
+  font-style:italic;font-size:13px;letter-spacing:2px;
+  color:rgba(255,255,255,.8);margin:2px 0 4px;
+  text-shadow:0 0 8px rgba(201,168,76,.25);
+}
+.status-bar{display:flex;align-items:center;gap:12px}
+.status-item{
+  display:flex;align-items:center;gap:6px;font-size:11px;color:var(--dim);
+}
+.status-dot{
+  width:7px;height:7px;border-radius:0;background:var(--accent);
+  box-shadow:0 0 6px var(--green);animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:1;box-shadow:0 0 6px var(--green)}
+  50%{opacity:.5;box-shadow:0 0 2px var(--green)}
+}
+
+.ctrl{padding:14px 20px 10px;max-width:1200px;margin:0 auto}
+.search{display:flex;gap:10px;align-items:center}
+.search input{
+  flex:1;min-width:240px;padding:9px 14px;
+  background:#fff;border:1px solid #c8d4e0;border-radius:0;
+  color:var(--text);font-size:13px;outline:none;
+  font-family:'Consolas','Courier New',monospace;
+}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 8px rgba(26,58,92,.15)}
+.search input::placeholder{color:#000000;font-family:inherit}
+.search-btn{
+  background:var(--accent);border:none;border-radius:0;
+  color:#fff;padding:9px 20px;font-size:13px;font-weight:600;
+  cursor:pointer;letter-spacing:1px;transition:all .2s;
+}
+.search-btn:hover{background:#2563eb;box-shadow:0 0 12px rgba(59,130,246,.3)}
+
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.tag{
+  padding:4px 12px;border-radius:0;border:1px solid var(--border);
+  background:#fff;color:#000000;font-size:11px;
+  cursor:pointer;transition:all .15s;user-select:none;
+}
+.tag:hover{border-color:var(--accent);color:#000000}
+.tag.on{background:rgba(26,58,92,.08);border-color:var(--accent);color:var(--accent)}
+.tag.felony.on{background:rgba(239,68,68,.12);border-color:var(--red);color:var(--red)}
+.tag.misd.on{background:rgba(234,179,8,.12);border-color:var(--yellow);color:var(--yellow)}
+.tag.violation.on{background:rgba(34,197,94,.12);border-color:var(--green);color:var(--green)}
+.tag.other.on{background:rgba(168,85,247,.12);border-color:var(--purple);color:var(--purple)}
+
+.tab-row{display:flex;margin-top:8px;border-bottom:1px solid var(--border)}
+.tab{touch-action:manipulation;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  padding:7px 20px;border:none;background:none;color:var(--dim);
+  font-size:13px;cursor:pointer;border-bottom:2px solid transparent;
+  transition:all .15s;
+}
+.tab.on{color:var(--accent-glow);border-bottom-color:var(--accent)}
+.info{
+  padding:8px 0;font-size:11px;color:var(--dim);
+  display:flex;align-items:center;gap:8px;
+}
+.info .sep{color:var(--border-glow)}
+
+.content{max-width:1600px;margin:0 auto;padding:10px 20px 40px;display:flex;gap:24px;align-items:flex-start}
+.content-main{flex:1;min-width:0}
+.content-left{flex:1;min-width:0;display:flex;flex-direction:column}
+
+/* ===== 米兰达左侧栏 ===== */
+.miranda-sidebar{
+  width:260px;flex-shrink:0;
+  position:sticky;top:10px;
+  align-self:flex-start;
+}
+
+/* ===== 米兰达权利卡片 ===== */
+.miranda-card{
+  background:linear-gradient(135deg,#fff 0%,#f5f7fa 100%);
+  border:1px solid rgba(26,58,92,.2);
+  border-left:3px solid var(--lspd-gold);
+  border-radius:0;
+  padding:20px 24px;
+  position:relative;
+  overflow:hidden;
+}
+.miranda-card::before{
+  content:'';position:absolute;top:0;right:0;
+  width:120px;height:120px;
+  background:radial-gradient(circle,rgba(201,168,76,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.miranda-header{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:14px;padding-bottom:10px;
+  border-bottom:1px solid rgba(26,58,92,.1);
+}
+.miranda-title{
+  font-size:15px;font-weight:700;letter-spacing:1px;
+  color:#000000;text-transform:uppercase;
+}
+.miranda-body{display:flex;flex-direction:column;gap:10px}
+.miranda-line{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:15px;line-height:1.7;color:#000000;
+}
+.miranda-line .miranda-text{flex:1}
+.miranda-line .miranda-text strong{color:#000000;font-weight:700}
+.miranda-footer{
+  margin-top:12px;padding-top:10px;
+  border-top:1px solid rgba(26,58,92,.08);
+  font-size:11px;color:var(--dim);text-align:right;
+  font-style:italic;letter-spacing:.3px;
+}
+
+/* ===== 服刑计算器 ===== */
+.calc-card{
+  background:#fff;border:1px solid #c8d4e0;
+  border-radius:0;padding:14px 16px;margin-top:12px;
+}
+.calc-title{
+  font-size:12px;font-weight:700;color:var(--accent-glow);
+  letter-spacing:.5px;margin-bottom:10px;text-align:center;
+}
+.calc-row{
+  display:flex;align-items:center;gap:6px;margin-bottom:8px;
+}
+.calc-row label{
+  font-size:11px;color:var(--dim);white-space:nowrap;min-width:28px;
+}
+.calc-row input{
+  flex:1;width:0;
+  background:#fff;border:1px solid #c8d4e0;
+  color:var(--text);font-size:13px;padding:6px 8px;
+  border-radius:0;text-align:center;font-family:inherit;
+  outline:none;transition:border-color .2s;
+}
+.calc-row input:focus{border-color:var(--accent)}
+.calc-row input::-webkit-inner-spin-button{opacity:1}
+.calc-row .calc-unit{font-size:11px;color:var(--dim);white-space:nowrap}
+.calc-result{
+  background:#f5f7fa;
+  border:1px solid rgba(59,130,246,.25);border-radius:0;
+  padding:10px;text-align:center;margin-top:6px;
+}
+.calc-result .calc-months{
+  font-size:24px;font-weight:800;color:var(--accent-glow);
+  line-height:1.2;
+}
+.calc-result .calc-label{
+  font-size:10px;color:var(--dim);letter-spacing:.5px;
+}
+.calc-result .calc-detail{
+  font-size:10px;color:var(--dim);margin-top:2px;
+}
+
+/* ===== 修正案侧边栏 ===== */
+.amendments-sidebar{
+  width:340px;flex-shrink:0;
+  background:#fff;border:1px solid #c8d4e0;
+  border-radius:0;padding:16px;
+  max-height:calc(100vh - 180px);overflow-y:auto;
+  position:sticky;top:10px;
+}
+.amendments-sidebar::-webkit-scrollbar{width:4px}
+.amendments-sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:0;font-size:16px;font-weight:700;
+  letter-spacing:1px;text-align:center;margin-bottom:2px;
+}
+.amend-title{
+  font-size:15px;font-weight:700;letter-spacing:1px;
+  color:#000000;margin-bottom:4px;text-transform:uppercase;
+}
+.amend-item{
+  padding:10px 0;border-bottom:1px solid rgba(200,212,224,.5);
+}
+.amend-item:last-child{border-bottom:none}
+.amend-num{
+  color:var(--accent);font-size:13px;font-weight:700;
+  margin-bottom:4px;letter-spacing:.5px;
+}
+.amend-tags{
+  color:var(--blue);font-size:11px;margin-bottom:6px;
+  opacity:.8;
+}
+.amend-note{
+  color:#000000;font-size:11px;line-height:1.7;
+}
+.amend-note strong{color:#000000;font-weight:700}
+
+.card{touch-action:manipulation;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  background:#fff;border:1px solid #c8d4e0;
+  border-radius:0;padding:14px 18px;margin-bottom:8px;
+  transition:border-color .2s,box-shadow .2s;
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--accent);opacity:0;transition:opacity .2s;
+}
+.card:hover{border-color:var(--accent);box-shadow:0 2px 12px rgba(26,58,92,.08)}
+.card:hover::before{opacity:1}
+.card-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px}
+.card-name{font-size:14px;font-weight:600}
+.badge{
+  padding:2px 8px;border-radius:0;font-size:10px;font-weight:700;
+  white-space:nowrap;flex-shrink:0;
+}
+.badge.f{background:rgba(192,57,43,.08);color:var(--red);border:1px solid rgba(192,57,43,.2)}
+.badge.m{background:rgba(26,58,92,.08);color:var(--accent);border:1px solid rgba(26,58,92,.2)}
+.badge.v{background:rgba(59,111,160,.08);color:var(--blue);border:1px solid rgba(59,111,160,.2)}
+.badge.o{background:rgba(26,58,92,.06);color:var(--dim);border:1px solid rgba(26,58,92,.15)}
+.card-p{
+  color:#000000;font-size:12px;padding:5px 10px;
+  background:rgba(26,58,92,.04);border-radius:0;margin:6px 0;
+  line-height:1.5;border-left:2px solid rgba(26,58,92,.3);
+  font-family:'Consolas','Courier New',monospace;
+}
+.card-d{color:#000000;font-size:12px;line-height:1.7}
+.card-m{color:var(--dim);font-size:10px;margin-top:6px;opacity:.5;text-transform:uppercase}
+.section{
+  color:#000;font-size:12px;font-weight:700;
+  padding:14px 0 6px;
+  border-bottom:1px solid var(--border);margin-bottom:6px;
+}
+.hl{background:rgba(59,130,246,.25);border-radius:0;padding:0 2px;color:#fff}
+.empty{text-align:center;padding:60px 20px;color:var(--dim)}
+.empty .big{font-size:48px;opacity:.2;margin-bottom:12px;color:var(--accent)}
+.ft{padding:6px 14px;border-left:2px solid var(--border);margin:2px 0;font-size:12px;color:var(--dim);-webkit-user-select:none;-moz-user-select:none;user-select:none}
+.ft.found{border-left-color:var(--accent);background:rgba(26,58,92,.04)}
+
+/* ===== 量刑面板 ===== */
+body.has-panel{padding-bottom:340px}
+.sentencing-panel{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:#ffffff;
+  border-top:1px solid #d8dde3;
+  box-shadow:0 -4px 24px rgba(12,26,42,.08);
+  transition:transform .25s ease;
+}
+.sentencing-panel.collapsed{transform:translateY(calc(100% - 38px))}
+.sentencing-toggle{
+  display:flex;align-items:center;gap:12px;
+  padding:8px 20px;cursor:pointer;user-select:none;
+  border-bottom:1px solid #eef1f4;
+}
+.sentencing-toggle:hover{background:#fafbfc}
+.sentencing-toggle .t-label{
+  color:#000;font-size:12px;font-weight:700;letter-spacing:1px;
+}
+.sentencing-toggle .t-count{
+  background:#f0f2f4;color:#000;font-size:10px;font-weight:700;
+  padding:1px 7px;border-radius:0;min-width:20px;text-align:center;
+}
+.sentencing-toggle .t-summary{
+  flex:1;text-align:right;color:#555;font-size:11px;
+  font-family:'Consolas','Courier New',monospace;
+}
+.sentencing-body{
+  max-height:300px;overflow-y:auto;padding:8px 16px;
+}
+.sentencing-body::-webkit-scrollbar{width:4px}
+.sentencing-body::-webkit-scrollbar-thumb{background:#d8dde3}
+.sentencing-item{
+  display:flex;align-items:center;gap:10px;
+  padding:7px 10px;background:#ffffff;
+  border-bottom:1px solid #eef1f4;
+  font-size:12px;
+}
+.sentencing-item .s-name{flex:1;color:#000;font-weight:600;min-width:0}
+.sentencing-item .s-level{color:#666;font-size:10px;white-space:nowrap}
+.sentencing-item .s-level-select{
+  background:#ffffff;border:1px solid #d8dde3;color:#000;
+  font-size:10px;padding:2px 4px;border-radius:0;cursor:pointer;
+  white-space:nowrap;max-width:120px;
+}
+.sentencing-item .s-level-select:hover{border-color:#000}
+.sentencing-item .s-level-select:focus{outline:none;border-color:#000}
+.sentencing-item .s-prison{
+  color:#000;font-family:'Consolas','Courier New',monospace;
+  white-space:nowrap;min-width:80px;text-align:right;font-size:11px;
+}
+.sentencing-item .s-fine{
+  color:#000;font-family:'Consolas','Courier New',monospace;
+  white-space:nowrap;min-width:90px;text-align:right;font-size:11px;
+}
+.sentencing-item .s-del{
+  color:#999;cursor:pointer;font-size:14px;padding:0 4px;line-height:1;
+  opacity:.6;transition:all .15s;
+}
+.sentencing-item .s-del:hover{color:#000;opacity:1}
+.sentencing-total{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;background:#f7f8f9;
+  border:1px solid #e5e8eb;border-radius:0;
+  font-family:'Consolas','Courier New',monospace;font-size:13px;
+}
+.sentencing-total .st-label{color:#000;font-weight:700;letter-spacing:1px}
+.sentencing-total .st-prison{color:#000;font-weight:700;margin-left:12px}
+.sentencing-total .st-fine{color:#000;font-weight:700;margin-left:8px}
+.sentencing-clear{
+  display:block;margin:6px auto 8px;padding:4px 24px;
+  background:none;border:1px solid #d8dde3;border-radius:0;
+  color:#666;font-size:11px;cursor:pointer;transition:all .15s;
+}
+.sentencing-clear:hover{border-color:#000;color:#000}
+/* 卡牌上的量刑按钮 */
+.sentencing-btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  margin-left:auto;flex-shrink:0;
+  padding:2px 10px;background:#ffffff;
+  border:1px solid #1a1a1a;border-radius:0;
+  color:#000;font-size:10px;font-weight:700;
+  cursor:pointer;letter-spacing:1px;transition:all .15s;
+}
+.sentencing-btn:hover{background:#000;color:#fff}
+.sentencing-btn.added{background:#f0f2f4;border-color:#999;color:#666;opacity:.8}
+/* 多级选择弹窗 */
+.sentencing-dialog{
+  display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,.65);z-index:200;justify-content:center;align-items:center;
+}
+.sentencing-dialog.show{display:flex}
+.sentencing-dialog-content{
+  background:#ffffff;border:1px solid #d8dde3;
+  border-radius:0;padding:20px 24px;min-width:360px;max-width:500px;
+  box-shadow:0 8px 40px rgba(0,0,0,.15);
+}
+.sentencing-dialog-title{
+  color:#000;font-size:14px;font-weight:700;
+  margin-bottom:4px;letter-spacing:1px;
+}
+.sentencing-dialog-sub{color:var(--dim);font-size:11px;margin-bottom:14px}
+.sentencing-dialog-option{
+  display:block;width:100%;padding:8px 14px;margin-bottom:6px;
+  background:#fff;border:1px solid #d8dde3;border-radius:0;
+  color:#000;font-size:12px;text-align:left;cursor:pointer;
+  transition:all .15s;
+}
+.sentencing-dialog-option:hover{background:#f5f6f7;border-color:#000}
+.sentencing-dialog-option .opt-label{display:block;color:#000;font-weight:600;margin-bottom:2px}
+.sentencing-dialog-option .opt-desc{display:block;color:#666;font-size:11px}
+.sentencing-dialog-cancel{
+  display:block;width:100%;padding:6px;margin-top:8px;
+  background:none;border:1px solid #d8dde3;border-radius:0;
+  color:#666;font-size:11px;cursor:pointer;
+}
+.sentencing-dialog-cancel:hover{border-color:#000;color:#000}
+/* 申请提交成功弹窗（盖在 portal 面板之上） */
+#enlist-success-dialog{z-index:5700}
+#enlist-success-dialog .sentencing-dialog-content{text-align:center;padding:28px 24px}
+#enlist-success-dialog .enlist-success-text{
+  color:#000;font-size:14px;line-height:1.9;margin:12px 0 18px;
+}
+#enlist-success-dialog .enlist-success-text a{
+  color:#000;font-weight:700;text-decoration:underline;word-break:break-all;
+}
+#enlist-success-dialog .enlist-success-btn{
+  display:block;width:100%;padding:10px;
+  background:#000;border:1px solid #000;border-radius:0;
+  color:#fff;font-size:14px;letter-spacing:2px;cursor:pointer;
+  transition:all .15s;
+}
+#enlist-success-dialog .enlist-success-btn:hover{background:#1a1a1a}
+
+/* ===== 量刑罪名 → 法条详情弹窗 ===== */
+.sentencing-item .s-name{cursor:pointer;transition:color .15s}
+.sentencing-item .s-name:hover{color:#000;text-decoration:underline}
+#law-dialog .sentencing-dialog-content{max-width:560px;max-height:72vh;overflow-y:auto}
+#law-dialog .sentencing-dialog-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.law-block{margin-bottom:12px}
+.law-block .lb-label{color:var(--accent);font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:3px}
+.law-block .lb-text{color:#000000;font-size:13px;line-height:1.7}
+
+/* ===== 网站快捷方式按钮（仅网站显示） ===== */
+.shortcut-btn{
+  display:flex;align-items:center;gap:5px;
+  background:#ffffff;border:2px solid #012c49;
+  color:#012c49;font-size:12px;font-weight:700;padding:8px 12px;
+  border-radius:0;cursor:pointer;text-decoration:none;letter-spacing:.5px;
+  white-space:nowrap;transition:all .2s;font-family:inherit;
+}
+.shortcut-btn:hover{background:#012c49;border-color:#001d33;color:#fff}
+.shortcut-btn svg{width:14px;height:14px}
+
+/* ===== 警用报告按钮 ===== */
+.report-btn{
+  display:flex;align-items:center;gap:5px;
+  background:#ffffff;border:2px solid #012c49;
+  color:#012c49;font-size:12px;font-weight:700;padding:8px 12px;
+  border-radius:0;cursor:pointer;text-decoration:none;letter-spacing:.5px;
+  white-space:nowrap;transition:all .2s;font-family:inherit;
+}
+.report-btn:hover{background:#012c49;border-color:#001d33;color:#fff}
+.report-btn svg{width:14px;height:14px;flex-shrink:0}
+.report-badge{
+  display:inline-block;background:#c0392b;color:#fff;
+  font-size:9px;padding:1px 5px;border-radius:0;
+  font-weight:700;letter-spacing:0;margin-left:4px;
+}
+
+/* ===== 警用报告弹窗 ===== */
+.report-overlay{
+  display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(12,26,42,.4);z-index:100;justify-content:center;align-items:flex-start;
+  padding-top:40px;overflow-y:auto;
+}
+.report-overlay.show{display:flex}
+.report-modal{
+  background:#ffffff;border:1px solid #c8d4e0;
+  border-radius:0;width:90%;max-width:500px;padding:20px;
+  box-shadow:0 8px 40px rgba(12,26,42,.15);
+}
+.report-modal-header{
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:16px;
+}
+.report-modal-title{
+  color:var(--accent);font-size:16px;font-weight:700;letter-spacing:1px;
+}
+.report-warn{
+  background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.4);
+  border-radius:0;padding:8px 12px;margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;
+}
+.report-warn-text{
+  color:var(--red);font-size:12px;font-weight:600;letter-spacing:.5px;
+}
+.report-modal textarea{
+  width:100%;min-height:240px;background:#f5f7fa;color:#1a1a1a;
+  border:1px solid #c8d4e0;border-radius:0;padding:12px;
+  font-family:Consolas,'Courier New',monospace;font-size:13px;line-height:1.7;
+  resize:vertical;letter-spacing:.5px;
+}
+.report-modal .copy-btn{
+  margin-top:12px;width:100%;padding:12px;font-size:14px;
+}
+.report-close{
+  background:none;border:none;color:var(--dim);font-size:22px;
+  cursor:pointer;line-height:1;padding:0 4px;
+}
+.report-close:hover{color:var(--red)}
+.report-dept-row{
+  display:flex;align-items:center;gap:10px;margin-bottom:14px;
+}
+.report-dept-row label{
+  color:var(--dim);font-size:13px;white-space:nowrap;
+}
+.report-dept-select{
+  flex:1;background:#fff;color:#1a1a1a;
+  border:1px solid #012c49;border-radius:0;
+  padding:8px 10px;font-size:13px;font-family:inherit;cursor:pointer;
+  outline:none;
+}
+.report-dept-select:focus{border-color:var(--accent)}
+.report-officer-row{
+  display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;
+}
+.report-officer-row label{
+  color:var(--dim);font-size:13px;white-space:nowrap;
+}
+.report-officer-input{
+  flex:1;min-width:80px;background:#fff;color:#1a1a1a;
+  border:1px solid #012c49;border-radius:0;padding:8px 10px;
+  font-size:13px;font-family:inherit;outline:none;
+}
+.report-officer-input:focus{border-color:var(--accent)}
+.save-officer-btn{
+  background:#012c49;
+  color:#ffffff;border:none;border-radius:0;padding:8px 14px;
+  font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;
+  transition:all .2s;
+}
+.save-officer-btn:hover{background:#001d33}
+.save-officer-btn.saved{background:#001d33;color:#fff}
+
+/* ===== 手机适配 ===== */
+@media(max-width:700px){
+  .header-top{flex-wrap:wrap;gap:8px;padding:8px 0}
+  .logo-box img{height:32px;width:32px}
+  .header-title h1{font-size:13px;letter-spacing:1px}
+  .header-title .sub{font-size:10px}
+  .header-title .motto{font-size:11px}
+  .ctrl,.content{padding:10px}
+  .card{padding:12px}
+  .card-name{font-size:14px}
+  .badge{font-size:10px;padding:2px 6px}
+  .sentencing-btn{font-size:11px;padding:3px 8px}
+  .sentencing-panel{width:100%;bottom:0;border-radius:0;max-height:70vh}
+  .sentencing-header{font-size:14px;padding:10px 14px}
+  .sentencing-item{font-size:12px;padding:8px 10px}
+  .sentencing-summary{font-size:13px}
+  .template-area{font-size:11px;min-height:180px}
+  .template-hint{font-size:11px}
+  .report-btn{font-size:11px;padding:6px 10px}
+  .report-badge{font-size:8px}
+  .shortcut-btn{font-size:11px;padding:6px 10px}
+  .report-dept-row{font-size:12px}
+  .report-dept-select{padding:7px 8px}
+  .welcome-box{width:92% !important;padding:16px !important}
+  .welcome-box h2{font-size:16px !important}
+  .welcome-box li{font-size:12px !important}
+  .site-footer{padding:20px 12px}
+  .site-footer img{height:32px;width:32px}
+  .site-footer .foot-brand{font-size:14px}
+  .tab{font-size:12px;padding:6px 12px}
+  #q{font-size:14px}
+  #search-btn{font-size:13px;padding:8px 14px}
+  .content{flex-direction:column}
+  .amendments-sidebar{width:100%;max-height:none;position:static;margin-top:16px}
+}
+@media(max-width:400px){
+  .logo-box img{height:26px}
+  .header-title h1{font-size:11px}
+  
+  .header-title .motto{display:none}
+  .report-btn span:not(.report-badge){display:none}
+  .report-btn{padding:6px 8px}
+  .card{padding:10px}
+  .card-name{font-size:13px}
+  .badge{font-size:9px}
+  .sentencing-panel{max-height:65vh}
+  .template-area{font-size:10px;min-height:160px}
+  .site-footer .foot-tag{display:none}
+  .amendments-sidebar{display:none}
+  .miranda-sidebar{position:static;width:100%}
+  .miranda-card{padding:14px 16px}
+  .miranda-line{font-size:13px}
+  .miranda-title{font-size:13px}
+}
+@media(max-width:700px) and (orientation:portrait){
+  .header-top{flex-wrap:wrap}
+  .report-btn{order:3;width:100%;justify-content:center}
+}
+
+/* ===== 量刑模板 ===== */
+.template-section{
+  margin-top:12px;border-top:2px solid var(--lspd-gold);padding-top:12px;
+  background:rgba(212,175,55,.06);border-radius:0;padding:12px;
+}
+.template-label{
+  color:var(--accent);font-size:13px;font-weight:700;margin-bottom:4px;
+  text-transform:uppercase;letter-spacing:1px;
+}
+.template-hint{
+  color:var(--dim);font-size:11px;margin-bottom:8px;
+  display:flex;align-items:center;gap:4px;
+}
+.template-hint::before{content:"i";display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:0;background:var(--lspd-gold);color:#070b14;font-size:10px;font-weight:700;font-style:normal;flex-shrink:0;}
+.template-area{
+  width:100%;background:#ffffff;border:1px solid var(--border);
+  color:#1a1a1a;font:12px/1.8 'Consolas','Courier New',monospace;
+  padding:10px;border-radius:0;resize:vertical;min-height:200px;
+  white-space:pre;
+}
+.template-area:focus{outline:none;border-color:var(--accent)}
+.copy-btn{
+  margin-top:6px;padding:8px 20px;background:#012c49;
+  color:#ffffff;border:none;border-radius:0;cursor:pointer;
+  font-weight:700;font-size:13px;letter-spacing:1px;
+  transition:all .2s;
+}
+.copy-btn:hover{background:#001d33}
+.copy-btn:active{transform:scale(.97)}
+
+
+/* 欢迎提示弹窗 */
+.welcome-overlay{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(12,26,42,.5);z-index:9999;
+  display:none;align-items:center;justify-content:center;
+  animation:fadeIn .2s ease;
+}
+.welcome-overlay.show{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.welcome-box{
+  background:#ffffff;border:1px solid #c8d4e0;border-radius:0;
+  padding:0;max-width:440px;width:90%;
+  box-shadow:0 8px 40px rgba(12,26,42,.15);
+  overflow:hidden;animation:slideUp .3s ease;
+}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.welcome-header{
+  background:#f5f7fa;
+  padding:14px 20px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid #c8d4e0;
+}
+.welcome-title{
+  color:var(--accent);font-size:15px;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;
+}
+.welcome-close{
+  width:28px;height:28px;border-radius:0;
+  background:#f5f7fa;border:1px solid #c8d4e0;
+  color:var(--dim);font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;line-height:1;
+}
+.welcome-close:hover{background:rgba(192,57,43,.1);border-color:rgba(192,57,43,.3);color:var(--red)}
+.welcome-body{padding:20px}
+.welcome-body p{margin:0 0 12px;font-size:13px;line-height:1.7;color:var(--text)}
+.welcome-body p:last-child{margin-bottom:0}
+.welcome-body .tip-row{
+  display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;
+}
+.welcome-body .tip-icon{
+  flex-shrink:0;width:22px;height:22px;border-radius:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;flex-shrink:0;
+}
+.welcome-body .tip-icon.green{background:rgba(26,58,92,.08);border:1px solid rgba(59,111,160,.3);color:var(--blue)}
+.welcome-body .tip-icon.gold{background:rgba(26,58,92,.08);border:1px solid rgba(26,58,92,.25);color:var(--accent)}
+.welcome-body .tip-text{font-size:13px;line-height:1.6;color:var(--text);padding-top:1px}
+.welcome-body .tip-text b{color:var(--accent)}
+.welcome-noshow{
+  display:block;margin:18px auto 0;padding:3px 2px 5px;width:auto;
+  background:none;border:none;border-bottom:1px solid #c3cbd4;
+  color:#9aa4ae;font-size:11px;font-weight:400;cursor:pointer;
+  letter-spacing:1px;font-family:inherit;transition:color .15s,border-color .15s;
+}
+.welcome-noshow:hover{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* 页脚水印（页面最底部） */
+.site-footer{
+  margin-top:30px;padding:26px 20px;text-align:center;
+  background:linear-gradient(180deg,#ffffff 0%,#f0f4f8 100%);
+  border-top:2px solid var(--accent);
+}
+.site-footer-inner{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  flex-wrap:wrap;
+}
+.site-footer img{
+  height:42px;width:42px;object-fit:contain;
+  filter:drop-shadow(0 2px 4px rgba(26,58,92,.3));
+}
+.site-footer .foot-brand{
+  font-family:Georgia,'Times New Roman',serif;font-style:italic;
+  font-size:16px;letter-spacing:2px;color:var(--accent);font-weight:700;
+}
+.site-footer .foot-tag{
+  font-size:11px;color:var(--dim);letter-spacing:1px;
+}
+.site-footer-account{
+  margin-top:10px;font-size:11px;color:#777;letter-spacing:.5px;
+}
+.site-footer-account a{
+  color:#999;text-decoration:none;margin-left:8px;
+}
+.site-footer-account a:hover{color:var(--accent)}
+
+/* ===== 账号登录（CloudBase 真账号系统） ===== */
+.auth-overlay{
+  position:fixed;inset:0;z-index:10000;
+  background:#012c49;
+  display:none;align-items:center;justify-content:center;
+}
+.auth-card{
+  width:360px;max-width:90vw;box-sizing:border-box;
+  background:#ffffff;color:#1a1a1a;
+  border:2px solid #012c49;padding:28px 26px;text-align:center;
+}
+.auth-card img{height:60px;width:60px;object-fit:contain;margin-bottom:10px}
+.auth-title{font-size:20px;font-weight:700;color:#000;letter-spacing:3px}
+.auth-sub{font-size:12px;color:#888;margin-top:4px;margin-bottom:16px;letter-spacing:2px}
+.auth-tabs{display:flex;border:1px solid #d8dde3;margin-bottom:14px}
+.auth-tab{
+  flex:1;padding:8px 0;font-size:12px;font-weight:700;cursor:pointer;
+  background:#fff;color:#666;border:none;letter-spacing:2px;transition:all .15s;
+  font-family:inherit;
+}
+.auth-tab.on{background:#012c49;color:#fff}
+.auth-field{
+  width:100%;box-sizing:border-box;padding:10px 12px;font-size:13px;
+  border:1px solid #bbb;background:#fff;color:#000;border-radius:0;
+  outline:none;margin-bottom:10px;font-family:inherit;
+}
+.auth-field:focus{border-color:#012c49}
+.auth-btn{
+  width:100%;margin-top:4px;padding:10px;font-size:13px;font-weight:700;
+  background:#012c49;color:#fff;border:none;border-radius:0;cursor:pointer;letter-spacing:3px;
+  font-family:inherit;
+}
+.auth-btn:hover{background:#001d33}
+.auth-btn:disabled{opacity:.6;cursor:wait}
+.auth-msg{font-size:12px;margin-top:10px;min-height:16px;line-height:1.5}
+.auth-msg.err{color:#c0392b}
+.auth-msg.ok{color:#1a5c3a}
+.auth-hint{font-size:10px;color:#aaa;margin-top:12px;letter-spacing:.5px;line-height:1.6}
+
+/* ===== 门户首页（一级界面） ===== */
+.portal-overlay{
+  position:fixed;inset:0;z-index:5000;
+  background:#ffffff;
+  display:none;overflow-y:auto;
+}
+.portal-overlay.show{display:block}
+.portal-inner{
+  min-height:100%;max-width:960px;width:92%;margin:0 auto;box-sizing:border-box;
+  text-align:center;padding:28px 48px 48px;
+  display:flex;flex-direction:column;align-items:center;
+  background:#ffffff;
+}
+.portal-inner > :first-child{margin-top:auto}
+.portal-inner > :last-child{margin-bottom:auto}
+.portal-badge{margin-top:34px}
+.portal-badge img{
+  width:120px;height:120px;object-fit:contain;
+  filter:drop-shadow(0 0 18px rgba(201,168,76,.55));
+}
+.portal-title{
+  color:#012c49;font-size:30px;font-weight:800;letter-spacing:6px;
+  margin-top:18px;
+  font-family:Impact,'Arial Black',sans-serif;
+}
+.portal-sub{color:#5a7a9c;font-size:13px;letter-spacing:4px;margin-top:6px;text-transform:uppercase}
+.portal-motto{
+  font-family:Georgia,'Times New Roman',serif;font-style:italic;
+  color:#b08d2e;font-size:24px;letter-spacing:3px;margin-top:14px;
+}
+.portal-slider{
+  width:100%;position:relative;
+  aspect-ratio:21/9;overflow:hidden;background:#0a0f16;
+  border:1px solid rgba(90,140,200,.35);
+  box-shadow:0 0 30px rgba(59,130,246,.15);
+  margin-top:20px;
+}
+.portal-slider .ps-item{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;opacity:0;transition:opacity 1.6s ease-in-out;
+  pointer-events:none;
+}
+.portal-slider .ps-item.active{opacity:1}
+.portal-slider .ps-dots{
+  position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+  display:flex;gap:8px;z-index:2;
+}
+.portal-slider .ps-dot{
+  width:8px;height:8px;border-radius:0;background:rgba(255,255,255,.25);
+  border:1px solid rgba(255,255,255,.15);transition:background .4s;
+}
+.portal-slider .ps-dot.active{background:rgba(201,168,76,.85);border-color:rgba(201,168,76,.5)}
+@media(max-width:640px){
+  .portal-inner{padding:16px 24px 40px}
+  .portal-badge{margin-top:22px}
+}
+.portal-modules{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px;width:100%}
+.portal-card{
+  background:#012c49;
+  border:1px solid rgba(90,140,200,.35);border-radius:0;
+  padding:32px 20px;color:#fff;cursor:pointer;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  font-family:inherit;transition:border-color .2s,box-shadow .2s,transform .2s;
+}
+.portal-card:hover{
+  border-color:rgba(201,168,76,.85);
+  box-shadow:0 0 24px rgba(201,168,76,.35),0 0 48px rgba(59,130,246,.2);
+  transform:translateY(-4px);
+}
+/* 投诉 / 加入我们：重点卡片加大 */
+.portal-card.portal-card-lg{padding:44px 24px;gap:14px}
+.portal-card.portal-card-lg .pc-icon{width:64px;height:64px}
+.portal-card.portal-card-lg .pc-icon svg{width:64px;height:64px}
+.portal-card.portal-card-lg .pc-title{font-size:22px}
+.portal-card.portal-card-lg .pc-desc{font-size:13px}
+.portal-card.portal-card-lg .pc-status{font-size:12px;padding:5px 16px}
+.pc-icon{width:52px;height:52px;color:#c9a84c;filter:drop-shadow(0 0 8px rgba(201,168,76,.5))}
+.pc-icon svg{width:52px;height:52px}
+.pc-title{font-size:18px;font-weight:700;letter-spacing:2px}
+.pc-desc{font-size:12px;color:#5a7a9c;line-height:1.6}
+.pc-status{font-size:11px;padding:3px 12px;border:1px solid rgba(59,130,246,.5);color:#7db4f0;letter-spacing:1px}
+.pc-status.dev{color:#d8c08a;border-color:rgba(201,168,76,.5)}
+.portal-foot{color:#8a9aa8;font-size:11px;letter-spacing:2px;margin-top:40px}
+.portal-toast{
+  position:fixed;bottom:48px;left:50%;transform:translateX(-50%);
+  background:rgba(12,26,42,.95);border:1px solid rgba(201,168,76,.6);
+  color:#fff;padding:10px 22px;font-size:13px;letter-spacing:1px;white-space:nowrap;
+  display:none;box-shadow:0 0 16px rgba(201,168,76,.3);pointer-events:none;z-index:6000;
+}
+.portal-toast.show{display:block;animation:fadeIn .2s ease}
+/* 投诉/征募表单：fixed 全屏压在 portal-overlay 之上，避免法典内容露出 */
+.complaint-panel{
+  position:fixed;inset:0;z-index:5500;overflow-y:auto;box-sizing:border-box;
+  display:none;background:#ffffff;padding:100px 48px 48px;text-align:left;
+}
+.complaint-panel.show{display:block}
+.complaint-panel > *{max-width:960px;margin-left:auto;margin-right:auto}
+/* 投诉页顶部同款上方栏（无按钮），fixed 顶部压在 panel 之上 */
+.complaint-header{display:none;position:fixed;top:0;left:0;right:0;z-index:5501}
+.complaint-header.show{display:block}
+.complaint-head{
+  display:flex;align-items:center;gap:16px;margin-bottom:26px;
+  padding-bottom:16px;border-bottom:2px solid #012c49;position:relative;
+}
+.complaint-head::after{
+  content:'';position:absolute;left:0;bottom:-2px;width:76px;height:2px;
+  background:linear-gradient(90deg,#c9a84c,rgba(201,168,76,0));
+}
+.complaint-title{color:#000000;font-size:20px;font-weight:800;letter-spacing:3px}
+.complaint-sub{
+  color:#5a7a9c;font-size:12px;letter-spacing:2px;margin-top:4px;
+  text-transform:uppercase;font-family:Georgia,'Times New Roman',serif;font-style:italic;
+}
+.complaint-form{
+  background:#fff;padding:32px 36px;
+}
+.cf-tip{
+  font-size:12px;color:#33558c;margin-bottom:20px;padding:10px 14px;
+  background:#eef3f8;border-left:4px solid #012c49;letter-spacing:1px;
+  display:flex;align-items:center;gap:8px;
+}
+.cf-tip::before{content:'ℹ';font-size:14px;color:#012c49;flex-shrink:0}
+.cf-field{margin-bottom:20px}
+.cf-label{
+  display:block;font-size:13px;font-weight:700;color:#000000;
+  margin-bottom:8px;letter-spacing:1px;
+}
+.cf-label .req{color:#c0392b;margin-left:2px}
+.cf-input,.cf-textarea{
+  width:100%;box-sizing:border-box;padding:11px 13px;font-size:13px;
+  border:1px solid #b9c6d2;background:#fbfcfd;color:#000;border-radius:0;
+  outline:none;font-family:inherit;transition:border-color .15s,box-shadow .15s;
+}
+.cf-input:focus,.cf-textarea:focus{
+  border-color:#012c49;background:#fff;
+  box-shadow:0 0 0 2px rgba(1,44,73,.12);
+}
+.cf-textarea{min-height:130px;resize:vertical;line-height:1.6}
+.cf-actions{display:flex;gap:12px;margin-top:26px}
+.cf-btn{
+  padding:11px 30px;font-size:13px;font-weight:700;border:none;border-radius:0;
+  cursor:pointer;letter-spacing:2px;font-family:inherit;transition:all .15s;
+}
+.cf-btn.submit{background:#012c49;color:#fff}
+.cf-btn.submit:hover{background:#001d33}
+.cf-btn.submit:disabled{background:#8ba0b3;cursor:not-allowed}
+.cf-btn.back{background:#fff;color:#000000;border:2px solid #012c49}
+.cf-btn.back:hover{background:#012c49;color:#fff}
+@media(max-width:640px){
+  .complaint-panel{padding:88px 24px 40px}
+  .complaint-form{padding:20px 16px}
+  .enlist-options{grid-template-columns:1fr;gap:14px}
+  .enlist-option{padding:22px 16px}
+}
+/* 征募面板：入职/调转选项卡片（白底黑字，方角） */
+.enlist-options{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.enlist-option{
+  background:#fff;border:1px solid #012c49;border-radius:0;
+  padding:34px 24px;cursor:pointer;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  font-family:inherit;transition:box-shadow .2s,transform .2s,border-color .2s;
+}
+.enlist-option:hover{
+  border-color:#c9a84c;
+  box-shadow:0 6px 20px rgba(1,44,73,.12),0 0 0 2px rgba(201,168,76,.35);
+  transform:translateY(-3px);
+}
+.eo-icon{width:46px;height:46px;color:#012c49}
+.eo-icon svg{width:46px;height:46px}
+.eo-title{font-size:17px;font-weight:800;color:#000000;letter-spacing:3px}
+.eo-desc{font-size:12px;color:#5a7a9c;line-height:1.6}
+/* 单选组（方角自定义样式，黑色字体） */
+.cf-radio-group{display:flex;gap:26px;padding-top:2px}
+.cf-radio{
+  display:inline-flex;align-items:center;gap:9px;cursor:pointer;
+  font-size:13px;color:#000000;letter-spacing:1px;font-family:inherit;
+}
+.cf-radio input{position:absolute;opacity:0;pointer-events:none}
+.cf-radio .rbox{
+  width:16px;height:16px;border:1.5px solid #9fb2c4;background:#fff;border-radius:0;
+  display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:border-color .15s,background .15s;
+}
+.cf-radio input:checked + .rbox{border-color:#012c49;background:#012c49}
+.cf-radio input:checked + .rbox::after{
+  content:'';width:8px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;
+  transform:rotate(-45deg) translateY(-1px);
+}
+.cf-radio input:focus-visible + .rbox{box-shadow:0 0 0 2px rgba(1,44,73,.25)}
+/* 表单标题右侧返回选择按钮 */
+.enlist-stepback{
+  margin-left:auto;display:flex;align-items:center;gap:5px;
+  background:#fff;border:2px solid #012c49;color:#012c49;
+  font-size:12px;font-weight:700;padding:8px 12px;border-radius:0;cursor:pointer;
+  letter-spacing:.5px;font-family:inherit;transition:all .2s;white-space:nowrap;
+}
+.enlist-stepback:hover{background:#012c49;color:#fff}
+.enlist-stepback svg{width:13px;height:13px;flex-shrink:0}
+/* 返回首页按钮（与 report-btn/shortcut-btn 同款） */
+.home-btn{
+  display:flex;align-items:center;gap:5px;
+  background:#ffffff;border:2px solid #012c49;
+  color:#012c49;font-size:12px;font-weight:700;padding:8px 12px;
+  border-radius:0;cursor:pointer;text-decoration:none;letter-spacing:.5px;
+  white-space:nowrap;transition:all .2s;font-family:inherit;
+}
+.home-btn:hover{background:#012c49;border-color:#001d33;color:#fff}
+.home-btn svg{width:14px;height:14px;flex-shrink:0}
+/* 表单内返回按钮文字改黑（不影响法典页的返回首页按钮） */
+#complaint-back{color:#000000}
+@media(max-width:700px){
+  .portal-modules{grid-template-columns:1fr;gap:14px;margin-top:28px}
+  .portal-badge img{width:84px;height:84px}
+  .portal-title{font-size:20px;letter-spacing:3px}
+  .portal-card{padding:20px 14px}
+  .pc-icon{width:40px;height:40px}
+  .pc-icon svg{width:40px;height:40px}
+  .portal-card.portal-card-lg{padding:30px 18px;gap:14px}
+  .portal-card.portal-card-lg .pc-icon{width:52px;height:52px}
+  .portal-card.portal-card-lg .pc-icon svg{width:52px;height:52px}
+  .portal-card.portal-card-lg .pc-title{font-size:21px}
+  .portal-card.portal-card-lg .pc-desc{font-size:13px}
+  .portal-card.portal-card-lg .pc-status{font-size:12px;padding:5px 16px}
+}
+@media(max-width:400px){
+  .home-btn span{display:none}
+  .home-btn{padding:6px 8px}
+}
+
+</style>
+
+</style>
+</head>
+
+<body>
+<div class="header" id="law-header">
+  <div class="header-top">
+    <div class="logo-box">
+      <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD" title="Los Santos Police Department">
+    </div>
+    <div class="header-title">
+      <h1>Los Santos Police Department</h1>
+      <div class="motto">"To Protect and to Serve"</div>
+    </div>
+      <button class="home-btn" id="law-back" type="button" title="返回上一级">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>返回上一级</span>
+      </button>
+  </div>
+</div>
+
+
+<div class="ctrl">
+  <div class="search">
+    <input type="text" id="q" placeholder="搜索：罪名 / 关键词 / 判罚..." autocomplete="off">
+    <button class="search-btn" id="search-btn">查询</button>
+  </div>
+  <div class="tags" id="cat-tags">
+    <span class="tag on" data-cat="all">全部</span>
+    <span class="tag felony" data-cat="重罪">重罪</span>
+    <span class="tag misd" data-cat="轻罪">轻罪</span>
+    <span class="tag violation" data-cat="违法">违法</span>
+    <span class="tag other" data-cat="未分类">其他</span>
+  </div>
+  <div class="tags" style="margin-top:6px">
+    <span class="tag on" data-law="all">全部法典</span>
+  </div>
+  <div class="tab-row">
+    <button class="tab on" data-tab="a">法条</button>
+    <button class="tab" data-tab="f">全文</button>
+  </div>
+  <div class="info">
+    <span id="cnt">0</span> 条结果
+    <span class="sep">|</span>
+    <span id="status-text">就绪</span>
+  </div>
+</div>
+
+
+<div class="content" id="content">
+  <aside class="miranda-sidebar">
+    <div class="miranda-card">
+      <div class="miranda-header">
+        <span class="miranda-title">米兰达权利警告</span>
+      </div>
+      <div class="miranda-body">
+        <div class="miranda-line">
+          <span class="miranda-text">你有权<strong>保持沉默</strong>。</span>
+        </div>
+        <div class="miranda-line">
+          <span class="miranda-text">你所说的每一句话都<strong>可能在法庭上</strong>作为对你不利的证据。</span>
+        </div>
+        <div class="miranda-line">
+          <span class="miranda-text">你有权<strong>聘请律师</strong>，并可在讯问时要求律师在场。</span>
+        </div>
+        <div class="miranda-line">
+          <span class="miranda-text">如果你无力聘请律师，将<strong>为你指定</strong>一名公职律师。</span>
+        </div>
+      </div>
+      <div class="miranda-footer">Miranda v. Arizona, 384 U.S. 436 (1966)</div>
+    </div>
+    <div class="calc-card">
+      <div class="calc-title">服刑月数计算器</div>
+      <div class="calc-row">
+        <label>年</label>
+        <input type="number" id="calc-years" value="0" min="0" max="999" oninput="calcSentence()">
+        <span class="calc-unit">年</span>
+      </div>
+      <div class="calc-row">
+        <label>月</label>
+        <input type="number" id="calc-months" value="0" min="0" max="11" oninput="calcSentence()">
+        <span class="calc-unit">月</span>
+      </div>
+      <div class="calc-result">
+        <div class="calc-months" id="calc-total">0</div>
+        <div class="calc-label">总计服刑月数</div>
+        <div class="calc-detail" id="calc-breakdown"></div>
+      </div>
+    </div>
+  </aside>
+  <div class="content-left">
+    <div class="content-main" id="content-main"></div>
+  </div>
+  <aside class="amendments-sidebar" id="amendments-sidebar">
+    <div class="amend-title">美国宪法修正案</div>
+
+    <div class="amend-item">
+      <div class="amend-num">第一修正案</div>
+      <div class="amend-tags">言论 | 宗教 | 出版 | 集会 | 请愿</div>
+      <div class="amend-note">
+        <strong>执法须知：</strong>公民有权批评执法行为，不得因言论内容报复执法。和平集会受宪法保护，仅可在出现暴力行为或明确威胁时依法驱散。媒体采访区需合理划定，不得无理限制记者拍摄。
+      </div>
+    </div>
+
+    <div class="amend-item">
+      <div class="amend-num">第二修正案</div>
+      <div class="amend-tags">持有和携带武器的权利</div>
+      <div class="amend-note">
+        <strong>执法须知：</strong>不得仅因发现公民持有武器即认定犯罪。截停后需核实持枪证件，合法持枪受保护。非法改装、无证携带或重罪犯持枪方可采取执法行动。注意区分公开携带与隐匿携带的州法规定。
+      </div>
+    </div>
+
+    <div class="amend-item">
+      <div class="amend-num">第三修正案</div>
+      <div class="amend-tags">士兵不得擅入民宅</div>
+      <div class="amend-note">
+        <strong>执法须知：</strong>和平时期未经房主同意不得强制进驻私人住宅。执法中进入民宅必须有搜查令或符合紧急情况例外（如正在进行的犯罪、追捕重罪犯、人员面临生命危险）。无证进入取得的证据可能被排除。
+      </div>
+    </div>
+
+    <div class="amend-item">
+      <div class="amend-num">第四修正案</div>
+      <div class="amend-tags">免受不合理搜查和扣押</div>
+      <div class="amend-note">
+        <strong>执法须知：</strong>搜查必须基于合理根据（Probable Cause）并获得有效搜查令。无证搜查仅在以下例外合法：同意搜查、逮捕附随搜查、紧急情况、一目了然原则（Plain View）、车辆搜查例外。违反本修正案获取的证据适用排除规则（Exclusionary Rule），庭审中不可采纳。<br>扣押财物须出具详细清单收据。
+      </div>
+    </div>
+
+    <div class="amend-item">
+      <div class="amend-num">第五修正案</div>
+      <div class="amend-tags">正当程序 | 不自证其罪 | 双重危险 | 大陪审团</div>
+      <div class="amend-note">
+        <strong>执法须知：</strong>逮捕后必须宣读米兰达警告——"你有权保持沉默，你所说的一切都可能成为呈堂证供"。不得以任何手段强迫嫌疑人供述，不得以沉默作为不利推断。同一罪行不得重复起诉。执法程序必须符合正当法律程序，违反正当程序的逮捕和取证均无效。私有财产被征用须给予公正补偿。
+      </div>
+    </div>
+
+    <div class="amend-item">
+      <div class="amend-num">第六修正案</div>
+      <div class="amend-tags">公平审判 | 律师辩护 | 迅速审判 | 对质权</div>
+      <div class="amend-note">
+        <strong>执法须知：</strong>逮捕后应及时告知嫌疑人有权聘请律师，若无力聘请可获得公设辩护人。不得无理拖延审判。嫌疑人有权知晓被指控的具体罪名和证据。执法中不得阻挠嫌疑人联系律师或获取证据。
+      </div>
+    </div>
+
+    <div class="amend-item">
+      <div class="amend-num">第七修正案</div>
+      <div class="amend-tags">民事案件陪审团审判</div>
+      <div class="amend-note">
+        <strong>执法须知：</strong>民事纠纷争议金额超过20美元的案件，当事人有权要求陪审团审判。执法中需注意区分刑事与民事性质：民事案件（如合同纠纷、侵权）不适用刑事执法程序，不得以刑事手段干预民事争议。
+      </div>
+    </div>
+
+    <div class="amend-item">
+      <div class="amend-num">第八修正案</div>
+      <div class="amend-tags">禁止过高保释金 | 禁止酷刑与非常刑罚</div>
+      <div class="amend-note">
+        <strong>执法须知：</strong>保释金金额必须与罪行性质和嫌疑人经济能力相匹配，不得设置过高金额变相拒绝保释。绝对禁止任何形式的酷刑、非人道对待和有辱人格的惩罚，包括审讯过程中。使用武力须符合Graham v. Connor案确立的"客观合理性"标准，根据现场情况判断武力等级是否适当。过度使用武力将承担法律责任。
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- 量刑面板 -->
+<div class="sentencing-panel collapsed" id="sentencing-panel">
+  <div class="sentencing-toggle" id="sentencing-toggle">
+    <span class="t-label">量刑清单</span>
+    <span class="t-count" id="sentencing-count">0</span>
+    <span class="t-summary" id="sentencing-summary">合计 0年监禁 + $0</span>
+  </div>
+  <div class="sentencing-body" id="sentencing-body">
+    <div class="sentencing-list" id="sentencing-list"></div>
+    <div class="sentencing-total" id="sentencing-total">
+      <span class="st-label">合计</span>
+      <span class="st-prison">0年监禁</span>
+      <span class="st-fine">$0</span>
+    </div>
+    <button class="sentencing-clear" id="sentencing-clear">清空清单</button>
+
+    <div class="template-section">
+      <div class="template-label">
+        量刑报告模板
+      </div>
+      <div class="template-hint">添加量刑后会自动填入罪名、刑期和罚款，可直接复制使用</div>
+      <div class="report-officer-row">
+        <label>姓名</label>
+        <input type="text" class="report-officer-input" id="template-name" placeholder="输入警员姓名">
+        <label>警号</label>
+        <input type="text" class="report-officer-input" id="template-badge" placeholder="输入警号">
+        <button class="save-officer-btn" id="template-save-officer">保存</button>
+      </div>
+      <div class="report-dept-row">
+        <label>隶属部门</label>
+        <select class="report-dept-select" id="template-dept">
+          <option value="中央巡逻分局">密申罗分局-中央巡逻分局</option>
+          <option value="中央交通分局">密申罗分局-中央交通分局</option>
+          <option value="警探分局">密申罗分局-警探分局</option>
+          <option value="GND">密申罗分局-GND</option>
+          <option value="内务部（IA）">密申罗分局-内务部（IA）</option>
+        </select>
+      </div>
+      <textarea class="template-area" id="template-area" readonly>姓名：
+警号：
+隶属警局：密申罗分局-中央巡逻分局
+-----------------------------------------------------
+罪名：
+证据：警员执法记录仪
+地方裁量：0个月监禁 0美元罚款</textarea>
+      <button class="copy-btn" id="copy-btn">复制模板</button>
+    </div>
+  </div>
+</div>
+
+<!-- 多级选择弹窗 -->
+<div class="sentencing-dialog" id="sentencing-dialog">
+  <div class="sentencing-dialog-content">
+    <div class="sentencing-dialog-title" id="sd-title"></div>
+    <div class="sentencing-dialog-sub">请选择适用的量刑等级</div>
+    <div id="sd-options"></div>
+    <button class="sentencing-dialog-cancel" id="sd-cancel">取消</button>
+  </div>
+</div>
+
+
+<div class="sentencing-dialog" id="law-dialog">
+  <div class="sentencing-dialog-content">
+    <div class="sentencing-dialog-title" id="law-d-title"></div>
+    <div id="law-d-body"></div>
+    <button class="sentencing-dialog-cancel" id="law-d-cancel">关闭</button>
+  </div>
+</div>
+
+
+<!-- 警用报告弹窗 -->
+<div class="report-overlay" id="report-overlay">
+  <div class="report-modal">
+    <div class="report-modal-header">
+      <span class="report-modal-title">警用报告模板</span>
+      <button class="report-close" id="report-close">&times;</button>
+    </div>
+    <div class="report-dept-row">
+      <label>隶属部门</label>
+      <select class="report-dept-select" id="report-dept">
+        <option value="中央巡逻分局">密申罗分局-中央巡逻分局</option>
+        <option value="中央交通分局">密申罗分局-中央交通分局</option>
+        <option value="警探分局">密申罗分局-警探分局</option>
+        <option value="GND">密申罗分局-GND</option>
+        <option value="内务部（IA）">密申罗分局-内务部（IA）</option>
+      </select>
+    </div>
+    <div class="report-officer-row">
+      <label>姓名</label>
+      <input type="text" class="report-officer-input" id="report-name" placeholder="输入警员姓名">
+      <label>警号</label>
+      <input type="text" class="report-officer-input" id="report-badge" placeholder="输入警号">
+      <button class="save-officer-btn" id="report-save-officer">保存</button>
+    </div>
+    <textarea id="report-textarea" readonly></textarea>
+    <button class="copy-btn" id="report-copy-btn">复制报告</button>
+  </div>
+</div>
+
+
+<div class="welcome-overlay" id="welcome-overlay">
+  <div class="welcome-box">
+    <div class="welcome-header">
+      <span class="welcome-title">使用说明</span>
+      <button class="welcome-close" id="welcome-close">&times;</button>
+    </div>
+    <div class="welcome-body">
+      <p>点击法条右侧的 <b>+量刑</b> 按钮，可将该罪名加入量刑清单</p>
+      <p>量刑清单底部有 <b>报告模板</b>，添加罪名后会自动填入罪名、合计刑期和罚款，可一键复制</p>
+      <p>有多个判罚档位的罪名，可在量刑清单中用 <b>下拉框</b> 切换轻罪/重罪</p>
+      <button class="welcome-noshow" id="welcome-noshow">不再显示</button>
+    </div>
+  </div>
+</div>
+
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD">
+    <span class="foot-brand">by Bradford</span>
+    <span class="foot-tag">LSPD MDT &middot; To Protect and to Serve</span>
+  </div>
+  <div class="site-footer-account" id="account-bar" style="display:none">
+    <span id="account-email"></span>
+    <a href="#" id="auth-logout">退出登录</a>
+  </div>
+</footer>
+
+
+<script>
+const arts = [{"name":"威胁罪","category":"轻罪","description":"以伤害、杀害本人或其亲友为目的，通过口头、书面、网络等任何形式恐吓他人，最高判处1年监禁+2000美元罚款","penalty":"最高判处1年监禁+2000美元罚款","law":"一、圣安地列斯州刑法","chapter":"第一章 涉及人身安全的犯罪","id":1},{"name":"持有危险武器人身攻击罪","category":"重罪","description":"使用武器、危险物品对他人实施威胁或攻击行为，并造成人身伤害，最高判处3年监禁+5000美元罚款","penalty":"最高判处3年监禁+5000美元罚款","law":"一、圣安地列斯州刑法","chapter":"第一章 涉及人身安全的犯罪","id":2},{"name":"故意伤人罪","category":"重罪","description":"蓄意以非法暴力手段伤害他人身体，造成一定伤害后果，最高判处3年监禁+3500美元罚款","penalty":"最高判处3年监禁+3500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第一章 涉及人身安全的犯罪","id":3},{"name":"过失杀人罪","category":"重罪","description":"非故意导致他人死亡（正当防卫情形除外），最高判处3年监禁+5000美元罚款","penalty":"最高判处3年监禁+5000美元罚款","law":"一、圣安地列斯州刑法","chapter":"第一章 涉及人身安全的犯罪","id":4},{"name":"一级谋杀罪","category":"重罪","description":"存在预谋的故意杀人行为，或在实施其他重罪过程中致人死亡，最高判处7年监禁+4000美元罚款","penalty":"最高判处7年监禁+4000美元罚款","law":"一、圣安地列斯州刑法","chapter":"第一章 涉及人身安全的犯罪","id":5},{"name":"二级谋杀罪","category":"重罪","description":"无预谋的故意杀人，仅意图造成他人重伤且放任死亡结果发生，最高判处5年监禁+6000美元罚款","penalty":"最高判处5年监禁+6000美元罚款","law":"一、圣安地列斯州刑法","chapter":"第一章 涉及人身安全的犯罪","id":6},{"name":"非法拘禁罪","category":"重罪","description":"非法限制他人人身自由，情节较重，最高判处3年监禁+2500美元罚款","penalty":"最高判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第一章 涉及人身安全的犯罪","id":7},{"name":"绑架罪","category":"重罪","description":"非法控制他人人身自由并意图实施恐吓、勒索等行为，最高判处3年监禁+2500美元罚款；若导致受害人重伤、死亡或实施勒索赎金行为，最高判处5年监禁+5000美元罚款","penalty":"轻罪：最高判处3年监禁+2500美元罚款；重罪（重伤/死亡/勒索赎金）：最高判处5年监禁+5000美元罚款","law":"一、圣安地列斯州刑法","chapter":"第一章 涉及人身安全的犯罪","id":8},{"name":"危害他人安全罪","category":"重罪","description":"未造成受害人昏迷的，按轻罪论处，判处2年监禁+1000美元罚款；造成受害人昏迷或死亡的，按重罪论处，判处3年监禁+3000美元罚款","penalty":"轻罪（未昏迷）：判处2年监禁+1000美元罚款；重罪（昏迷/死亡）：判处3年监禁+3000美元罚款","law":"一、圣安地列斯州刑法","chapter":"第一章 涉及人身安全的犯罪","id":9},{"name":"亵渎尸体罪","category":"重罪","description":"蓄意篡改、损毁尸体，或妨碍尸体相关调查工作，最高判处3年监禁+1500美元罚款","penalty":"最高判处3年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第二章 涉及财产安全的犯罪","id":10},{"name":"纵火罪","category":"重罪","description":"未经财产所有权人授权故意纵火，或因实施其他犯罪行为导致他人财产烧毁，最高判处3年监禁+2500美元罚款","penalty":"最高判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第二章 涉及财产安全的犯罪","id":11},{"name":"非法入侵罪","category":"轻罪","description":"进入他人合法财产区域，经所有权人或授权人告诫后仍拒绝离开，最高判处1年监禁+500美元罚款","penalty":"最高判处1年监禁+500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第二章 涉及财产安全的犯罪","id":12},{"name":"非法入侵禁区罪","category":"轻罪","description":"未经授权擅自进入政府办公区域、执法部门驻地等受限管控区域，最高判处1年监禁+1000美元罚款","penalty":"最高判处1年监禁+1000美元罚款","law":"一、圣安地列斯州刑法","chapter":"第二章 涉及财产安全的犯罪","id":13},{"name":"入室盗窃罪","category":"重罪","description":"以非法占有为目的，非法进入他人住宅、商铺等封闭财产区域实施盗窃，最高判处3年监禁+2500美元罚款","penalty":"最高判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第二章 涉及财产安全的犯罪","id":14},{"name":"抢劫罪","category":"重罪","description":"以暴力、胁迫或恐吓手段，当场夺取他人财物，最高判处3年监禁+1500美元罚款","penalty":"最高判处3年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第二章 涉及财产安全的犯罪","id":15},{"name":"盗窃罪","category":"未分类","description":"以非法占有为目的，窃取他人财物，最高判处3年监禁+1500美元罚款，同时需全额赔偿受害人财产损失","penalty":"最高判处3年监禁+1500美元罚款，同时需全额赔偿受害人财产损失","law":"一、圣安地列斯州刑法","chapter":"第二章 涉及财产安全的犯罪","id":16},{"name":"重大盗窃车辆罪","category":"重罪","description":"无严重后果的，按轻罪论处，判处1年监禁+500美元罚款；造成人员伤亡、重大财产损失等严重后果的，按重罪论处，判处3年监禁+3000美元罚款，无论轻重均需赔偿车辆所有权人损失","penalty":"轻罪：判处1年监禁+500美元罚款；重罪：判处3年监禁+3000美元罚款，无论轻重均需赔偿车辆所有权人损失","law":"一、圣安地列斯州刑法","chapter":"第二章 涉及财产安全的犯罪","id":17},{"name":"收受赃物罪","category":"重罪","description":"收受赃物价值≤5000美元的，按轻罪论处，判处1年监禁+500美元罚款；收受赃物价值＞5000美元的，按重罪论处，判处3年监禁+2500美元罚款","penalty":"轻罪（赃物价值≤5000美元）：判处1年监禁+500美元罚款；重罪（赃物价值＞5000美元）：判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第二章 涉及财产安全的犯罪","id":18},{"name":"敲诈勒索罪","category":"重罪","description":"以恐吓、威胁、滥用职权等非法手段，强行向他人索要财物或无偿服务，最高判处2年监禁+1500美元罚款","penalty":"最高判处2年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第二章 涉及财产安全的犯罪","id":19},{"name":"伪造或欺诈罪","category":"重罪","description":"蓄意伪造文书、签章，或代签他人文件、歪曲事实欺骗他人，获取非法利益，最高判处2年监禁+1500美元罚款","penalty":"最高判处2年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第二章 涉及财产安全的犯罪","id":20},{"name":"蓄意破坏罪","category":"轻罪","description":"故意损坏他人合法财产，情节较轻，最高判处1年监禁+500美元罚款","penalty":"最高判处1年监禁+500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第二章 涉及财产安全的犯罪","id":21},{"name":"入店行窃罪","category":"轻罪","description":"无付款意图，在商铺内盗窃、藏匿商品，最高判处1年监禁+500美元罚款","penalty":"最高判处1年监禁+500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第二章 涉及财产安全的犯罪","id":22},{"name":"信用卡/借记卡欺诈罪","category":"轻罪","description":"非法使用他人信用卡、借记卡消费或取现，最高判处1年监禁+500美元罚款，同时需全额赔偿受害人损失","penalty":"最高判处1年监禁+500美元罚款，同时需全额赔偿受害人损失","law":"一、圣安地列斯州刑法","chapter":"第二章 涉及财产安全的犯罪","id":23},{"name":"挪用公款公物罪","category":"轻罪","description":"非法侵占、挪用受委托管理的公款、公物，最高判处3年监禁+2500美元罚款，同时需返还挪用财物或赔偿对应价值","penalty":"最高判处3年监禁+2500美元罚款，同时需返还挪用财物或赔偿对应价值","law":"一、圣安地列斯州刑法","chapter":"第二章 涉及财产安全的犯罪","id":24},{"name":"持有失窃物品罪","category":"轻罪","description":"明知是他人失窃财物仍故意持有，最高判处2年监禁+1500美元罚款","penalty":"最高判处2年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第三章 涉及公共道德的犯罪","id":25},{"name":"公共淫秽行为罪","category":"轻罪","description":"在公共场所从事性行为、恶意骚扰他人，或招募、介绍性交易，最高判处1年监禁+500美元罚款","penalty":"最高判处1年监禁+500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第三章 涉及公共道德的犯罪","id":26},{"name":"卖淫罪","category":"轻罪","description":"以财物为对价，与他人发生性行为，最高判处1年监禁+500美元罚款","penalty":"最高判处1年监禁+500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第三章 涉及公共道德的犯罪","id":27},{"name":"组织卖淫罪","category":"重罪","description":"协助、引诱、强迫他人从事卖淫活动，并从中牟利，最高判处3年监禁+2500美元罚款，同时需赔偿受害人损失","penalty":"最高判处3年监禁+2500美元罚款，同时需赔偿受害人损失","law":"一、圣安地列斯州刑法","chapter":"第三章 涉及公共道德的犯罪","id":28},{"name":"性暴力罪","category":"重罪","description":"情节较轻的，按轻罪论处，判处1年监禁+500美元罚款；情节严重的，按重罪论处，判处3年监禁+2500美元罚款","penalty":"轻罪（情节较轻）：判处1年监禁+500美元罚款；重罪（情节严重）：判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第三章 涉及公共道德的犯罪","id":29},{"name":"强奸罪","category":"重罪","description":"以暴力、胁迫手段强迫他人发生性行为，或趁他人无意识、无反抗能力时发生性行为，最高判处3年监禁+2500美元罚款","penalty":"最高判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第三章 涉及公共道德的犯罪","id":30},{"name":"跟踪罪","category":"轻罪","description":"蓄意跟踪、纠缠他人，多次实施骚扰行为，影响他人正常生活，最高判处1年监禁+500美元罚款","penalty":"最高判处1年监禁+500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第三章 涉及公共道德的犯罪","id":31},{"name":"传播淫秽色情罪","category":"轻罪","description":"非法制作、传播、贩卖淫秽色情文字、图片、视频等内容，最高判处1年监禁+500美元罚款","penalty":"最高判处1年监禁+500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第三章 涉及公共道德的犯罪","id":32},{"name":"仇恨罪","category":"轻罪","description":"基于他人残疾、性别、种族、宗教等特征，实施辱骂、攻击等歧视性行为，最高判处3年监禁+1500美元罚款","penalty":"最高判处3年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第三章 涉及公共道德的犯罪","id":33},{"name":"非法监听罪","category":"重罪","description":"未经沟通双方许可，擅自监听、记录他人私人通话、聊天等沟通内容，最高判处3年监禁+2500美元罚款","penalty":"最高判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":34},{"name":"行贿罪","category":"重罪","description":"向公职人员提供财物、利益，意图影响其依法履行职务，最高判处3年监禁+2500美元罚款","penalty":"最高判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":35},{"name":"贿赂受害人罪","category":"重罪","description":"通过贿赂手段，引诱、胁迫受害人撤销控诉、隐瞒案情，阻碍法律文书执行，最高判处3年监禁+2500美元罚款","penalty":"最高判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":36},{"name":"提供虚假信息罪","category":"轻罪","description":"向执法人员、公职人员提供虚假信息，干扰执法或公务执行，最高判处3年监禁+1500美元罚款","penalty":"最高判处3年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":37},{"name":"虚假报警罪","category":"轻罪","description":"无事实依据，恶意举报他人犯罪，浪费执法资源，最高判处3年监禁+1500美元罚款","penalty":"最高判处3年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":38},{"name":"拒绝执法命令与检查/拒捕罪","category":"轻罪","description":"无正当理由，拒绝听从执法人员合法指令，或拒绝接受执法检查、抗拒逮捕，最高判处3年监禁+1500美元罚款","penalty":"最高判处3年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":39},{"name":"拒绝提供身份罪","category":"轻罪","description":"被执法人员依法扣留、逮捕后，拒绝提供真实身份信息，最高判处3年监禁+1500美元罚款","penalty":"最高判处3年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":40},{"name":"冒充公职人员罪","category":"重罪","description":"假扮警察、法官、政府官员等公职人员，实施招摇撞骗行为，最高判处3年监禁+2500美元罚款","penalty":"最高判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":41},{"name":"妨碍公务罪","category":"重罪","description":"以暴力、威胁、故意阻挠等方式，妨碍公职人员依法履行职务，最高判处3年监禁+2500美元罚款","penalty":"最高判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":42},{"name":"逃避羁押/非法逃脱罪","category":"重罪","description":"从执法人员控制范围、监狱等羁押场所非法逃脱，最高判处3年监禁+2500美元罚款","penalty":"最高判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":43},{"name":"协助拒捕罪","category":"重罪","description":"协助、包庇被执法人员追捕的嫌疑人逃脱羁押，最高判处3年监禁+2500美元罚款","penalty":"最高判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":44},{"name":"恶意占用公共资源罪","category":"轻罪","description":"恶意拨打、占用政府服务热线，浪费公共资源，最高判处1年监禁+500美元罚款；二审败诉方恶意占用公共资源的，处罚2000美元，无监禁处罚","penalty":"恶意拨打、占用政府服务热线，浪费公共资源，最高判处1年监禁+500美元罚款；二审败诉方恶意占用公共资源的，处罚2000美元，无监禁处罚","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":45},{"name":"破坏证据罪","category":"轻罪","description":"故意隐瞒、篡改、损毁涉案证据，干扰案件调查、审理，最高判处3年监禁+1500美元罚款","penalty":"最高判处3年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":46},{"name":"虚假逮捕罪","category":"重罪","description":"无合法依据擅自逮捕他人，或借逮捕名义侵占他人财产，最高判处3年监禁+2500美元罚款（仅部门主管有权起诉涉事执法人员）","penalty":"最高判处3年监禁+2500美元罚款（仅部门主管有权起诉涉事执法人员）","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":47},{"name":"伪证罪","category":"轻罪","description":"向法庭、警方提供虚假证言、证据，影响案件公正处理，最高判处3年监禁+500美元罚款","penalty":"最高判处3年监禁+500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":48},{"name":"冒充律师罪","category":"轻罪","description":"未取得律师执业资格，擅自假扮律师提供法律服务、参与诉讼，最高判处3年监禁+1500美元罚款","penalty":"最高判处3年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":49},{"name":"藐视法庭罪","category":"重罪","description":"经法官明确宣布后，仍无视法庭程序、拒不执行法庭命令，最高判处3年监禁+3000美元罚款","penalty":"最高判处3年监禁+3000美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":50},{"name":"谎报紧急情况罪","category":"轻罪","description":"恶意谎报火灾、爆炸、伤人等紧急事件，扰乱公共秩序，最高判处1年监禁+1000美元罚款","penalty":"最高判处1年监禁+1000美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":51},{"name":"非法进入封闭紧急区域罪","category":"轻罪","description":"未经执法人员许可，擅自进入警戒线封闭的紧急事件现场区域，最高判处1年监禁+500美元罚款","penalty":"最高判处1年监禁+500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第四章 涉及司法公正的犯罪","id":52},{"name":"袭警罪","category":"重罪","description":"故意撞击警车、袭击执法警员或警用警犬，最高判处2年监禁+2500美元罚款","penalty":"最高判处2年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第五章 涉及公共秩序的犯罪","id":53},{"name":"扰乱治安罪","category":"轻罪","description":"在公共场所实施暴力行为、以高分贝噪音扰民、无正当理由佩戴枪套引发公众恐慌等，最高判处2年监禁+500美元罚款（持证执法人员执行公务除外）","penalty":"最高判处2年监禁+500美元罚款（持证执法人员执行公务除外）","law":"一、圣安地列斯州刑法","chapter":"第五章 涉及公共秩序的犯罪","id":54},{"name":"非法集会罪","category":"轻罪","description":"组织、参与可能引发骚乱的聚集活动，或经执法人员驱散后仍滞留现场，最高判处1年监禁+1500美元罚款。注：5人及以上为非法集会","penalty":"最高判处1年监禁+1500美元罚款。注：5人及以上为非法集会","law":"一、圣安地列斯州刑法","chapter":"第五章 涉及公共秩序的犯罪","id":55},{"name":"煽动暴乱罪","category":"重罪","description":"以言语、文字、行为等方式，意图引发暴乱，鼓励他人实施暴力破坏行为，最高判处3年监禁+2500美元罚款","penalty":"最高判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第五章 涉及公共秩序的犯罪","id":56},{"name":"遮挡面部罪","category":"轻罪","description":"在任何公共场所，经执法人员三次警告后仍不听从，最高判处1年监禁+1500美元罚款","penalty":"最高判处1年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第六章 致命武器和设备管制","id":57},{"name":"持有非法武器罪","category":"重罪","description":"非法持有爆炸物、全自动枪支、无合法证件的枪支等，最高判处3年监禁+5000美元罚款（执法人员执行公务除外）","penalty":"最高判处3年监禁+5000美元罚款（执法人员执行公务除外）","law":"一、圣安地列斯州刑法","chapter":"第六章 致命武器和设备管制","id":58},{"name":"非法展示武器罪","category":"轻罪","description":"在公共场所无正当理由公开携带、挥舞枪支、刀具等武器，引发公众恐慌，最高判处2年监禁+1500美元罚款","penalty":"最高判处2年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第六章 致命武器和设备管制","id":59},{"name":"非法使用武器罪","category":"重罪","description":"鲁莽射击、向他人住宅、车辆射击，危害公共安全，最高判处3年监禁+2500美元罚款","penalty":"最高判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第六章 致命武器和设备管制","id":60},{"name":"驾车射击罪","category":"重罪","description":"在行进中的车辆内使用武器射击，最高判处3年监禁+2500美元罚款（执法人员执行公务除外） 此条州法作废，与联邦法冲突","penalty":"最高判处3年监禁+2500美元罚款（执法人员执行公务除外） 此条州法作废，与联邦法冲突","law":"一、圣安地列斯州刑法","chapter":"第六章 致命武器和设备管制","id":61},{"name":"拒绝告知持有武器罪","category":"轻罪","description":"被执法人员依法检查时，隐瞒持有武器的事实，或拒绝按指令交出武器，最高判处3年监禁+1500美元罚款","penalty":"最高判处3年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第六章 致命武器和设备管制","id":62},{"name":"非法贩卖/走私军火罪","category":"重罪","description":"非法贩卖、走私枪支、弹药、爆炸物等军火，最高判处3年监禁+2500美元罚款","penalty":"最高判处3年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第七章 其他违法行为","id":63},{"name":"有组织犯罪","category":"重罪","description":"三人及以上团体，以牟利为目的，有组织地实施多项犯罪活动，最高判处7年监禁+6000美元罚款（需持有正式逮捕令方可抓捕）","penalty":"最高判处7年监禁+6000美元罚款（需持有正式逮捕令方可抓捕）","law":"一、圣安地列斯州刑法","chapter":"第七章 其他违法行为","id":64},{"name":"洗钱罪","category":"重罪","description":"通过金融机构、商业交易等方式，隐匿、合法化犯罪所得资金，最高判处6年监禁+5000美元罚款","penalty":"最高判处6年监禁+5000美元罚款","law":"一、圣安地列斯州刑法","chapter":"第七章 其他违法行为","id":65},{"name":"篡改记录罪","category":"重罪","description":"故意伪造、销毁文字、电子形式的官方记录、商业记录等，最高判处4年监禁+2500美元罚款","penalty":"最高判处4年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第七章 其他违法行为","id":66},{"name":"非法篡改信息系统罪","category":"重罪","description":"非法入侵、篡改计算机、通讯系统，窃取或破坏系统内数据，最高判处4年监禁+2500美元罚款","penalty":"最高判处4年监禁+2500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第七章 其他违法行为","id":67},{"name":"身份盗用罪","category":"未分类","description":"非法获取、使用他人个人身份信息，用于诈骗、消费等活动，最高判处3年监禁+1500美元罚款","penalty":"最高判处3年监禁+1500美元罚款","law":"一、圣安地列斯州刑法","chapter":"第七章 其他违法行为","id":68},{"name":"拒交罚款罪","category":"未分类","description":"收到罚金缴纳通知后，服刑完出狱后3日未补缴的，即便犯罪嫌疑人未作出明确拒缴意思表示，仍认定为拒缴罚金, 最高判处3年监禁","penalty":"最高判处3年监禁","law":"一、圣安地列斯州刑法","chapter":"第七章 其他违法行为","id":69},{"name":"非法走私运输车辆罪","category":"重罪","description":"凡未经海关及交通部门正规备案审批，私自从港口接驳、转运无正规手续车辆，一律判定走私车辆罪，最高判处3年监禁","penalty":"最高判处3年监禁","law":"一、圣安地列斯州刑法","chapter":"","id":70},{"name":"无证驾驶","category":"轻罪","description":"未取得有效驾驶执照擅自驾驶车辆，最高处罚1000美元罚款，执法人员可依法扣押车辆","penalty":"最高处罚1000美元罚款，执法人员可依法扣押车辆","law":"二、圣安地列斯州车辆法","chapter":"","id":71},{"name":"吊销/暂扣驾照后驾车","category":"重罪","description":"无其他伴随犯罪行为的，按轻罪论处，判处1年监禁+2000美元罚款；伴随其他犯罪行为或二次及以上违规的，按重罪论处，判处3年监禁，车辆可依法没收","penalty":"轻罪：判处1年监禁+2000美元罚款；重罪：判处3年监禁，车辆可依法没收","law":"二、圣安地列斯州车辆法","chapter":"","id":72},{"name":"肇事逃逸","category":"重罪","description":"仅造成财产损失且损失金额＞1000美元的，按违法行为论处，处罚1000美元罚款，扣押车辆；造成他人伤亡的，按重罪论处，判处4年监禁+2000美元罚款","penalty":"违法（仅财产损失＞1000美元）：处罚1000美元罚款，扣押车辆；重罪（造成伤亡）：判处4年监禁+2000美元罚款","law":"二、圣安地列斯州车辆法","chapter":"","id":73},{"name":"车道行驶/超车违规","category":"违法","description":"不按规定靠右行驶、违规越线超车、实线变道等，最高处罚500美元罚款","penalty":"最高处罚500美元罚款","law":"二、圣安地列斯州车辆法","chapter":"","id":74},{"name":"路权违规","category":"违法","description":"交叉路口未按规定让行、妨碍消防车、救护车等应急车辆通行等，驾驶员处罚200美元，行人违规处罚100美元","penalty":"处罚200美元，行人违规处罚100美元","law":"二、圣安地列斯州车辆法","chapter":"","id":75},{"name":"转向/限速违规","category":"违法","description":"违规转向、强行掉头的，处罚300美元罚款；超速10MPH（英里/小时）以内的，处罚200美元；超速10-20MPH的，处罚600美元；超速20MPH以上的，处罚1500美元","penalty":"违规转向、强行掉头的，处罚300美元罚款；超速10MPH（英里/小时）以内的，处罚200美元；超速10-20MPH的，处罚600美元；超速20MPH以上的，处罚1500美元","law":"二、圣安地列斯州车辆法","chapter":"","id":76},{"name":"违法停车","category":"违法","description":"车辆停放堵塞消防通道、应急通道、人行横道等，最高处罚500美元罚款，执法人员可依法扣押车辆","penalty":"最高处罚500美元罚款，执法人员可依法扣押车辆","law":"二、圣安地列斯州车辆法","chapter":"","id":77},{"name":"危险驾驶","category":"轻罪","description":"同时满足两项及以上下列情形的，判处1年监禁+1000美元罚款：漠视公共安全、超速25MPH以上、危及他人人身及财产安全的交通违规行为","penalty":"判处1年监禁+1000美元罚款：漠视公共安全、超速25MPH以上、危及他人人身及财产安全的交通违规行为","law":"二、圣安地列斯州车辆法","chapter":"","id":78},{"name":"飙车","category":"轻罪","description":"在公共道路上组织、参与车辆竞速活动，判处1年监禁或1000美元罚款（二选一），同时暂扣驾驶执照","penalty":"判处1年监禁或1000美元罚款（二选一），同时暂扣驾驶执照","law":"二、圣安地列斯州车辆法","chapter":"","id":79},{"name":"醉驾/毒驾","category":"轻罪","description":"血液酒精浓度（BAC）≥0.08%（商用车驾驶员≥0.04%），或受毒品影响无法安全驾驶的，判处1年监禁+1000美元罚款，暂扣驾驶执照","penalty":"判处1年监禁+1000美元罚款，暂扣驾驶执照","law":"二、圣安地列斯州车辆法","chapter":"","id":80},{"name":"严重醉驾/毒驾","category":"重罪","description":"血液酒精浓度（BAC）≥0.15%，或一年内累计四次及以上醉驾/毒驾违规的，判处1年监禁+1000美元罚款，吊销驾驶执照","penalty":"判处1年监禁+1000美元罚款，吊销驾驶执照","law":"二、圣安地列斯州车辆法","chapter":"","id":81},{"name":"车辆灯光违规","category":"违法","description":"前灯颜色不符合规定、非法加装霓虹灯等，处罚500美元罚款，执法人员可扣押车辆，并责令限期恢复原厂灯光配置","penalty":"处罚500美元罚款，执法人员可扣押车辆，并责令限期恢复原厂灯光配置","law":"二、圣安地列斯州车辆法","chapter":"","id":82},{"name":"超速","category":"违法","description":"市区限速80MI 公路限速120MI 市区超速处罚款1500 公路超速1000 注：车底盘灯不算灯光违规","penalty":"处罚款1500美元，公路超速1000美元（注：车底盘灯不算灯光违规）","law":"二、圣安地列斯州车辆法","chapter":"","id":83},{"name":"非法持有管制物品罪","category":"重罪","description":"非法持有毒品、非法枪支的，按重罪论处，判处4年监禁+2000美元罚款；非法持有管制工具类物品、2-4英寸刀具的，按轻罪论处，判处1年监禁+500美元罚款；非法持有4英寸以上刀具的，按重罪论处，判处2年监禁+1000美元罚款","penalty":"非法持有毒品、非法枪支的，按重罪论处，判处4年监禁+2000美元罚款；非法持有管制工具类物品、2-4英寸刀具的，按轻罪论处，判处1年监禁+500美元罚款；非法持有4英寸以上刀具的，按重罪论处，判处2年监禁+1000美元罚款","law":"三、圣安地列斯州公共安全法","chapter":"","id":84},{"name":"非法持有大量管制物品罪","category":"重罪","description":"按持有数量分级处罚；10-50份，判处2年监禁+3000美元罚款；51-200份，判处5年监禁+5000美元罚款；201-500份，判处7年监禁+10000美元罚款；501-999份，判处最高10年监禁+25000美元罚款","penalty":"按持有数量分级处罚；10-50份，判处2年监禁+3000美元罚款；51-200份，判处5年监禁+5000美元罚款；201-500份，判处7年监禁+10000美元罚款；501-999份，判处最高10年监禁+25000美元罚款","law":"三、圣安地列斯州公共安全法","chapter":"","id":85},{"name":"非法经营/制造/贩卖管制物品罪","category":"重罪","description":"非法经营、贩卖管制物品的，判处3年监禁+1000-3000美元罚款；非法制造管制物品的，判处5年监禁+1000美元罚款","penalty":"非法经营、贩卖管制物品的，判处3年监禁+1000-3000美元罚款；非法制造管制物品的，判处5年监禁+1000美元罚款","law":"三、圣安地列斯州公共安全法","chapter":"","id":86},{"name":"公共酗酒罪","category":"轻罪","description":"在公共场所因饮酒、吸食毒品导致行为失控，危及自身或他人安全，判处1年监禁+1000美元罚款","penalty":"判处1年监禁+1000美元罚款","law":"三、圣安地列斯州公共安全法","chapter":"","id":87},{"name":"非法进入管制区域","category":"轻罪","description":"擅自进入毒品产区、政府重点管制区域等，判处1年监禁+500美元罚款","penalty":"判处1年监禁+500美元罚款","law":"三、圣安地列斯州公共安全法","chapter":"","id":88},{"name":"设备违规","category":"违法","description":"船只航行设备故障未及时维修、船员未按规定穿着救生衣等，处罚275美元罚款","penalty":"处罚275美元罚款","law":"四、港口与航海法","chapter":"","id":89},{"name":"受限区域航行","category":"违法","description":"擅自靠近军事基地、港口禁航区等受限区域航行，处罚1070美元罚款","penalty":"处罚1070美元罚款","law":"四、港口与航海法","chapter":"","id":90},{"name":"超速航行","category":"违法","description":"在港口、码头区域内航行速度超过15节，处罚384美元罚款","penalty":"处罚384美元罚款","law":"四、港口与航海法","chapter":"","id":91},{"name":"事故不报","category":"违法","description":"发生船只碰撞、搁浅等事故后，未及时向相关部门报告，处罚2000美元罚款","penalty":"处罚2000美元罚款","law":"四、港口与航海法","chapter":"","id":92},{"name":"无许可举办水上活动","category":"违法","description":"未经相关部门审批，擅自举办水上集会、竞赛等活动，处罚6000美元罚款","penalty":"处罚6000美元罚款","law":"四、港口与航海法","chapter":"","id":93},{"name":"船只未注册","category":"违法","description":"船只未按规定办理注册手续擅自航行，处罚500美元罚款，可依法扣押船只","penalty":"处罚500美元罚款，可依法扣押船只","law":"四、港口与航海法","chapter":"","id":94},{"name":"危险驾船","category":"轻罪","description":"鲁莽驾船、违规操作，危及自身、他人或其他船只安全，判处6个月监禁+1000美元罚款","penalty":"判处6个月监禁+1000美元罚款","law":"四、港口与航海法","chapter":"","id":95},{"name":"无照驾船","category":"违法","description":"未取得有效驾船执照擅自驾驶船只，处罚1000美元罚款，可依法扣押船只","penalty":"处罚1000美元罚款，可依法扣押船只","law":"四、港口与航海法","chapter":"","id":96},{"name":"无航行记录/保险","category":"违法","description":"船只未按规定记录航行日志的，处罚3000美元罚款；未购买船只保险的，处罚800美元罚款，两种情形均可依法扣押船只","penalty":"按规定记录航行日志的，处罚3000美元罚款；未购买船只保险的，处罚800美元罚款，两种情形均可依法扣押船只","law":"四、港口与航海法","chapter":"","id":97},{"name":"驾照/证书违规","category":"违法","description":"未取得对应类型飞行驾照擅自飞行、缺少飞行器必备合规证书的，处罚10000美元罚款，可暂扣飞行驾照30天-1年","penalty":"处罚10000美元罚款，可暂扣飞行驾照30天-1年","law":"五、圣安地列斯州航空管理法","chapter":"","id":98},{"name":"工作时间违规","category":"违法","description":"飞行员、机组人员超时长工作、飞行，或休息时间不足违规执勤的，按本条第一款标准处罚","penalty":"处罚10000美元罚款，可暂扣飞行驾照30天-1年","law":"五、圣安地列斯州航空管理法","chapter":"","id":99},{"name":"设备故障","category":"违法","description":"飞行器航行、通讯、安全等设备无法正常运行，仍擅自起飞飞行的，按本条第一款标准处罚","penalty":"处罚10000美元罚款，可暂扣飞行驾照30天-1年","law":"五、圣安地列斯州航空管理法","chapter":"","id":100},{"name":"受限区域飞行","category":"违法","description":"未经许可擅自进入机场管控区域、军事基地上空飞行的，按本条第一款标准处罚","penalty":"处罚10000美元罚款，可暂扣飞行驾照30天-1年","law":"五、圣安地列斯州航空管理法","chapter":"","id":101},{"name":"酒驾/毒驾飞行","category":"违法","description":"飞行前8小时内饮酒、血液酒精浓度（BAC）≥0.04%，或受毒品影响执勤飞行的，按本条第一款标准处罚","penalty":"处罚10000美元罚款，可暂扣飞行驾照30天-1年","law":"五、圣安地列斯州航空管理法","chapter":"","id":102},{"name":"事故不报","category":"违法","description":"发生飞行器碰撞、坠毁、故障迫降等事故后，未及时向相关部门报告的，按本条第一款标准处罚","penalty":"处罚10000美元罚款，可暂扣飞行驾照30天-1年","law":"五、圣安地列斯州航空管理法","chapter":"","id":103},{"name":"机场安全违规","category":"违法","description":"非法进入机场管控区域、实施危及航班起降安全的行为，处罚30000美元罚款，同时判处3年监禁","penalty":"处罚30000美元罚款，同时判处3年监禁","law":"五、圣安地列斯州航空管理法","chapter":"","id":104},{"name":"狩猎违规","category":"违法","description":"狩猎时未按规定穿着安全服装、车载狩猎、在市区及禁猎区狩猎等，处罚1500美元罚款","penalty":"处罚1500美元罚款","law":"六、狩猎法和动物保护法","chapter":"核心条款","id":105},{"name":"酒后/毒后狩猎","category":"违法","description":"饮酒、吸食毒品后实施狩猎行为，处罚2000美元罚款","penalty":"处罚2000美元罚款","law":"六、狩猎法和动物保护法","chapter":"核心条款","id":106},{"name":"狩猎许可","category":"违法","description":"狩猎需满足年满21岁、无重罪犯罪记录、完成狩猎安全培训课程三项条件，取得合法狩猎许可；无证狩猎的，处罚2000美元罚款，可吊销狩猎许可（已取得者）","penalty":"处罚2000美元罚款，可吊销狩猎许可（已取得者）","law":"六、狩猎法和动物保护法","chapter":"核心条款","id":107},{"name":"捕鱼违规","category":"违法","description":"在禁渔区捕鱼、捕获保护鱼类物种后未及时放生的，处罚2000美元罚款，可吊销捕鱼许可","penalty":"处罚2000美元罚款，可吊销捕鱼许可","law":"六、狩猎法和动物保护法","chapter":"核心条款","id":108},{"name":"非法狩猎区狩猎","category":"违法","description":"仅允许在国家森林红色指定区域内狩猎，违规在其他区域狩猎的，处罚2000美元罚款","penalty":"处罚2000美元罚款","law":"六、狩猎法和动物保护法","chapter":"核心条款","id":109},{"name":"商业捕鱼许可","category":"违法","description":"从事商业捕鱼活动，需先办理船只注册手续，取得对应商业捕鱼许可；违规经营的，按情节轻重依法处罚","penalty":"按情节轻重依法处罚","law":"六、狩猎法和动物保护法","chapter":"","id":110},{"name":"提供注册商品以外的商品","category":"违法","description":"向他人售卖非注册商品的，构成违法行为","penalty":"处以500美元罚款","law":"九. 圣安地列斯州商法","chapter":"第一章 涉及商业经营的违法行为","id":111},{"name":"虚假报价","category":"违法","description":"向他人虚报商品价格，误导交易决策的，构成违法行为","penalty":"处以500美元罚款","law":"九. 圣安地列斯州商法","chapter":"第一章 涉及商业经营的违法行为","id":112},{"name":"非法经营","category":"违法","description":"未向政府部门申请登记擅自开展盈利商业活动，或营业许可证被吊销后仍继续从事盈利商业活动","penalty":"没收违法营业额，并处以400美元罚款","law":"九. 圣安地列斯州商法","chapter":"第一章 涉及商业经营的违法行为","id":113},{"name":"拒绝检查","category":"违法","description":"拒绝、阻挠、干涉政府部门及其工作人员依法开展食品安全监督检查、事故调查处理、风险监测及风险评估工作","penalty":"处以2000美元罚款，同时责令停产停业；情节严重的，吊销营业执照、没收保证金，并冻结其盈利公款","law":"九. 圣安地列斯州商法","chapter":"第一章 涉及商业经营的违法行为","id":114},{"name":"拒绝缴纳税款","category":"违法","description":"盈利性经营场所无正当理由拒绝缴纳税款，或通过任何方式推脱、逃避纳税义务的，构成违法行为","penalty":"吊销营业执照，没收包括保证金在内的全部营业公款","law":"九. 圣安地列斯州商法","chapter":"第一章 涉及商业经营的违法行为","id":115},{"name":"无法承担税务","category":"违法","description":"盈利性经营场所无法按期足额缴纳每周企业税，从其保证金中扣除；需在2周内补缴；多次出现的，经审查协商后返还剩余保证金；恶意拒缴的，没收保证金及全部经营公款，责令补缴税款，并处以漏缴税款1至3倍的罚款","penalty":"恶意拒缴的，没收保证金及全部经营公款，责令补缴税款，并处以漏缴税款1至3倍的罚款","law":"九. 圣安地列斯州商法","chapter":"第一章 涉及商业经营的违法行为","id":116},{"name":"私自转让合法经营许可","category":"违法","description":"任何私下转让经营许可的行为均不受法律保护，转让双方的合法权益无法得到法律保障","penalty":"转让行为不受法律保护，双方权益无法保障","law":"九. 圣安地列斯州商法","chapter":"第一章 涉及商业经营的违法行为","id":117},{"name":"虚假财务报表","category":"违法","description":"刻意向政府部门及工作人员隐瞒真实经营情况、人员配置、收入明细，或提供虚假材料的，构成违法行为","penalty":"处以3000美元罚款，没收保证金及全部经营公款，吊销营业执照","law":"九. 圣安地列斯州商法","chapter":"","id":118}];
+const fts = [{"lineNum":1,"text":"《圣安地列斯州根本法+普通法》(总成篇）"},{"lineNum":2,"text":"声明"},{"lineNum":3,"text":"本文档仅适用于GTA5多人角色扮演（RP）场景下，圣安地列斯州虚构世界的违法行为界定及刑事处罚程序规范，仅约束游戏内角色行为，不适用游戏外现实行为及角色外个人行为。"},{"lineNum":4,"text":"所有条款均为游戏场景定制，与现实世界各国法律无任何关联，不构成任何现实法律建议、参考或指导。"},{"lineNum":5,"text":"条款中“最高判决”仅适用于情节极端恶劣、造成严重后果的情形，非默认处罚标准，具体量刑需结合角色行为情节判定。"},{"lineNum":6,"text":"犯罪分类与时间换算（IC/OOC）"},{"lineNum":7,"text":"一、犯罪分类"},{"lineNum":8,"text":"违法：轻微违规行为，处罚方式以罚款、剥夺IC内部分权益为主。"},{"lineNum":9,"text":"轻罪：情节较轻的违法行为，处罚方式包括逮捕、罚款、短期监禁单一或组合适用。"},{"lineNum":10,"text":"重罪：情节严重的违法行为，必处监禁，同时附加罚款处罚。"},{"lineNum":11,"text":"数罪并罚规则：罚款金额累计计算；同类型罪名刑期不叠加。"},{"lineNum":12,"text":"二、时间换算标准"},{"lineNum":13,"text":"游戏内时间（IC）与现实时间（OOC）换算：1年=12个月=12分钟（即游戏内1个月对应现实1分钟）。"},{"lineNum":14,"text":"注：最高刑期为5年最高罚款为5W美金"},{"lineNum":15,"text":"三. 对于法律进一步的解释"},{"lineNum":16,"text":"例外"},{"lineNum":17,"text":"行为构成犯罪需完全符合罪名描述，例外条款除外；"},{"lineNum":18,"text":"一事件可能含多个违法犯罪行为，可构成多项罪名（含重复罪名）；"},{"lineNum":19,"text":"3.  同一事件构成相同罪名的，处罚不超该罪名法定最高标准。"},{"lineNum":20,"text":"未遂"},{"lineNum":21,"text":"企图实施违法犯罪行为，因被阻止或未达成目标构成未遂，按对应罪名论处。"},{"lineNum":22,"text":"密谋"},{"lineNum":23,"text":"两人及以上合谋实施非法行为，或恶意控告他人意图使其被逮捕/起诉，构成同谋，所有参与者按相同罪名论处。"},{"lineNum":24,"text":"教唆"},{"lineNum":25,"text":"以明示或暗示方式促使他人犯罪，构成教唆，按被教唆者所犯罪名论处。"},{"lineNum":26,"text":"武器犯罪"},{"lineNum":27,"text":"1.  持合法枪支实施重罪，吊销持枪许可证；实施轻罪/违规，视情暂停或吊销许可证；许可证被暂停期间持枪犯罪，直接吊销。2.  本节适用于自然人、各类机构/团体/组织，由联邦及地方执法人员、相关武器管理机构执行。"},{"lineNum":28,"text":"从犯"},{"lineNum":29,"text":"为他人已完成或未遂的违法犯罪行为提供协助，构成从犯，按对应罪名论处。"},{"lineNum":30,"text":"包庇"},{"lineNum":31,"text":"明知他人犯罪，为其提供帮助以逃避制裁，构成包庇，按对应罪名论处，处罚不超该罪名最高标准的一半。"},{"lineNum":32,"text":"保释"},{"lineNum":33,"text":"属轻罪才能进行保释，保释金额5W----15W，酌情开具保释金额"},{"lineNum":34,"text":"通缉令"},{"lineNum":35,"text":"通缉时间为七天，申请通缉令需要向市法院提交相关证据"},{"lineNum":36,"text":"一方通知政策"},{"lineNum":37,"text":"根据本条法律，只要一方（电话中的人、设施中的人或其他记录对话或事件的地点）知道这种情况，它就被视为合法录音。业主始终对其维护的财产和设施、停车场等拥有全面监控权。执法人员除外。"},{"lineNum":38,"text":"《宪法修正案》"},{"lineNum":39,"text":"第一修正案"},{"lineNum":40,"text":"宪法第一修正案赋予公民言论自由、新闻自由、宗教自由与集会自由。这些权利在警务实践中十分常见。在紧急事件现场，媒体或个人的言论可能带有攻击性或讽刺性，会对执法人员造成心理压力。但依据法律，除非言论具备攻击性、性攻击性或恐吓性质，否则个人的言论自由权利受保护。"},{"lineNum":41,"text":"第二修正案"},{"lineNum":42,"text":"受规范的武力是保障自由国家安全的必要条件，人民持有及携带武器的权利不可侵犯。"},{"lineNum":43,"text":"第四修正案"},{"lineNum":44,"text":"宪法第四修正案规定，除非存在合理理由或合法的逮捕令，否则公民享有免受不合理搜查和扣押的权利。执法监督人员需明确：拘留不得在无合理怀疑的情况下进行"},{"lineNum":45,"text":"逮捕需基于逮捕令或合理理由"},{"lineNum":46,"text":"搜查不得在无合理理由的情况下执行，且必须基于合理怀疑"},{"lineNum":47,"text":"合理怀疑的定义虽不明确，但通常基于具体事实。这些事实需依据现场情况判断，足以让执法人员确信犯罪行为已经发生。由于制定明确 “规则” 存在困难，执法人员应尽可能遵循此 “规则”，因为该法案的应用场景通常极为复杂。合理怀疑的情形包括："},{"lineNum":48,"text":"警员发现车辆疑似藏有违禁品"},{"lineNum":49,"text":"个人在警员抵达 911 现场后突然逃跑，且在交谈中表现出紧张和不安"},{"lineNum":50,"text":"为确定合理怀疑的有效性，执法人员必须从合理、中立的视角审视事件，并以客观标准判断犯罪行为是否已经发生、正在发生或即将发生。若个人拒绝回答问题或接受搜查，不得作为怀疑其的理由。"},{"lineNum":51,"text":"在 “Plain view（一目了然）” 原则下，执法人员可在无搜查令的情况下没收证据。例如，警员在截停的车辆中发现毒品和武器，即可合理怀疑车上所有人员，并进行整车搜查。但执法人员不得为了获取更多证据而直接进行搜查，仅限于没收其肉眼可见的违法物品。"},{"lineNum":52,"text":"第五修正案"},{"lineNum":53,"text":"宪法第五修正案保障公民免于自证其罪的权利和禁止双重审判的权利，即沉默权。任何人均无义务回答执法人员的提问，且执法人员不得将保持沉默视为怀疑其的理由。沉默本身并不构成犯罪的证据。"},{"lineNum":54,"text":"第六修正案"},{"lineNum":55,"text":"在一切刑事诉讼中，被告享有以下权利：在被告提起诉讼时应由犯罪发生地的州和地区法院组成的公正陪审团或合议庭予以迅速且公开的审判，被告知控告的性质与理由；与原告证人对质；以强制程序取得对其有利的证人；并获得律师帮助为其辩护。"},{"lineNum":56,"text":"第七修正案"},{"lineNum":57,"text":"根据圣安地列斯法律，规定在民事诉讼中由法院陪审团或合议庭审判的权利，根据圣安地列斯合同法，规定在合同确立和公正由洛圣度市政府确立、公正、备案、监督执行的权利，以确保市民签署民事合同的法律效应和保障。"},{"lineNum":58,"text":"第八修正案"},{"lineNum":59,"text":"禁止过高保释金，保释金必须与罪行严重程度、被告逃跑风险相称，不能为了羁押而故意设天价保释。禁止过重罚金，罚金不能与罪行严重程度严重失衡，不能以罚款变相剥夺财产。禁止残酷且异常的惩罚，禁止酷刑、长期单独监禁等野蛮刑罚。"},{"lineNum":60,"text":"一、圣安地列斯州刑法"},{"lineNum":61,"text":"第一章 涉及人身安全的犯罪"},{"lineNum":62,"text":"威胁罪（轻罪）：以伤害、杀害本人或其亲友为目的，通过口头、书面、网络等任何形式恐吓他人，最高判处1年监禁+2000美元罚款。"},{"lineNum":63,"text":"持有危险武器人身攻击罪（重罪）：使用武器、危险物品对他人实施威胁或攻击行为，并造成人身伤害，最高判处3年监禁+5000美元罚款。"},{"lineNum":64,"text":"故意伤人罪（重罪）：蓄意以非法暴力手段伤害他人身体，造成一定伤害后果，最高判处3年监禁+3500美元罚款。"},{"lineNum":65,"text":"过失杀人罪（重罪）：非故意导致他人死亡（正当防卫情形除外），最高判处3年监禁+5000美元罚款。"},{"lineNum":66,"text":"一级谋杀罪（重罪）：存在预谋的故意杀人行为，或在实施其他重罪过程中致人死亡，最高判处7年监禁+4000美元罚款。"},{"lineNum":67,"text":"二级谋杀罪（重罪）：无预谋的故意杀人，仅意图造成他人重伤且放任死亡结果发生，最高判处5年监禁+6000美元罚款。"},{"lineNum":68,"text":"非法拘禁罪（重罪）：非法限制他人人身自由，情节较重，最高判处3年监禁+2500美元罚款。"},{"lineNum":69,"text":"绑架罪（重罪）："},{"lineNum":70,"text":"非法控制他人人身自由并意图实施恐吓、勒索等行为，最高判处3年监禁+2500美元罚款；"},{"lineNum":71,"text":"若导致受害人重伤、死亡或实施勒索赎金行为，最高判处5年监禁+5000美元罚款。"},{"lineNum":72,"text":"危害他人安全罪："},{"lineNum":73,"text":"未造成受害人昏迷的，按轻罪论处，判处2年监禁+1000美元罚款；"},{"lineNum":74,"text":"造成受害人昏迷或死亡的，按重罪论处，判处3年监禁+3000美元罚款。"},{"lineNum":75,"text":"亵渎尸体罪（重罪）：蓄意篡改、损毁尸体，或妨碍尸体相关调查工作，最高判处3年监禁+1500美元罚款。"},{"lineNum":76,"text":"第二章 涉及财产安全的犯罪"},{"lineNum":77,"text":"纵火罪（重罪）：未经财产所有权人授权故意纵火，或因实施其他犯罪行为导致他人财产烧毁，最高判处3年监禁+2500美元罚款。"},{"lineNum":78,"text":"非法入侵罪（轻罪）：进入他人合法财产区域，经所有权人或授权人告诫后仍拒绝离开，最高判处1年监禁+500美元罚款。"},{"lineNum":79,"text":"非法入侵禁区罪（轻罪）：未经授权擅自进入政府办公区域、执法部门驻地等受限管控区域，最高判处1年监禁+1000美元罚款。"},{"lineNum":80,"text":"入室盗窃罪（重罪）：以非法占有为目的，非法进入他人住宅、商铺等封闭财产区域实施盗窃，最高判处3年监禁+2500美元罚款。"},{"lineNum":81,"text":"抢劫罪（重罪）：以暴力、胁迫或恐吓手段，当场夺取他人财物，最高判处3年监禁+1500美元罚款。"},{"lineNum":82,"text":"盗窃罪：以非法占有为目的，窃取他人财物，最高判处3年监禁+1500美元罚款，同时需全额赔偿受害人财产损失。"},{"lineNum":83,"text":"重大盗窃车辆罪：无严重后果的，按轻罪论处，判处1年监禁+500美元罚款；造成人员伤亡、重大财产损失等严重后果的，按重罪论处，判处3年监禁+3000美元罚款，无论轻重均需赔偿车辆所有权人损失。"},{"lineNum":84,"text":"收受赃物罪："},{"lineNum":85,"text":"收受赃物价值≤5000美元的，按轻罪论处，判处1年监禁+500美元罚款；"},{"lineNum":86,"text":"收受赃物价值＞5000美元的，按重罪论处，判处3年监禁+2500美元罚款。"},{"lineNum":87,"text":"敲诈勒索罪（重罪）：以恐吓、威胁、滥用职权等非法手段，强行向他人索要财物或无偿服务，最高判处2年监禁+1500美元罚款。"},{"lineNum":88,"text":"伪造或欺诈罪（重罪）：蓄意伪造文书、签章，或代签他人文件、歪曲事实欺骗他人，获取非法利益，最高判处2年监禁+1500美元罚款。"},{"lineNum":89,"text":"蓄意破坏罪（轻罪）：故意损坏他人合法财产，情节较轻，最高判处1年监禁+500美元罚款。"},{"lineNum":90,"text":"入店行窃罪（轻罪）：无付款意图，在商铺内盗窃、藏匿商品，最高判处1年监禁+500美元罚款。"},{"lineNum":91,"text":"信用卡/借记卡欺诈罪（轻罪）：非法使用他人信用卡、借记卡消费或取现，最高判处1年监禁+500美元罚款，同时需全额赔偿受害人损失。"},{"lineNum":92,"text":"挪用公款公物罪（轻罪）：非法侵占、挪用受委托管理的公款、公物，最高判处3年监禁+2500美元罚款，同时需返还挪用财物或赔偿对应价值。"},{"lineNum":93,"text":"持有失窃物品罪（轻罪）：明知是他人失窃财物仍故意持有，最高判处2年监禁+1500美元罚款。"},{"lineNum":94,"text":"第三章 涉及公共道德的犯罪"},{"lineNum":95,"text":"公共淫秽行为罪（轻罪）：在公共场所从事性行为、恶意骚扰他人，或招募、介绍性交易，最高判处1年监禁+500美元罚款。"},{"lineNum":96,"text":"卖淫罪（轻罪）：以财物为对价，与他人发生性行为，最高判处1年监禁+500美元罚款。"},{"lineNum":97,"text":"组织卖淫罪（重罪）：协助、引诱、强迫他人从事卖淫活动，并从中牟利，最高判处3年监禁+2500美元罚款，同时需赔偿受害人损失。"},{"lineNum":98,"text":"性暴力罪：情节较轻的，按轻罪论处，判处1年监禁+500美元罚款；情节严重的，按重罪论处，判处3年监禁+2500美元罚款。"},{"lineNum":99,"text":"强奸罪（重罪）：以暴力、胁迫手段强迫他人发生性行为，或趁他人无意识、无反抗能力时发生性行为，最高判处3年监禁+2500美元罚款。"},{"lineNum":100,"text":"跟踪罪（轻罪）：蓄意跟踪、纠缠他人，多次实施骚扰行为，影响他人正常生活，最高判处1年监禁+500美元罚款。"},{"lineNum":101,"text":"传播淫秽色情罪（轻罪）：非法制作、传播、贩卖淫秽色情文字、图片、视频等内容，最高判处1年监禁+500美元罚款。"},{"lineNum":102,"text":"仇恨罪（轻罪）：基于他人残疾、性别、种族、宗教等特征，实施辱骂、攻击等歧视性行为，最高判处3年监禁+1500美元罚款。"},{"lineNum":103,"text":"非法监听罪（重罪）：未经沟通双方许可，擅自监听、记录他人私人通话、聊天等沟通内容，最高判处3年监禁+2500美元罚款。"},{"lineNum":104,"text":"第四章 涉及司法公正的犯罪"},{"lineNum":105,"text":"行贿罪（重罪）：向公职人员提供财物、利益，意图影响其依法履行职务，最高判处3年监禁+2500美元罚款。"},{"lineNum":106,"text":"贿赂受害人罪（重罪）：通过贿赂手段，引诱、胁迫受害人撤销控诉、隐瞒案情，阻碍法律文书执行，最高判处3年监禁+2500美元罚款。"},{"lineNum":107,"text":"提供虚假信息罪（轻罪）：向执法人员、公职人员提供虚假信息，干扰执法或公务执行，最高判处3年监禁+1500美元罚款。"},{"lineNum":108,"text":"虚假报警罪（轻罪）：无事实依据，恶意举报他人犯罪，浪费执法资源，最高判处3年监禁+1500美元罚款。"},{"lineNum":109,"text":"拒绝执法命令与检查/拒捕罪（轻罪）：无正当理由，拒绝听从执法人员合法指令，或拒绝接受执法检查、抗拒逮捕，最高判处3年监禁+1500美元罚款。"},{"lineNum":110,"text":"拒绝提供身份罪（轻罪）：被执法人员依法扣留、逮捕后，拒绝提供真实身份信息，最高判处3年监禁+1500美元罚款。"},{"lineNum":111,"text":"冒充公职人员罪（重罪）：假扮警察、法官、政府官员等公职人员，实施招摇撞骗行为，最高判处3年监禁+2500美元罚款。"},{"lineNum":112,"text":"妨碍公务罪（重罪）：以暴力、威胁、故意阻挠等方式，妨碍公职人员依法履行职务，最高判处3年监禁+2500美元罚款。"},{"lineNum":113,"text":"逃避羁押/非法逃脱罪（重罪）：从执法人员控制范围、监狱等羁押场所非法逃脱，最高判处3年监禁+2500美元罚款。"},{"lineNum":114,"text":"协助拒捕罪（重罪）：协助、包庇被执法人员追捕的嫌疑人逃脱羁押，最高判处3年监禁+2500美元罚款。"},{"lineNum":115,"text":"恶意占用公共资源罪（轻罪）："},{"lineNum":116,"text":"恶意拨打、占用政府服务热线，浪费公共资源，最高判处1年监禁+500美元罚款；"},{"lineNum":117,"text":"二审败诉方恶意占用公共资源的，处罚2000美元，无监禁处罚。"},{"lineNum":118,"text":"破坏证据罪（轻罪）：故意隐瞒、篡改、损毁涉案证据，干扰案件调查、审理，最高判处3年监禁+1500美元罚款。"},{"lineNum":119,"text":"虚假逮捕罪（重罪）：无合法依据擅自逮捕他人，或借逮捕名义侵占他人财产，最高判处3年监禁+2500美元罚款（仅部门主管有权起诉涉事执法人员）。"},{"lineNum":120,"text":"伪证罪（轻罪）：向法庭、警方提供虚假证言、证据，影响案件公正处理，最高判处3年监禁+500美元罚款。"},{"lineNum":121,"text":"冒充律师罪（轻罪）：未取得律师执业资格，擅自假扮律师提供法律服务、参与诉讼，最高判处3年监禁+1500美元罚款。"},{"lineNum":122,"text":"藐视法庭罪（重罪）：经法官明确宣布后，仍无视法庭程序、拒不执行法庭命令，最高判处3年监禁+3000美元罚款。"},{"lineNum":123,"text":"谎报紧急情况罪（轻罪）：恶意谎报火灾、爆炸、伤人等紧急事件，扰乱公共秩序，最高判处1年监禁+1000美元罚款。"},{"lineNum":124,"text":"非法进入封闭紧急区域罪（轻罪）：未经执法人员许可，擅自进入警戒线封闭的紧急事件现场区域，最高判处1年监禁+500美元罚款。"},{"lineNum":125,"text":"袭警罪（重罪）：故意撞击警车、袭击执法警员或警用警犬，最高判处2年监禁+2500美元罚款。"},{"lineNum":126,"text":"第五章 涉及公共秩序的犯罪"},{"lineNum":127,"text":"扰乱治安罪（轻罪）：在公共场所实施暴力行为、以高分贝噪音扰民、无正当理由佩戴枪套引发公众恐慌等，最高判处2年监禁+500美元罚款（持证执法人员执行公务除外）。"},{"lineNum":128,"text":"非法集会罪（轻罪）：组织、参与可能引发骚乱的聚集活动，或经执法人员驱散后仍滞留现场，最高判处1年监禁+1500美元罚款。注：5人及以上为非法集会"},{"lineNum":129,"text":"煽动暴乱罪（重罪）：以言语、文字、行为等方式，意图引发暴乱，鼓励他人实施暴力破坏行为，最高判处3年监禁+2500美元罚款。"},{"lineNum":130,"text":"遮挡面部罪（轻罪）：在任何公共场所，经执法人员三次警告后仍不听从，最高判处1年监禁+1500美元罚款。"},{"lineNum":131,"text":"第六章 致命武器和设备管制"},{"lineNum":132,"text":"持有非法武器罪（重罪）：非法持有爆炸物、全自动枪支、无合法证件的枪支等，最高判处3年监禁+5000美元罚款（执法人员执行公务除外）。"},{"lineNum":133,"text":"非法展示武器罪（轻罪）：在公共场所无正当理由公开携带、挥舞枪支、刀具等武器，引发公众恐慌，最高判处2年监禁+1500美元罚款。"},{"lineNum":134,"text":"非法使用武器罪（重罪）：鲁莽射击、向他人住宅、车辆射击，危害公共安全，最高判处3年监禁+2500美元罚款。"},{"lineNum":135,"text":"驾车射击罪（重罪）：在行进中的车辆内使用武器射击，最高判处3年监禁+2500美元罚款（执法人员执行公务除外）       此条州法作废，与联邦法冲突"},{"lineNum":136,"text":"拒绝告知持有武器罪（轻罪）：被执法人员依法检查时，隐瞒持有武器的事实，或拒绝按指令交出武器，最高判处3年监禁+1500美元罚款。"},{"lineNum":137,"text":"非法贩卖/走私军火罪（重罪）：非法贩卖、走私枪支、弹药、爆炸物等军火，最高判处3年监禁+2500美元罚款。"},{"lineNum":138,"text":"第七章 其他违法行为"},{"lineNum":139,"text":"有组织犯罪（重罪）：三人及以上团体，以牟利为目的，有组织地实施多项犯罪活动，最高判处7年监禁+6000美元罚款（需持有正式逮捕令方可抓捕）。"},{"lineNum":140,"text":"洗钱罪（重罪）：通过金融机构、商业交易等方式，隐匿、合法化犯罪所得资金，最高判处6年监禁+5000美元罚款。"},{"lineNum":141,"text":"篡改记录罪（重罪）：故意伪造、销毁文字、电子形式的官方记录、商业记录等，最高判处4年监禁+2500美元罚款。"},{"lineNum":142,"text":"非法篡改信息系统罪（重罪）：非法入侵、篡改计算机、通讯系统，窃取或破坏系统内数据，最高判处4年监禁+2500美元罚款。"},{"lineNum":143,"text":"身份盗用罪：非法获取、使用他人个人身份信息，用于诈骗、消费等活动，最高判处3年监禁+1500美元罚款。"},{"lineNum":144,"text":"拒交罚款罪：收到罚金缴纳通知后，服刑完出狱后3日未补缴的，即便犯罪嫌疑人未作出明确拒缴意思表示，仍认定为拒缴罚金, 最高判处3年监禁"},{"lineNum":145,"text":"非法走私运输车辆罪（重罪）：凡未经海关及交通部门正规备案审批，私自从港口接驳、转运无正规手续车辆，一律判定走私车辆罪，最高判处3年监禁"},{"lineNum":146,"text":"二、圣安地列斯州车辆法"},{"lineNum":147,"text":"无证驾驶（轻罪）：未取得有效驾驶执照擅自驾驶车辆，最高处罚1000美元罚款，执法人员可依法扣押车辆。"},{"lineNum":148,"text":"吊销/暂扣驾照后驾车："},{"lineNum":149,"text":"无其他伴随犯罪行为的，按轻罪论处，判处1年监禁+2000美元罚款；"},{"lineNum":150,"text":"伴随其他犯罪行为或二次及以上违规的，按重罪论处，判处3年监禁，车辆可依法没收。"},{"lineNum":151,"text":"肇事逃逸：仅造成财产损失且损失金额＞1000美元的，按违法行为论处，处罚1000美元罚款，扣押车辆；造成他人伤亡的，按重罪论处，判处4年监禁+2000美元罚款。"},{"lineNum":152,"text":"车道行驶/超车违规（违法）：不按规定靠右行驶、违规越线超车、实线变道等，最高处罚500美元罚款。"},{"lineNum":153,"text":"路权违规（违法）：交叉路口未按规定让行、妨碍消防车、救护车等应急车辆通行等，驾驶员处罚200美元，行人违规处罚100美元。"},{"lineNum":154,"text":"转向/限速违规（违法）：违规转向、强行掉头的，处罚300美元罚款；超速10MPH（英里/小时）以内的，处罚200美元；超速10-20MPH的，处罚600美元；超速20MPH以上的，处罚1500美元。"},{"lineNum":155,"text":"违法停车（违法）：车辆停放堵塞消防通道、应急通道、人行横道等，最高处罚500美元罚款，执法人员可依法扣押车辆。"},{"lineNum":156,"text":"危险驾驶（轻罪）：同时满足两项及以上下列情形的，判处1年监禁+1000美元罚款：漠视公共安全、超速25MPH以上、危及他人人身及财产安全的交通违规行为。"},{"lineNum":157,"text":"飙车（轻罪）：在公共道路上组织、参与车辆竞速活动，判处1年监禁或1000美元罚款（二选一），同时暂扣驾驶执照。"},{"lineNum":158,"text":"醉驾/毒驾（轻罪）：血液酒精浓度（BAC）≥0.08%（商用车驾驶员≥0.04%），或受毒品影响无法安全驾驶的，判处1年监禁+1000美元罚款，暂扣驾驶执照。"},{"lineNum":159,"text":"严重醉驾/毒驾（重罪）：血液酒精浓度（BAC）≥0.15%，或一年内累计四次及以上醉驾/毒驾违规的，判处1年监禁+1000美元罚款，吊销驾驶执照。"},{"lineNum":160,"text":"车辆灯光违规（违法）：前灯颜色不符合规定、非法加装霓虹灯等，处罚500美元罚款，执法人员可扣押车辆，并责令限期恢复原厂灯光配置。"},{"lineNum":161,"text":"超速（违法）：市区限速80MI 公路限速120MI 市区超速处罚款1500 公路超速1000  注：车底盘灯不算灯光违规"},{"lineNum":162,"text":"三、圣安地列斯州公共安全法"},{"lineNum":163,"text":"非法持有管制物品罪："},{"lineNum":164,"text":"非法持有毒品、非法枪支的，按重罪论处，判处4年监禁+2000美元罚款"},{"lineNum":165,"text":"非法持有管制工具类物品、2-4英寸刀具的，按轻罪论处，判处1年监禁+500美元罚款"},{"lineNum":166,"text":"非法持有4英寸以上刀具的，按重罪论处，判处2年监禁+1000美元罚款"},{"lineNum":167,"text":"非法持有大量管制物品罪（重罪）：按持有数量分级处罚"},{"lineNum":168,"text":"10-50份，判处2年监禁+3000美元罚款"},{"lineNum":169,"text":"51-200份，判处5年监禁+5000美元罚款"},{"lineNum":170,"text":"201-500份，判处7年监禁+10000美元罚款"},{"lineNum":171,"text":"501-999份，判处最高10年监禁+25000美元罚款"},{"lineNum":172,"text":"非法经营/制造/贩卖管制物品罪（重罪）："},{"lineNum":173,"text":"非法经营、贩卖管制物品的，判处3年监禁+1000-3000美元罚款"},{"lineNum":174,"text":"非法制造管制物品的，判处5年监禁+1000美元罚款"},{"lineNum":175,"text":"公共酗酒罪（轻罪）：在公共场所因饮酒、吸食毒品导致行为失控，危及自身或他人安全，判处1年监禁+1000美元罚款"},{"lineNum":176,"text":"非法进入管制区域（轻罪）：擅自进入毒品产区、政府重点管制区域等，判处1年监禁+500美元罚款"},{"lineNum":177,"text":"四、港口与航海法"},{"lineNum":178,"text":"设备违规（违法）：船只航行设备故障未及时维修、船员未按规定穿着救生衣等，处罚275美元罚款。"},{"lineNum":179,"text":"受限区域航行（违法）：擅自靠近军事基地、港口禁航区等受限区域航行，处罚1070美元罚款。"},{"lineNum":180,"text":"超速航行（违法）：在港口、码头区域内航行速度超过15节，处罚384美元罚款。"},{"lineNum":181,"text":"事故不报（违法）：发生船只碰撞、搁浅等事故后，未及时向相关部门报告，处罚2000美元罚款。"},{"lineNum":182,"text":"无许可举办水上活动（违法）：未经相关部门审批，擅自举办水上集会、竞赛等活动，处罚6000美元罚款。"},{"lineNum":183,"text":"船只未注册（违法）：船只未按规定办理注册手续擅自航行，处罚500美元罚款，可依法扣押船只。"},{"lineNum":184,"text":"危险驾船（轻罪）：鲁莽驾船、违规操作，危及自身、他人或其他船只安全，判处6个月监禁+1000美元罚款。"},{"lineNum":185,"text":"无照驾船（违法）：未取得有效驾船执照擅自驾驶船只，处罚1000美元罚款，可依法扣押船只。"},{"lineNum":186,"text":"无航行记录/保险（违法）：船只未按规定记录航行日志的，处罚3000美元罚款；未购买船只保险的，处罚800美元罚款，两种情形均可依法扣押船只。"},{"lineNum":187,"text":"五、圣安地列斯州航空管理法"},{"lineNum":188,"text":"驾照/证书违规（违法）：未取得对应类型飞行驾照擅自飞行、缺少飞行器必备合规证书的，处罚10000美元罚款，可暂扣飞行驾照30天-1年。"},{"lineNum":189,"text":"工作时间违规（违法）：飞行员、机组人员超时长工作、飞行，或休息时间不足违规执勤的，按本条第一款标准处罚。"},{"lineNum":190,"text":"设备故障（违法）：飞行器航行、通讯、安全等设备无法正常运行，仍擅自起飞飞行的，按本条第一款标准处罚。"},{"lineNum":191,"text":"受限区域飞行（违法）：未经许可擅自进入机场管控区域、军事基地上空飞行的，按本条第一款标准处罚。"},{"lineNum":192,"text":"酒驾/毒驾飞行（违法）：飞行前8小时内饮酒、血液酒精浓度（BAC）≥0.04%，或受毒品影响执勤飞行的，按本条第一款标准处罚。"},{"lineNum":193,"text":"事故不报（违法）：发生飞行器碰撞、坠毁、故障迫降等事故后，未及时向相关部门报告的，按本条第一款标准处罚。"},{"lineNum":194,"text":"机场安全违规（违法）：非法进入机场管控区域、实施危及航班起降安全的行为，处罚30000美元罚款，同时判处3年监禁。"},{"lineNum":195,"text":"六、狩猎法和动物保护法"},{"lineNum":196,"text":"第一章 定义与声明"},{"lineNum":197,"text":"州：指圣安地列斯州。"},{"lineNum":198,"text":"猎人：指实施或计划实施狩猎行为的个人。"},{"lineNum":199,"text":"渔民：指实施或计划实施捕鱼行为的个人。"},{"lineNum":200,"text":"大猎物：包括野猪、郊狼、长耳鹿、哥伦比亚黑尾鹿、美洲狮、西北黑熊、圣安地列斯黑熊、红狐、山猫等物种。"},{"lineNum":201,"text":"小猎物：包括黑尾兔、沙漠棉尾兔、灌木兔等物种。"},{"lineNum":202,"text":"水禽：包括绿头鸭、针尾鸭、帆背鸭、红头鸭、长吻鸭、北铲鸭、丑角鸭、冲浪鸭、白翅鸭、普通鸭、黑鸭、巴罗金眼、连帽秋沙鸭、普通秋沙鸭、红胸秋沙鸭、蓝翅蓝鸭、绿翅蓝鸭、肉桂青色鸭、大鳞鱼鸭、小头雁、雪雁、罗斯鹅、大白额雁、大加拿大鹅、小加拿大鹅等物种。"},{"lineNum":203,"text":"陆地猎鸟：包括山鹌鹑、加利福尼亚鹌鹑、里奥格兰德火鸡、梅里亚姆火鸡、松鸡、黑松鸡、环颈雉、哀鸽、欧亚领斑鸠、白翅斑鸠等物种。"},{"lineNum":204,"text":"步枪：指设计、改造、制造或翻新后，可从肩部发射，依靠固定金属弹药筒内炸药能量驱动，每次扣动扳机仅能通过膛线枪管发射一枚弹丸的武器。"},{"lineNum":205,"text":"执行机构：指圣安地列斯州园林管理局，负责监督本法条款的执行与落地。"},{"lineNum":206,"text":"淡水水体：包括卡西迪溪、通瓦溪、桑库多河、土地法水库、戈多山湖、好麦坞湖、洛圣都河、镜园湖。"},{"lineNum":207,"text":"咸水体：包括阿拉莫海、拉普尔塔码头区、韦斯普奇运河区、伊利西亚岛港区、太平洋。"},{"lineNum":208,"text":"溯河水域：指海洋洄游鱼类可进入的内陆水域，如卡西迪溪、桑库多河。"},{"lineNum":209,"text":"内陆水域：指本州内所有淡水、半咸水及内陆咸水水域，含泻湖、沿海河流及溪流入海口上游潮水；不含毗邻海洋的开放式/封闭式海湾，以及桑库多湖水域、拉顿峡谷径流处的卡西迪溪水域。"},{"lineNum":210,"text":"溪流（含小溪、河流）：指至少周期性或间歇性流经有堤岸河床/河道，且能支撑鱼类或其他水生生物的水体，包括具有地表/地下水流且能支撑或曾支撑河岸植被的水道。"},{"lineNum":211,"text":"垂钓：指用鱼钩鱼线捕鱼，鱼线可手持、连接手持钓竿，或以鱼类自愿上钩方式密切看管，或引诱鱼类咬钩的行为。"},{"lineNum":212,"text":"人工诱饵：指无香味/调味（含制造过程中及后续添加香味）的人造设备，配有鱼钩且用于吸引鱼类，包括但不限于金属、塑料、木材等非食用材料制成的勺子、旋转器、人造苍蝇、塞子。"},{"lineNum":213,"text":"诱饵：指通过味觉、嗅觉吸引鱼类的天然或人造产品/装置，含添加或外用香味、调味引诱剂的品类，包括但不限于香味糊、香味人造鱼卵、蠕虫、蛴螬、蟋蟀、水蛭、臭饵、昆虫、小龙虾、人类食物、鱼类及鱼体部分、鱼卵。"},{"lineNum":214,"text":"商业捕鱼：指以商业盈利为目的，从野生渔业捕捞鱼类及其他海产品的活动。"},{"lineNum":215,"text":"副渔获物：指渔业捕捞中，捕获目标物种及目标规格鱼类、蟹类等时，无意捕获的其他海洋物种、非目标性别个体，或体型过小/未成年的目标物种个体。"},{"lineNum":216,"text":"最佳产量：指为州内带来最大整体利益（尤其粮食生产、娱乐机会），且兼顾海洋生态系统保护的鱼类捕捞量。"},{"lineNum":217,"text":"渔业：指养殖或收获鱼类及其他水生生物的产业，商业渔业含淡水（约占总渔获量10%）、海洋（约占总渔获量90%）的野生渔业及养鱼场。"},{"lineNum":218,"text":"拖网捕鱼：指在船后拖拽渔网捕鱼的方式，分为两类：①底拖网：将渔网加重至海底，拖拽捕捞底栖鱼类；②中层拖网：在水底上方水域拖拽捕捞。"},{"lineNum":219,"text":"非居民商业捕鱼许可证：指年满16岁的非居民，为商业目的使用、操作或协助使用、操作捕鱼船只、飞机、渔网、鱼笼、鱼线等器具，或为商业渔船活动提供重大协助时，需持有的许可凭证。"},{"lineNum":220,"text":"商业船只注册：指本州居民所有或经营的船只，若在公共水域开展营利性捕鱼作业，或为盈利目的提供捕鱼服务，需办理的注册手续。"},{"lineNum":221,"text":"野生咸水渔业：指太平洋水域的野生渔业资源。"},{"lineNum":222,"text":"禁养动物：指黑豹、豹子、野狼，私自饲养此类动物属轻罪，最高可判处1年监禁+1000美元罚款，同时依法没收禁养动物。"},{"lineNum":223,"text":"第二章 动物保护"},{"lineNum":224,"text":"为维护圣安地列斯州生态系统稳定，确立三类动物保护等级，实施分类管控："},{"lineNum":225,"text":"① 国家保护/限制物种：州内濒临灭绝，需重点保护的物种；"},{"lineNum":226,"text":"② 国家管制野生动物：需在全州范围内监控、保护的物种；"},{"lineNum":227,"text":"③ 最不受关注的游戏物种：州内数量充足，无需特殊保护的物种。"},{"lineNum":228,"text":"动物养护与管理措施，应在可行范围内做到："},{"lineNum":229,"text":"① 尽量减少副渔获物数量；"},{"lineNum":230,"text":"② 无法避免副渔获时，最大限度降低其死亡率。"},{"lineNum":231,"text":"养护与管理工作核心：防止过度捕捞，同时为美国渔业持续实现各品类渔业的最佳产量。"},{"lineNum":232,"text":"底拖网捕捞仅限可持续水域开展，禁止在深水珊瑚、海绵花园等不可替代栖息地进行。"},{"lineNum":233,"text":"第三章 狩猎安全"},{"lineNum":234,"text":"狩猎服装要求：所有进入、穿越或停留于指定狩猎区的人员，须全程穿着合规狩猎服装，包括覆盖躯干的橙色背心或衣物，可搭配橙色头饰，防范猎人误击事故。"},{"lineNum":235,"text":"狩猎行为规范："},{"lineNum":236,"text":"① 禁止从任何车辆（含移动、静止状态）开枪狩猎；"},{"lineNum":237,"text":"② 禁止向距离自身50英尺以内的大猎物开火，正当防卫情形除外；"},{"lineNum":238,"text":"③ 狩猎需使用霰弹枪，禁止使用消音器、抑制器；"},{"lineNum":239,"text":"④ 禁止在洛圣都市区、沙滩海岸、佩里托湾边界内狩猎；"},{"lineNum":240,"text":"⑤ 未经产权人许可，禁止在住宅、建筑物150码范围内，从或穿越任何等级公共道路，或从任何机动车辆开火狩猎。违反本条规定属违法，最高可处罚1500美元罚款。"},{"lineNum":241,"text":"酒后/毒后狩猎禁令：禁止在饮用酒精饮料、使用影响精神状态的药物或管制物品后，试图狩猎、捕捉或引诱任何动物。违反本条规定属违法，最高可处罚2000美元罚款。"},{"lineNum":242,"text":"第四章 狩猎许可"},{"lineNum":243,"text":"狩猎许可由洛圣都警察局（LSPD）颁发，申请人需满足以下条件："},{"lineNum":244,"text":"① 持有有效的PF/CCW许可证；"},{"lineNum":245,"text":"② 年满18周岁；"},{"lineNum":246,"text":"③ 无重罪犯罪记录；"},{"lineNum":247,"text":"④ 完成必修狩猎安全课程。"},{"lineNum":248,"text":"猎人开展合法狩猎活动时，须随身携带狩猎许可证，随时准备向圣安地列斯州园林管理局执法人员出示。"},{"lineNum":249,"text":"圣安地列斯州园林管理局可向同一人颁发多个狩猎许可证。"},{"lineNum":250,"text":"未经圣安地列斯州园林管理局许可，任何人不得狩猎、捕捉或引诱本法第一章界定的大猎物、小猎物、水禽、陆地猎鸟。"},{"lineNum":251,"text":"违反本条规定，将视情节暂停或吊销狩猎许可证，最高可处罚2000美元罚款。"},{"lineNum":252,"text":"第五章 捕鱼管理"},{"lineNum":253,"text":"在州内码头捕鱼属合法行为。"},{"lineNum":254,"text":"乘船捕鱼需满足以下条件：参与捕捞的船只，在有渔民作业时，须配备至少1个IV型漂浮装置。"},{"lineNum":255,"text":"禁止在以下区域250英尺范围内捕鱼：①任何鱼道、取卵站；②设有鱼道、取卵站的水坝、堰或架体；③任何鱼筛的上游侧。无鱼道、取卵站的水坝，其上游、下游区域可正常捕鱼。"},{"lineNum":256,"text":"非商业捕鱼仅限捕捞“国家管制野生动物”“最不受关注的游戏物种”；若误捕“国家保护/限制物种”，须立即放回水中。违反本条规定，将视情节暂停或吊销捕鱼许可证，最高可处罚2000美元罚款。"},{"lineNum":257,"text":"商业捕鱼需满足以下条件："},{"lineNum":258,"text":"①参与捕捞的船只，在有渔民作业时，须配备至少1个IV型漂浮装置；②采用拖网捕鱼方式（含底拖网、中层拖网）；③仅限在野生咸水渔业（太平洋）捕捞；④船只所有人持有有效的营业执照及商业捕鱼许可证。"},{"lineNum":259,"text":"第六章 指定狩猎区"},{"lineNum":260,"text":"本条款由圣安地列斯州法院发布，告知州内所有猎人：州内狩猎活动仅限在官方地图标记为国家森林的红色区域内开展。在指定国家森林区域外狩猎属非法行为，最高可处罚2000美元罚款。官方发布的狩猎区域地图为州内现行有效狩猎范围依据。"},{"lineNum":261,"text":"第七章 商业捕鱼许可证"},{"lineNum":262,"text":"商业捕鱼许可证由州长办公室颁发，申请人需满足以下条件：①完成商业船只注册；②非居民需持有商业捕鱼许可证（雇主有义务为雇员支付每人一次性许可费用）；③商船注册申请人（企业所有人、共同所有人、利益相关者）无重罪犯罪记录；④完成必修狩猎安全课程。"},{"lineNum":263,"text":"第八章 执法规范"},{"lineNum":264,"text":"设立圣安地列斯州园林管理局，作为本法专属执行机构，负责监督《狩猎法和动物保护法》全流程落地。"},{"lineNum":265,"text":"警方在指定狩猎区开展调查时，执行机构有权暂时中止区域内狩猎活动，保障公众安全。"},{"lineNum":266,"text":"执行机构联合洛圣都警察局（LSPD）承担以下职责："},{"lineNum":267,"text":"① 本法条款的执法工作；"},{"lineNum":268,"text":"② 指定官方狩猎区域；"},{"lineNum":269,"text":"③ 划定动物保护等级。"},{"lineNum":270,"text":"第九章 免费狩猎日"},{"lineNum":271,"text":"圣安地列斯州园林管理局每月指定1天作为“免费狩猎日”，并在月刊中公布具体日期。"},{"lineNum":272,"text":"免费狩猎日期间，圣安地列斯州居民可在符合以下条件的情况下狩猎1次：①由持有州内有效狩猎许可证、年满21周岁的猎人陪同；②陪同对象仅限1名无狩猎许可证者；③无证猎人需完成圣安地列斯州园林管理局批准的猎人教育课程，并提前获得该局许可部门书面同意；④狩猎期间，无证猎人需与有证猎人保持密切视觉及语言联系，不得脱离管控。"},{"lineNum":273,"text":"核心定义"},{"lineNum":274,"text":"大猎物、小猎物、水禽等物种分类按原文界定；淡水、咸水、溯河水域范围按原文标准划分。"},{"lineNum":275,"text":"核心条款"},{"lineNum":276,"text":"禁养动物（轻罪）：私自饲养黑豹、豹子、野狼等禁养动物，判处1年监禁+1000美元罚款，依法没收禁养动物。"},{"lineNum":277,"text":"狩猎违规（违法）：狩猎时未按规定穿着安全服装、车载狩猎、在市区及禁猎区狩猎等，处罚1500美元罚款。"},{"lineNum":278,"text":"酒后/毒后狩猎（违法）：饮酒、吸食毒品后实施狩猎行为，处罚2000美元罚款。"},{"lineNum":279,"text":"狩猎许可：狩猎需满足年满21岁、无重罪犯罪记录、完成狩猎安全培训课程三项条件，取得合法狩猎许可；无证狩猎的，处罚2000美元罚款，可吊销狩猎许可（已取得者）。"},{"lineNum":280,"text":"捕鱼违规：在禁渔区捕鱼、捕获保护鱼类物种后未及时放生的，处罚2000美元罚款，可吊销捕鱼许可。"},{"lineNum":281,"text":"非法狩猎区狩猎（违法）：仅允许在国家森林红色指定区域内狩猎，违规在其他区域狩猎的，处罚2000美元罚款。"},{"lineNum":282,"text":"商业捕鱼许可：从事商业捕鱼活动，需先办理船只注册手续，取得对应商业捕鱼许可；违规经营的，按情节轻重依法处罚。"},{"lineNum":283,"text":"七、圣安地列斯州律师法"},{"lineNum":284,"text":"第一章 总则"},{"lineNum":285,"text":"为完善圣安地列斯州律师制度，规范律师执业行为，保障律师依法执业，充分发挥律师在州内法制建设中的作用，制定本法。"},{"lineNum":286,"text":"本法所称律师，是指依法取得律师执业证书，接受委托或指定，为当事人提供法律服务的执业人员。律师应当维护当事人合法权益，维护法律正确实施，维护社会公平和正义。"},{"lineNum":287,"text":"律师执业必须遵守宪法和法律，恪守律师职业道德和执业纪律，以事实为根据、以法律为准绳。律师执业应当接受社会公众和当事人的监督，其依法执业受法律保护，任何组织和个人不得侵害律师的合法权益。"},{"lineNum":288,"text":"司法部依照本法规定，对律师、律师事务所及律师协会履行监督、指导职责。"},{"lineNum":289,"text":"第二章 律师执业许可"},{"lineNum":290,"text":"申请律师执业，应当同时具备下列条件："},{"lineNum":291,"text":"拥护圣安地列斯州宪法；"},{"lineNum":292,"text":"通过司法部统一法律职业资格考试并取得法律职业资格；"},{"lineNum":293,"text":"完成规定实习期限并考核合格，符合转正要求；"},{"lineNum":294,"text":"（四）品行良好，无不良执业记录。本法实施前，通过司法部统一司法考试取得的合格证书、律师资格凭证，与司法部统一法律职业资格证书具有同等效力。"},{"lineNum":295,"text":"申请律师执业，需向司法部提交书面申请及下列材料："},{"lineNum":296,"text":"司法部统一法律职业资格证书；"},{"lineNum":297,"text":"律师协会出具的实习考核合格材料；"},{"lineNum":298,"text":"申请人有效身份证明；"},{"lineNum":299,"text":"（四）律师事务所出具的同意接收材料。申请兼职律师执业的，额外提交所在单位同意其兼职从事律师职业的书面证明。受理部门自受理之日起3个工作日内完成审查，将审查意见及全部申请材料报送司法部；司法部自收到材料之日起3个工作日内完成审核，作出是否准予执业的决定。准予执业的，颁发律师执业证书；不准予执业的，书面告知申请人理由。"},{"lineNum":300,"text":"申请人有下列情形之一的，不予颁发律师执业证书："},{"lineNum":301,"text":"无民事行为能力或限制民事行为能力的；"},{"lineNum":302,"text":"有重罪犯罪记录的（过失犯罪除外）；"},{"lineNum":303,"text":"（三）曾被吊销律师执业证书的。"},{"lineNum":304,"text":"具备相应专业法律知识，申请专职律师执业的，经司法部考核合格后，准予执业。具体考核办法由司法部另行制定。"},{"lineNum":305,"text":"有下列情形之一的，由司法部或律师协会撤销准予执业决定，注销律师执业证书："},{"lineNum":306,"text":"申请人以欺诈、贿赂等不正当手段取得执业证书的；"},{"lineNum":307,"text":"对不符合本法规定条件的申请人准予执业的；"},{"lineNum":308,"text":"（三）律师存在行为不端、渎职等违规情形，情节严重的。"},{"lineNum":309,"text":"律师只能在一个律师事务所执业，变更执业机构的，需申请换发律师执业证书。律师执业不受地域限制，可在州内全域开展法律服务。"},{"lineNum":310,"text":"公职人员不得兼任专职律师，不得利用公职身份从事有偿法律服务。"},{"lineNum":311,"text":"高等院校、科研机构中从事法学教育、研究工作的人员，符合本法第五条规定条件的，经所在单位同意，可按照本法第六条规定的程序，申请兼职律师执业。"},{"lineNum":312,"text":"未取得律师执业证书的人员，不得以律师名义从事法律服务业务，不得收取法律服务费用。"},{"lineNum":313,"text":"第三章 律师事务所"},{"lineNum":314,"text":"律师事务所是律师的执业机构，设立需具备下列条件："},{"lineNum":315,"text":"拥有独立名称、固定办公场所及合法章程；"},{"lineNum":316,"text":"配备符合本法规定的执业律师；"},{"lineNum":317,"text":"设立人具有相应执业经历，且未受过停止执业处罚；"},{"lineNum":318,"text":"（四）拥有符合司法部规定数额的资产。"},{"lineNum":319,"text":"设立合伙律师事务所，除符合本法第十四条规定外，设立人需具备3周以上执业经历。合伙律师事务所可采用普通合伙或特殊普通合伙形式设立，合伙人按合伙形式依法对事务所债务承担责任。"},{"lineNum":320,"text":"设立个人律师事务所，除符合本法第十四条规定外，设立人需具备5周以上执业经历，且对事务所债务承担无限责任。"},{"lineNum":321,"text":"申请设立律师事务所，需提交下列材料："},{"lineNum":322,"text":"书面申请书；"},{"lineNum":323,"text":"事务所名称、章程；"},{"lineNum":324,"text":"律师名单、简历、身份证明及执业证书；"},{"lineNum":325,"text":"固定办公场所证明；"},{"lineNum":326,"text":"（五）资产证明。设立合伙律师事务所的，额外提交合伙协议。"},{"lineNum":327,"text":"设立律师事务所，向司法部提出申请。受理部门自受理之日起3个工作日内完成审查，将审查意见及全部材料报送司法部；司法部自收到材料之日起3个工作日内完成审核，作出是否准予设立的决定。准予设立的，颁发律师事务所执业证书；不准予设立的，书面告知理由。"},{"lineNum":328,"text":"成立满3年、拥有10名以上执业律师的合伙律师事务所，可设立分所。申请设立分所的，按照本法第十八条规定的程序办理，总所对分所债务承担连带责任。"},{"lineNum":329,"text":"司法部出资设立的律师事务所，依法自主开展业务，以自身全部资产对债务承担责任。"},{"lineNum":330,"text":"律师事务所变更名称、负责人、章程、合伙协议的，需报原审核部门批准；变更住所、合伙人的，自变更之日起5个工作日内报原审核部门备案。"},{"lineNum":331,"text":"律师事务所有下列情形之一的，应当终止："},{"lineNum":332,"text":"无法保持法定设立条件，经限期整改仍不符合要求的；"},{"lineNum":333,"text":"执业证书被依法吊销的；"},{"lineNum":334,"text":"自行决定解散的；"},{"lineNum":335,"text":"（四）法律、行政法规规定应当终止的其他情形。律师事务所终止的，由颁发执业证书的部门注销其执业证书。"},{"lineNum":336,"text":"律师事务所应当建立健全执业管理、利益冲突审查、收费与财务管理、投诉查处、年度考核、档案管理等制度，对律师执业过程中遵守职业道德、执业纪律的情况进行全程监督。"},{"lineNum":337,"text":"律师事务所需在每周周度考核结束后，向司法部或律师协会提交本所执业情况报告及律师执业考核结果，接受监督检查。"},{"lineNum":338,"text":"律师承办业务，由律师事务所统一接受委托，与委托人签订书面委托合同，按照规定统一收取费用并如实入账，严禁律师私自收费。律师事务所应当依法履行纳税义务。"},{"lineNum":339,"text":"律师事务所及律师不得以诋毁其他律所、律师，或支付介绍费、回扣等不正当手段承揽业务。"},{"lineNum":340,"text":"律师事务所不得从事法律服务以外的经营活动，不得参与非法营利性项目。"},{"lineNum":341,"text":"第四章 律师的业务和权利、义务"},{"lineNum":342,"text":"律师可从事下列法律服务业务："},{"lineNum":343,"text":"接受自然人、法人或其他组织委托，担任法律顾问；"},{"lineNum":344,"text":"接受民事、行政案件当事人委托，担任代理人参与诉讼；"},{"lineNum":345,"text":"接受刑事案件犯罪嫌疑人、被告人委托，或依法接受法律援助机构指派担任辩护人；接受自诉案件自诉人、公诉案件被害人或其近亲属委托，担任代理人参与诉讼；"},{"lineNum":346,"text":"接受委托，代理各类诉讼案件的申诉；"},{"lineNum":347,"text":"接受委托，参与调解、仲裁活动；"},{"lineNum":348,"text":"接受委托，提供非诉讼法律服务；"},{"lineNum":349,"text":"（七）解答法律询问，代写诉讼文书及其他法律事务文书。"},{"lineNum":350,"text":"律师担任法律顾问的，应当按约定为委托人提供法律意见，草拟、审查法律文书，代理参与诉讼、调解、仲裁活动，办理委托的其他法律事务，切实维护委托人合法权益。"},{"lineNum":351,"text":"律师担任诉讼或非诉讼代理人的，应当在委托权限范围内，依法维护委托人合法权益，不得超越权限行事。"},{"lineNum":352,"text":"律师担任辩护人的，应当根据事实和法律，提出犯罪嫌疑人、被告人无罪、罪轻或减轻、免除其刑事责任的材料和意见，维护其诉讼权利及其他合法权益。"},{"lineNum":353,"text":"委托人有权拒绝已委托的律师继续辩护或代理，并可另行委托律师。律师接受委托后，无正当理由不得拒绝辩护或代理；但委托事项违法、委托人利用律师服务从事违法活动，或委托人故意隐瞒与案件有关重要事实的，律师有权拒绝辩护或代理，并及时告知委托人。"},{"lineNum":354,"text":"律师担任辩护人的，有权持律师执业证书、律师事务所证明及委托书或法律援助公函，依照圣安地列斯州法律规定，会见在押或被监视居住的犯罪嫌疑人、被告人，会见过程不被监听。"},{"lineNum":355,"text":"律师担任辩护人的，自地检办公室对案件审查起诉之日起，有权查阅、摘抄、复制本案全部案卷材料，相关部门应当予以配合。"},{"lineNum":356,"text":"受委托律师可根据案情需要，申请地检办公室、法院收集、调取证据，或申请法院通知证人出庭作证。律师自行调查取证的，凭执业证书和律所证明，可向有关单位或个人调查与承办法律事务相关的情况。"},{"lineNum":357,"text":"律师担任诉讼代理人或辩护人的，其在法庭上的辩论、辩护权利依法受到保障，任何单位和个人不得非法干涉。"},{"lineNum":358,"text":"律师在执业活动中的人身权利不受侵犯。律师在法庭上发表的代理、辩护意见，除发表危害政府安全、恶意诽谤他人、严重扰乱法庭秩序的言论外，不受法律追究。律师参与诉讼活动涉嫌犯罪的，侦查机关应当及时通知其所在律所及家属。"},{"lineNum":359,"text":"律师应当保守执业活动中知悉的政府及司法机关秘密、商业秘密，不得泄露当事人隐私。对知悉的委托人和其他人不愿泄露的情况及信息，应当予以保密；但委托人或其他人准备、正在实施危害政府安全、公共安全及严重危害他人人身安全的犯罪事实和信息除外。"},{"lineNum":360,"text":"律师不得在同一案件中为双方当事人担任代理人，不得代理与本人或其近亲属有利益冲突的法律事务。"},{"lineNum":361,"text":"律师在执业活动中不得有下列行为："},{"lineNum":362,"text":"私自接受委托、收取费用，或收受委托人以外的其他利益；"},{"lineNum":363,"text":"利用法律服务便利，牟取当事人争议的权益；"},{"lineNum":364,"text":"接受对方当事人财物或其他利益，与对方当事人、第三人恶意串通，侵害委托人权益；"},{"lineNum":365,"text":"违反规定会见法官、检察官及其他相关工作人员；"},{"lineNum":366,"text":"向法官、检察官及其他相关工作人员行贿，介绍贿赂，或指使、诱导当事人行贿，以不正当方式影响案件办理；"},{"lineNum":367,"text":"故意提供虚假证据，或威胁、利诱他人提供虚假证据，妨碍对方当事人合法取得证据；"},{"lineNum":368,"text":"（七）煽动、教唆当事人采取扰乱公共秩序、危害公共安全等非法手段解决争议；（八）扰乱法庭、仲裁庭秩序，干扰诉讼、仲裁活动正常进行。"},{"lineNum":369,"text":"曾担任法官、检察官的律师，从法院、地检办公室离任后3周内，不得担任诉讼代理人或辩护人。"},{"lineNum":370,"text":"律师、律师事务所应当按照司法部规定履行法律援助义务，为受援人提供符合标准的法律服务，维护受援人合法权益。"},{"lineNum":371,"text":"第五章 律师监督与保障局"},{"lineNum":372,"text":"律师监督与保障局是司法部下级部门体，为律师总体管理部门，统一管理州内律师及律所事务。"},{"lineNum":373,"text":"圣安地列斯州律师章程由律师与监督保障局制定，报司法部备案，章程内容不得与法律、行政法规、规章相抵触。"},{"lineNum":374,"text":"律师监督与保障局应当履行下列职责："},{"lineNum":375,"text":"保障律师依法执业，维护律师合法权益；"},{"lineNum":376,"text":"总结、交流律师工作经验，提升行业服务水平；"},{"lineNum":377,"text":"制定行业规范和惩戒规则，规范执业行为；"},{"lineNum":378,"text":"组织律师业务培训、职业道德及执业纪律教育，对律师执业活动进行考"},{"lineNum":379,"text":"（五）管理申请律师执业人员的实习活动，对实习人员进行考核；"},{"lineNum":380,"text":"对律师、律师事务所实施奖励和惩戒；"},{"lineNum":381,"text":"受理对律师的投诉、举报，调解执业纠纷，受理律师申诉；"},{"lineNum":382,"text":"（八）法律、行政法规、规章及章程规定的其他职责。"},{"lineNum":383,"text":"第六章 法律责任"},{"lineNum":384,"text":"律师有下列行为之一的，由司法部或律师协会给予警告，可并处5000美元以下罚款；有违法所得的，没收违法所得；情节严重的，给予1周以下停止执业处罚："},{"lineNum":385,"text":"同时在两个以上律师事务所执业的；"},{"lineNum":386,"text":"以不正当手段承揽业务的；"},{"lineNum":387,"text":"在同一案件中为双方当事人担任代理人，或代理与本人、其近亲属有利益冲突法律事务的；"},{"lineNum":388,"text":"从法院、地检办公室离任后3周内担任诉讼代理人、辩护人的；"},{"lineNum":389,"text":"（五）拒绝履行法律援助义务的。"},{"lineNum":390,"text":"律师有下列行为之一的，由司法部给予警告，可并处1万美元以下罚款；有违法所得的，没收违法所得；情节严重的，给予1周至3周停止执业处罚："},{"lineNum":391,"text":"私自接受委托、收取费用，或收受委托人以外其他利益的；"},{"lineNum":392,"text":"接受委托后无正当理由，拒绝辩护、代理，或不按时出庭参与诉讼、仲裁的；"},{"lineNum":393,"text":"利用法律服务便利牟取当事人争议权益的；"},{"lineNum":394,"text":"（四）泄露商业秘密或个人隐私的。"},{"lineNum":395,"text":"律师有下列行为之一的，由司法部给予1周至3周停止执业处罚，可并处5万美元以下罚款；有违法所得的，没收违法所得；情节严重的，吊销律师执业证书；构成犯罪的，依法追究刑事责任："},{"lineNum":396,"text":"违反规定会见法官、检察官、仲裁员及其他相关工作人员，或以不正当方式影响案件办理的；"},{"lineNum":397,"text":"向法官、检察官、仲裁员及其他相关工作人员行贿、介绍贿赂，或指使、诱导当事人行贿的；"},{"lineNum":398,"text":"向司法行政部门提供虚假材料或存在其他弄虚作假行为的；"},{"lineNum":399,"text":"故意提供虚假证据，或威胁、利诱他人提供虚假证据，妨碍对方当事人合法取得证据的；"},{"lineNum":400,"text":"接受对方当事人财物或其他利益，与对方当事人、第三人恶意串通侵害委托人权益的；"},{"lineNum":401,"text":"扰乱法庭、仲裁庭秩序，干扰诉讼、仲裁活动正常进行的；"},{"lineNum":402,"text":"煽动、教唆当事人采取扰乱公共秩序、危害公共安全等非法手段解决争议的；"},{"lineNum":403,"text":"发表危害政府及司法机关安全、恶意诽谤他人、严重扰乱法庭秩序言论的；"},{"lineNum":404,"text":"（九）泄露政府及司法机关秘密的。律师因故意犯罪受到刑事处罚的，由司法部或律师协会吊销其执业证书。"},{"lineNum":405,"text":"律师事务所有下列行为之一的，由司法部或律师协会视情节给予警告、1周停业整顿处罚，可并处10万美元以下罚款；有违法所得的，没收违法所得；情节特别严重的，吊销执业证书："},{"lineNum":406,"text":"违反规定接受委托、收取费用的；"},{"lineNum":407,"text":"违反法定程序办理名称、负责人、章程、合伙协议、住所、合伙人等重大事项变更的；"},{"lineNum":408,"text":"从事法律服务以外经营活动的；"},{"lineNum":409,"text":"以诋毁其他律所、律师或支付介绍费等不正当手段承揽业务的；"},{"lineNum":410,"text":"违反规定接受有利益冲突案件的；"},{"lineNum":411,"text":"拒绝履行法律援助义务的；"},{"lineNum":412,"text":"向司法行政部门提供虚假材料或存在其他弄虚作假行为的；"},{"lineNum":413,"text":"（八）对本所律师疏于管理，造成严重后果的。律所因前款行为受处罚的，对其负责人视情节给予警告或2万美元以下罚款。"},{"lineNum":414,"text":"律师受警告处罚后1周内，再次发生应当给予警告处罚情形的，由司法部或律师协会给予1周至3周停止执业处罚；受停止执业处罚期满后1周内，再次发生应当给予停止执业处罚情形的，吊销其执业证书。律师事务所受停业整顿处罚期满后2周内，再次发生应当给予停业整顿处罚情形的，吊销其执业证书。"},{"lineNum":415,"text":"司法部或律师协会对律师、律师事务所执业活动实施日常监督管理，对检查发现的问题责令限期改正；对当事人投诉及时调查核实，认为应当给予行政处罚的，依法作出处理决定。"},{"lineNum":416,"text":"受3周以上停止执业处罚的律师，处罚期满未逾3周的，不得担任律师事务所合伙人。被吊销执业证书的人员，不得担任辩护人、诉讼代理人，但系刑事、民事、行政诉讼当事人监护人、近亲属的除外。"},{"lineNum":417,"text":"律师违法执业或因过错给当事人造成损失的，由其所在律师事务所承担赔偿责任；律所赔偿后，可向有故意或重大过失行为的律师追偿。"},{"lineNum":418,"text":"未取得律师执业证书的人员，以律师名义从事法律服务业务的，由司法部或律师协会责令停止违法行为，没收违法所得，可并处5万美元以下罚款；构成犯罪的，依法追究刑事责任。"},{"lineNum":419,"text":"执业许可"},{"lineNum":420,"text":"申请律师执业需通过圣安地列斯州司法考试，品行良好，无重罪犯罪记录（过失犯罪除外），执业许可由司法部审批发放；伪造申请材料取得执业许可的，一经查实立即注销执照，依法追究责任。"},{"lineNum":421,"text":"律师权利与义务"},{"lineNum":422,"text":"律师享有会见当事人、查阅案件卷宗、调查取证等执业权利；同时需履行保密义务，不得为双方当事人代理同一案件，不得实施行贿、提供虚假证据等违法行为。"},{"lineNum":423,"text":"法律责任"},{"lineNum":424,"text":"律师违规执业的，视情节轻重给予以下处罚：警告、最高5万美元罚款、1-3周暂停执业、吊销执业执照；构成犯罪的，依法追究刑事责任。"},{"lineNum":425,"text":"八、圣安地列斯州合同法"},{"lineNum":426,"text":"第一章 总则"},{"lineNum":427,"text":"第一条 为保障合同当事人的合法权益，规范合同行为及交易秩序，明确合同权利义务关系，维护圣安地列斯州社会经济秩序，制定本法。"},{"lineNum":428,"text":"第二条 本法所称合同，是平等主体的自然人、法人、其他组织之间设立、变更、终止民事权利义务关系的协议。婚姻、收养、监护等有关身份关系的协议，适用其他相关法律规定。"},{"lineNum":429,"text":"第三条 合同当事人订立、履行合同，必须遵守本法及其他相关法律、行政法规的强制性规定，不得违反公序良俗。当事人应秉持合法原则，通过正当途径行使权利、履行义务，维护法治秩序。"},{"lineNum":430,"text":"第四条 合同当事人的法律地位一律平等，一方不得将自己的意志强加给另一方，任何组织和个人不得非法干预当事人的平等缔约权。"},{"lineNum":431,"text":"第五条 当事人依法享有自愿订立合同的权利，有权自主决定合同的订立、内容及缔约相对方，任何组织和个人不得非法干预。"},{"lineNum":432,"text":"第六条 当事人订立、履行合同，应当遵循公平原则，合理确定各方的权利和义务，兼顾各方利益平衡。"},{"lineNum":433,"text":"第七条 当事人行使合同权利、履行合同义务，应当遵循诚实信用原则，秉持诚实、恪守承诺，不得隐瞒真实情况、规避合同义务。"},{"lineNum":434,"text":"第八条 当事人订立、履行合同，应当遵守法律、行政法规，尊重社会公德，不得扰乱社会经济秩序，损害社会公共利益及第三人合法权益。"},{"lineNum":435,"text":"第九条 依法成立的合同，对当事人具有法律约束力。当事人应当按照约定全面履行自己的义务，不得擅自变更或者解除合同。依法成立的合同，受法律保护。"},{"lineNum":436,"text":"第十条 本法适用于圣安地列斯州境内平等主体的自然人、法人、其他组织之间订立的各类民事合同，依法成立的合同均受本法保护。"},{"lineNum":437,"text":"第二章 合同的订立"},{"lineNum":438,"text":"第十一条 当事人订立合同，应在市政府由有关部门订立；当事人无法亲自缔约的，可依法委托代理律师代为订立合同，委托代理需出具书面授权委托书。"},{"lineNum":439,"text":"第十二条 当事人订立合同，只采用数据电文形式、由市政府按照双方当事人意见和按相关法律规定订立有效数据电文合同。"},{"lineNum":440,"text":"第十三条 本法所称数据电文形式，是指合同书、信件、电报、电传、传真以及数据电文（包括电子数据交换、电子邮件、电子签章文件等）能够有形地表现所载内容，并可以随时调取查用的形式。"},{"lineNum":441,"text":"第十四条 合同内容由当事人协商约定，一般应当包含下列条款："},{"lineNum":442,"text":"当事人的名称或者姓名和住所；"},{"lineNum":443,"text":"标的（指合同权利义务指向的对象）；"},{"lineNum":444,"text":"数量；"},{"lineNum":445,"text":"质量（包括标准、验收要求等）；"},{"lineNum":446,"text":"价款或者报酬（包括支付方式、支付期限等）；"},{"lineNum":447,"text":"履行期限、地点和方式；"},{"lineNum":448,"text":"违约责任（包括违约金、赔偿范围等）；"},{"lineNum":449,"text":"（八）解决争议的方法（包括协商、市政府介入、诉讼等）。"},{"lineNum":450,"text":"第十五条 合同内容应当与当事人协商一致的内容保持一致。一方当事人对合同核心条款作出实质性变更的，视为发出新的缔约要约，达成一致后前往市政府成立新合同。本条所称实质性变更，包括对合同标的、数量、质量、价款或者报酬、履行期限、履行地点和方式、违约责任、解决争议方法等条款的变更。新合同的订立，仍需符合本法第十一条规定。"},{"lineNum":451,"text":"第十六条 当事人采用合同书形式订立合同的，自双方当事人签字、市政府审核备案后合同成立。"},{"lineNum":452,"text":"第十七条 承诺生效的地点为合同成立的地点。"},{"lineNum":453,"text":"第十八条 法律、行政法规规定或者当事人约定采用数据电文合同，当事人未采用数据电文合同但一方已经履行主要义务，对方接受的，该合同不成立。"},{"lineNum":454,"text":"第十九条 采用合同书形式订立合同，在签字、盖章或者按指印之前，当事人一方已经履行主要义务，对方接受的，该合同成立。"},{"lineNum":455,"text":"第二十条 当事人在订立合同过程中有下列情形之一，给对方造成损失的，应当承担损害赔偿责任："},{"lineNum":456,"text":"假借订立合同，恶意进行磋商，拖延缔约进程；"},{"lineNum":457,"text":"故意隐瞒与订立合同有关的重要事实，或者提供虚假信息、虚假证明材料；"},{"lineNum":458,"text":"（三）其他违背诚实信用原则的缔约过失行为。"},{"lineNum":459,"text":"第二十一条 当事人在订立合同过程中知悉的对方商业秘密、技术秘密及其他未公开信息，无论合同是否成立，均负有保密义务，不得泄露或者不正当地使用。泄露、不正当地使用该信息给对方造成损失的，应当承担损害赔偿责任。"},{"lineNum":460,"text":"第三章 合同的效力"},{"lineNum":461,"text":"第二十二条 依法成立的合同，自成立时生效。法律、行政法规规定应当办理批准、登记等手续生效的，依照其规定办理相关手续后，合同方可生效。"},{"lineNum":462,"text":"第二十三条 当事人对合同的效力可以约定附条件。附生效条件的合同，自条件成就时生效；附解除条件的合同，自条件成就时失效。当事人为自己的利益不正当地阻止条件成就的，视为条件已成就；不正当地促成条件成就的，视为条件未成就。"},{"lineNum":463,"text":"第二十四条 当事人对合同的效力可以约定附期限。附生效期限的合同，自期限届至时生效；附终止期限的合同，自期限届满时失效。"},{"lineNum":464,"text":"第二十五条 无处分权人处分他人财产订立的合同，经权利人追认或者无处分权人在订立合同后取得处分权的，该合同有效；权利人拒绝追认且无处分权人未取得处分权的，合同无效，但善意第三人的合法权益受法律保护。"},{"lineNum":465,"text":"第二十六条 有下列情形之一的，合同无效："},{"lineNum":466,"text":"一方以欺诈、胁迫的手段订立合同，损害国家利益、社会公共利益或者对方合法权益的；"},{"lineNum":467,"text":"恶意串通，损害国家、集体或者第三人利益的；"},{"lineNum":468,"text":"违反法律、行政法规强制性规定的；"},{"lineNum":469,"text":"违背公序良俗的；"},{"lineNum":470,"text":"（五）合同内容约定不明，且当事人无法协商补充，导致各方权利义务无法确定，合同目的无法实现的。"},{"lineNum":471,"text":"第二十七条 无效的合同或者被撤销的合同自始没有法律约束力。合同部分无效，不影响其他部分效力的，其他部分仍然有效。合同无效后，当事人应当返还因该合同取得的财产；不能返还或者没有必要返还的，应当折价补偿。有过错的一方应当赔偿对方因此所受到的损失，双方都有过错的，应当各自承担相应的责任。"},{"lineNum":472,"text":"第二十八条 合同的效力依据本法及其他相关法律规定确定。其他法律对特定类型合同的效力有特别规定的，优先适用该特别规定。"},{"lineNum":473,"text":"第二十九条 依照法律、行政法规的规定或者当事人的约定，合同需经有关部门批准、登记、备案等手续方可生效或履行的，当事人应当及时办理相关手续，拒不办理导致合同无法生效或履行的，应当承担相应违约责任。"},{"lineNum":474,"text":"第四章 合同的履行和变更"},{"lineNum":475,"text":"第三十条 当事人应当按照合同约定，全面、适当地履行自己的义务，遵循诚实信用原则，根据合同的性质、目的和交易习惯履行通知、协助、保密等附随义务。"},{"lineNum":476,"text":"第三十一条 当事人可以协商约定一方或双方履行义务的期限，允许提前履行或者延期履行，但提前履行、延期履行不得损害对方当事人的合法权益；未经对方同意，不得擅自变更履行期限。"},{"lineNum":477,"text":"第三十二条 当事人履行合同义务时，应当保证交付的标的在数量、质量、规格等方面符合合同约定，并按照约定提供相关的证明文件、质量检测报告等资料，配合对方验收。"},{"lineNum":478,"text":"第三十三条 当事人履行合同义务时，有下列情形之一的，对方有权请求解除合同，或者要求采取修理、更换、重作、退货、减少价款或者报酬等补救措施："},{"lineNum":479,"text":"无正当理由不履行或者迟延履行主要合同义务，经催告后在合理期限内仍未履行的；"},{"lineNum":480,"text":"履行义务不符合合同约定，存在重大缺陷，导致合同目的无法实现的；"},{"lineNum":481,"text":"（三）以欺诈、胁迫等手段订立合同，对方有权请求撤销合同并要求补救的。"},{"lineNum":482,"text":"第三十四条 当事人一方迟延履行合同义务，或者履行义务存在重大缺陷的，对方有权要求其承担违约责任，支付约定的违约金，或者赔偿因此造成的损失（包括直接损失和间接损失）。"},{"lineNum":483,"text":"第三十五条 当事人协商一致，可以变更合同内容。合同变更应当采用书面形式，由双方当事人签字、盖章或者按指印确认；涉及重要条款变更的，仍需有律师在场见证。"},{"lineNum":484,"text":"第三十六条 合同的变更不得违反法律、行政法规的强制性规定，不得违背公序良俗，不得损害国家利益、社会公共利益及第三人合法权益。"},{"lineNum":485,"text":"第三十七条 当事人一方提出变更合同的要约，对方有权决定接受或者拒绝。对方拒绝变更的，原合同继续有效，双方应当按照原合同约定履行义务。"},{"lineNum":486,"text":"第三十八条 合同变更涉及本法第十五条规定的实质性条款的，应当视为重新订立合同，按照本法第二章关于合同订立的规定执行，需经双方协商一致、书面确认并由律师见证。"},{"lineNum":487,"text":"第五章 合同的转让和让与"},{"lineNum":488,"text":"第三十九条 合同一方当事人可以将其在合同中的全部或者部分权利、义务转让给第三人，但有下列情形之一的除外："},{"lineNum":489,"text":"法律、行政法规禁止转让的；"},{"lineNum":490,"text":"当事人明确约定不得转让的；"},{"lineNum":491,"text":"（三）合同性质决定不得转让的（如具有人身依附性的合同义务）。"},{"lineNum":492,"text":"第四十条 合同一方将其合同权利义务转让给第三人的，应当事先取得对方当事人的书面同意，并依法办理相关转让手续；未经对方同意的，转让行为对对方不发生法律效力。"},{"lineNum":493,"text":"第四十一条 债权人转让权利的，应当通知债务人。未经通知，该转让对债务人不发生法律效力。债权人转让权利的，受让人取得与债权有关的从权利，但该从权利专属于债权人自身的除外。"},{"lineNum":494,"text":"第四十二条 债务人将合同义务全部或者部分转移给第三人的，必须取得债权人的书面同意。债权人同意的，第三人成为新债务人，承担相应的合同义务；债权人不同意的，债务转移行为无效，原债务人仍需履行合同义务。"},{"lineNum":495,"text":"第四十三条 当事人一方经对方同意，将自己在合同中的权利和义务一并转让给第三人的，第三人取代原当事人的地位，成为新的合同主体，享有相应权利并承担相应义务。权利义务一并转让的，适用本法第三十九条、第四十条的规定。"},{"lineNum":496,"text":"第六章 合同的解除和终止"},{"lineNum":497,"text":"第四十四条 当事人协商一致，可以解除合同。当事人可以约定一方解除合同的事由，解除合同的事由发生时，解除权人可以解除合同。"},{"lineNum":498,"text":"第四十五条 当事人一方不履行或者迟延履行主要合同义务，致使对方合同目的无法实现，或者给对方造成重大损失的，对方有权解除合同。解除合同的通知应当以书面形式送达对方，合同自通知到达对方时解除；对方有异议的，可以请求法院或者仲裁机构确认解除合同的效力。"},{"lineNum":499,"text":"第四十六条 有下列情形之一的，合同自始无效，视为从未成立："},{"lineNum":500,"text":"违反法律、行政法规强制性规定，情节严重的；"},{"lineNum":501,"text":"恶意串通，严重损害国家、集体或者第三人利益的；"},{"lineNum":502,"text":"（三）违背公序良俗，损害社会公共利益的。"},{"lineNum":503,"text":"第四十七条 合同解除后，不影响合同中结算和清理条款的效力。合同解除前已经履行的部分，当事人应当根据履行情况和合同性质，恢复原状、采取其他补救措施，或者就已履行部分结算款项；尚未履行的，终止履行。"},{"lineNum":504,"text":"第四十八条 合同可以因下列情形终止："},{"lineNum":505,"text":"当事人协商一致终止；"},{"lineNum":506,"text":"合同约定的履行期限届满，义务全部履行完毕；"},{"lineNum":507,"text":"合同解除；"},{"lineNum":508,"text":"（四）法律规定的其他终止情形。除即时终止的情形外，当事人终止合同应当提前合理期限书面通知对方，明确终止后的结算、清理事宜。"},{"lineNum":509,"text":"第七章 合同的担保"},{"lineNum":510,"text":"第四十九条 当事人一方未按照合同约定履行义务，或者履行义务存在缺陷，经对方催告后仍未纠正的，对方有权要求其提供相应担保，以保障合同后续履行及自身权益。"},{"lineNum":511,"text":"第五十条 合同担保方式可由当事人约定，包括保证金、保证人担保、抵押、质押等合法形式。提供担保的，应当订立书面担保合同，明确担保范围、担保期限、担保责任等条款。"},{"lineNum":512,"text":"第五十一条 担保人应当按照担保合同的约定，在担保范围内承担担保责任。主合同履行完毕的，担保责任终止；主合同无效、被撤销或者解除的，担保人的担保责任按照担保合同约定及法律规定处理。"},{"lineNum":513,"text":"第五十二条 当事人提供的担保违反法律规定、无效或者无法实现担保目的的，对方有权解除主合同，或者要求采取其他补救措施，并有权要求提供担保的一方赔偿因此���成的损失。"},{"lineNum":514,"text":"第八章 合同的争议解决"},{"lineNum":515,"text":"第五十三条 合同当事人之间发生争议的，应当首先尝试友好协商解决；协商不成的，可以按照合同约定选择仲裁或者诉讼方式解决；合同未约定争议解决方式的，当事人可依法自主选择。"},{"lineNum":516,"text":"第五十四条 当事人选择市政府介入解决争议的，应当订立法律协议，法律协议应当明确约定法律规则，对双方当事人具有约束力。"},{"lineNum":517,"text":"第五十五条 当事人选择诉讼方式解决争议的，应当向有管辖权的法院提起诉讼。合同纠纷的管辖法院，可由当事人约定；未约定的，由合同履行地或者被告住所地法院管辖。"},{"lineNum":518,"text":"第九章 附则"},{"lineNum":519,"text":"第五十六条 本法适用于圣安地列斯州境内所有平等主体之间订立、履行、变更、终止民事合同的活动，法律另有特别规定的除外。"},{"lineNum":520,"text":"第五十七条 本法自公布之日起施行。本法施行前已经成立的合同，继续有效；本法施行前发生的合同纠纷，尚未解决的，适用本法规定。"},{"lineNum":521,"text":"九. 圣安地列斯州商法"},{"lineNum":522,"text":"第一章 涉及商业经营的违法行为"},{"lineNum":523,"text":"（1）01 适用性"},{"lineNum":524,"text":"本法适用于圣安地列斯州内所有具备商业性质的公司、组织、店铺等经营主体，旨在营造公平有序、和谐稳定的商业环境，切实保护消费者的合法权益。"},{"lineNum":525,"text":"（2）02 提供注册商品以外的商品"},{"lineNum":526,"text":"注：注册商品指盈利性经营场所已依法登记、具备制作及售卖资质的商品；非盈利场所制作或售卖的商品，均视为非注册商品。"},{"lineNum":527,"text":"依据本条规定，向他人售卖非注册商品的，构成违法行为。"},{"lineNum":528,"text":"■ 违反本条规定的，处以500美元罚款。"},{"lineNum":529,"text":"（3）03 虚假报价"},{"lineNum":530,"text":"依据本条规定，向他人虚报商品价格，误导交易决策的，构成违法行为。"},{"lineNum":531,"text":"■ 违反本条规定的，处以500美元罚款。"},{"lineNum":532,"text":"（4）04 非法经营"},{"lineNum":533,"text":"依据本条规定，存在下列情形之一的，构成非法经营违法行为："},{"lineNum":534,"text":"未向政府部门申请登记，擅自开展以盈利为目的的商业活动；"},{"lineNum":535,"text":"营业许可证被吊销后，仍继续从事以盈利为目的的商业活动。"},{"lineNum":536,"text":"■ 违反本条规定的，没收违法营业额，并处以400美元罚款。"},{"lineNum":537,"text":"（5）05 拒绝检查"},{"lineNum":538,"text":"依据本条规定，拒绝、阻挠、干涉政府部门及其工作人员依法开展食品安全监督检查、事故调查处理、风险监测及风险评估工作的，构成违法行为。"},{"lineNum":539,"text":"■ 违反本条规定的，处以2000美元罚款，同时责令停产停业；情节严重的，吊销营业执照、没收保证金，并冻结其盈利公款。"},{"lineNum":540,"text":"（6）06 拒绝缴纳税款"},{"lineNum":541,"text":"依据本条规定，盈利性经营场所无正当理由拒绝缴纳税款，或通过任何方式推脱、逃避纳税义务的，构成违法行为。"},{"lineNum":542,"text":"■ 违反本条规定的，吊销营业执照，没收包括保证金在内的全部营业公款。"},{"lineNum":543,"text":"（7）07 无法承担税务"},{"lineNum":544,"text":"依据本条规定，盈利性经营场所无法按期足额缴纳政府规定的每周企业税的，从其保证金中扣除相应金额；经营主体需在2周内补缴税款，补缴完毕后恢复保证金额度。"},{"lineNum":545,"text":"若多次出现无法承担企业税情形的，经政府部门审查、双方协商一致后，可返还剩余保证金；经查证存在恶意拒缴企业税行为的，依法采取以下处罚措施：没收保证金及全部经营公款，责令补缴税款，并处以漏缴税款1至3倍的罚款。"},{"lineNum":546,"text":"（8）08 私自转让合法经营许可"},{"lineNum":547,"text":"依据本条规定，政府仅认可已在政府部门注册登记的自然人参与商业经营活动。任何私下转让经营许可的行为，均不受法律保护，转让双方的合法权益无法得到法律保障。"},{"lineNum":548,"text":"（9）09 虚假财务报表"},{"lineNum":549,"text":"依据本条规定，刻意向政府部门及工作人员隐瞒真实经营情况、人员配置、收入明细，或提供虚假材料的，构成违法行为。"},{"lineNum":550,"text":"■ 违反本条规定的，处以3000美元罚款，没收保证金及全部经营公款，吊销营业执照。"},{"lineNum":551,"text":"第二章 扣留和逮捕"},{"lineNum":552,"text":"1 店主特权"},{"lineNum":553,"text":"1.01 适用范围"},{"lineNum":554,"text":"店主特权的适用主体包括：某一经营场所的所有人、所有人授权的代理人、场所雇员及雇佣的安保人员（以下统称“店主”）。店主在有合理怀疑他人在其经营场所内实施（2）08轻度盗窃、（2）09盗窃、（2）10重度盗窃犯罪行为时，可使用合理武力将其扣留。"},{"lineNum":555,"text":"1.02 特权范围"},{"lineNum":556,"text":"店主在有合理怀疑他人非法拿取店内零售商品（不包含店主亲手提供的商品及各类服务）时，可对其进行合理且有限度的搜身。搜身范围不得涉及他人身上穿着或携带的任何衣物，违反本规定的搜身行为，一律视为（1）02袭击行为。"},{"lineNum":557,"text":"1.03 通知义务"},{"lineNum":558,"text":"店主行使本条规定的特权扣留他人后，必须在尽可能短的时间内通知执法人员，依法移交处理。"},{"lineNum":559,"text":"2 可能嫌疑和合理怀疑"},{"lineNum":560,"text":"可能嫌疑（Probable Cause）：是执法人员实施逮捕、搜查，或申请逮捕令、搜查令的必要前提。在常规执法人员的认知范围内，若现有事实与情形足以让理性普通人相信犯罪行为正在发生或已实施完毕，则构成可能嫌疑。合法获取的物证、目击证人提供的详细且合理的证词等，均可作为认定可能嫌疑的依据。可能嫌疑的成立与否，需结合具体实际情况综合判断。"},{"lineNum":561,"text":"合理怀疑（Reasonable Suspicion）：属于可能嫌疑的次级形式，并非主观臆断、无依据的预感或猜测，而是基于特定事实和合理推理，针对特定个体形成的怀疑。合理怀疑的成立与否，需结合具体实际情况综合判断。"},{"lineNum":562,"text":"十. 司法执行程序"},{"lineNum":563,"text":"1. 法律权利"},{"lineNum":564,"text":"根据本条法律，所有违反《圣安地列斯州法典》的犯罪行为，行为人均应在本州范围内接受处罚；"},{"lineNum":565,"text":"根据本条法律，所有违反《圣安地列斯州法典》的刑事犯罪行为，行为人均应在本州监狱或惩教机构接受刑事处罚；"},{"lineNum":566,"text":"根据本条法律，所有违反《圣安地列斯州法典》的犯罪行为，任何处罚均不得超出《圣安地列斯州法典》规定的最高处罚标准；"},{"lineNum":567,"text":"《圣安地列斯州法典》中，对任何行为的定罪只需符合某节法律的一项解释，理由如下：每节法律规定的罪名可能存在多种解释；即使同一节法律存在不同解释，每个解释末尾均以“构成犯罪”收尾；"},{"lineNum":568,"text":"根据本条法律，除非另有规定，对同一事件中可能构成多个罪名的不同行为，可合并处罚，但需满足以下条件："},{"lineNum":569,"text":"上述行为须连贯发生，且各行为间存在明显前因后果关联；"},{"lineNum":570,"text":"虽可合并处罚，但单节罪名的处罚不得超过该罪名的最高处罚标准；"},{"lineNum":571,"text":"轻罪合并处罚不得超过一年监禁和/或2000美元罚款；"},{"lineNum":572,"text":"重罪合并处罚不得超过终身监禁且不得假释。"},{"lineNum":573,"text":"2. 积极性抗辩"},{"lineNum":574,"text":"根据本条法律，被告人有责任尽早提出任何积极性抗辩，并向相关主体陈述其辩护观点；"},{"lineNum":575,"text":"根据本条法律，若被告人已证明抗辩理由是其实施被指控违法犯罪行为的主要原因，且已表明该抗辩为积极性抗辩，则不得因其抗辩理由而受到任何形式的处罚或起诉；"},{"lineNum":576,"text":"根据本条法律，下列积极性抗辩被认定为有效："},{"lineNum":577,"text":"自卫行为：适用于《刑法》第(1)章除第(1)01节、第(1)10节、第(1)11节、第(1)12节以外的所有条款；"},{"lineNum":578,"text":"必要行为：适用于《圣安地列斯州法律》除《刑法》第(1)07节、第(1)08节、第(1)09节、第(1)12节以外的所有条款（原文“第(1)0节”应为笔误，修正为第(1)08节）；"},{"lineNum":579,"text":"非自愿受毒品或酒精影响的行为：适用于《圣安地列斯州法典》所有条款；"},{"lineNum":580,"text":"被陷害行为：适用于《圣安地列斯州法典》所有条款；"},{"lineNum":581,"text":"公民逮捕时的行为：符合《刑法》第(9)08节规定的，适用于《刑法》第(1)10节和第(1)11节。"},{"lineNum":582,"text":"3. 警察执法程序"},{"lineNum":583,"text":"根据本条法律，执法人员在确认行为人行为是否构成犯罪时，须严格遵守本节规定，否则收集的任何证据均丧失法律效力；"},{"lineNum":584,"text":"根据本条法律，证据收集过程必须合法；"},{"lineNum":585,"text":"根据本条法律，执法人员仅在观察到违法犯罪行为时，有权扣留或逮捕他人。此外，观察到违法犯罪行为的执法人员与实施扣留或逮捕的执法人员可为不同主体；"},{"lineNum":586,"text":"根据本条法律，执法人员对被拘留或逮捕的可疑人员进行询问前，必须依法告知其以下权利："},{"lineNum":587,"text":"有权随时行使任何法定权利；"},{"lineNum":588,"text":"有权保持沉默；"},{"lineNum":589,"text":"若不保持沉默，其所有言论均可在法庭上作为证据使用；"},{"lineNum":590,"text":"有权聘请律师；"},{"lineNum":591,"text":"若无力聘请律师，相关部门将为其指派免费法律援助律师。"},{"lineNum":592,"text":"根据本条法律，执法人员逮捕他人时，必须宣告其罪名，无需告知全部罪名；若该人存在未决罪名或有需后续调查的可疑违法犯罪行为，执法人员应依法告知。"},{"lineNum":593,"text":"4. 警察的合法出入"},{"lineNum":594,"text":"根据本条法律，执法人员可合法进入任何对公众开放的区域；"},{"lineNum":595,"text":"根据本条法律，执法人员可进入经租客、房东或房产代理人允许的区域；"},{"lineNum":596,"text":"根据本条法律，执法人员为追逐或逮捕嫌犯处于应急响应状态时，进入任何区域均属合法。"},{"lineNum":597,"text":"5. 对人的搜查"},{"lineNum":598,"text":"根据本条法律，执法人员在下列情形下有权对他人进行搜查："},{"lineNum":599,"text":"合理怀疑他人携带武器的，可进行防备性搜身；"},{"lineNum":600,"text":"他人本人或其监护人同意搜查的；"},{"lineNum":601,"text":"他人已被逮捕的；"},{"lineNum":602,"text":"持有合法搜查令的；"},{"lineNum":603,"text":"持有合法逮捕令的。"},{"lineNum":604,"text":"6. 对财产的搜查"},{"lineNum":605,"text":"根据本条法律，执法人员在下列情形下有权对他人财产进行搜查："},{"lineNum":606,"text":"车辆乘客被逮捕且该乘客非车辆所有者的，仅可搜查该乘客乘坐区域；"},{"lineNum":607,"text":"进入《刑法》第(9)04节规定的区域时，可依据“一目了然法则”对该区域进行搜查；"},{"lineNum":608,"text":"经租客、房东或房产代理人同意的；"},{"lineNum":609,"text":"持有合法搜查令的；"},{"lineNum":610,"text":"有合法理由进行紧急搜查的；"},{"lineNum":611,"text":"对财产所有者或租客实施逮捕后的。"},{"lineNum":612,"text":"7. 搜查令"},{"lineNum":613,"text":"根据本条法律，所有搜查令均由圣安地列斯州法院签发。执法人员申请搜查令时，应提交以下材料："},{"lineNum":614,"text":"搜查区域；"},{"lineNum":615,"text":"搜查内容；"},{"lineNum":616,"text":"搜查原因；"},{"lineNum":617,"text":"可能涉及的罪名及性质。"},{"lineNum":618,"text":"根据本条法律，搜查令签发须遵守以下原则："},{"lineNum":619,"text":"现有证据可证明搜查令被执行人涉嫌违法犯罪；"},{"lineNum":620,"text":"被搜查内容可证明搜查令被执行人违法犯罪。"},{"lineNum":621,"text":"8. 扣留和逮捕"},{"lineNum":622,"text":"根据本条法律，执法人员在下列情形之一时，可扣留他人："},{"lineNum":623,"text":"通过直接观察或他人提供的证据，有理由怀疑他人涉嫌违法犯罪；"},{"lineNum":624,"text":"合理怀疑现场已发生违法犯罪事件；"},{"lineNum":625,"text":"法院已签发传票的。"},{"lineNum":626,"text":"根据本条法律，扣留时间不得超过下列情形所需最短时间："},{"lineNum":627,"text":"对他人及其车辆的搜查时间；"},{"lineNum":628,"text":"执法人员对合理怀疑的调查时间；"},{"lineNum":629,"text":"查找或复查资料、信息的时间；"},{"lineNum":630,"text":"法院传票规定的时间。"},{"lineNum":631,"text":"根据本条法律，扣留行为不得超过三十分钟，下列情形除外："},{"lineNum":632,"text":"法院传票规定时间超过十五分钟的；"},{"lineNum":633,"text":"需要进一步询问的；"},{"lineNum":634,"text":"警探部门为调查重大刑事案件而进行扣留谈话的。"},{"lineNum":635,"text":"根据本条法律，执法人员在下列情形之一时，可逮捕他人："},{"lineNum":636,"text":"他人行为已构成任何轻罪或重罪；"},{"lineNum":637,"text":"持有合法逮捕令的。"},{"lineNum":638,"text":"9. 逮捕令"},{"lineNum":639,"text":"根据本条法律，执法人员有足够证据证明他人构成犯罪且需抓捕归案，但嫌疑人位置不明或位于执法人员无法合法进入的区域时，可向法院申请逮捕令。申请时应提交以下材料："},{"lineNum":640,"text":"嫌疑人姓名；"},{"lineNum":641,"text":"嫌疑人涉嫌罪名；"},{"lineNum":642,"text":"确认嫌疑人涉嫌犯罪的证据；"},{"lineNum":643,"text":"涉案事件的发生时间、地点及过程简述；"},{"lineNum":644,"text":"行为构成的犯罪名称及对应的法律条款。"},{"lineNum":645,"text":"根据本条法律，逮捕令一经颁发即永久有效，直至嫌疑人被逮捕；"},{"lineNum":646,"text":"根据本条法律，法院仅对刑事犯罪签发逮捕令。"},{"lineNum":647,"text":"10. 公民逮捕权"},{"lineNum":648,"text":"根据本条法律，存在下列情形之一时，任何人有权对他人实施逮捕："},{"lineNum":649,"text":"被逮捕人在公共场所实施或企图实施刑事犯罪行为；"},{"lineNum":650,"text":"被逮捕人为刑事重罪罪犯；"},{"lineNum":651,"text":"有足够理由相信被逮捕人涉嫌刑事重罪；"},{"lineNum":652,"text":"被逮捕人自称在实施逮捕行为；"},{"lineNum":653,"text":"执法人员请求协助执行逮捕。"},{"lineNum":654,"text":"根据本条法律，实施公民逮捕后，应及时通知执法人员；"},{"lineNum":655,"text":"根据本条法律，必要时可使用适当武力执行公民逮捕。"},{"lineNum":656,"text":"11. 自由裁量权"},{"lineNum":657,"text":"根据本条法律，执法人员有权合理运用判断力行使自由裁量权，对构成违法或刑事轻罪的行为，选择从轻处罚或放弃处罚；"},{"lineNum":658,"text":"根据本条法律，执法人员的自由裁量权限于对构成违法或刑事轻罪的行为从轻处罚或放弃处罚，不得用其他方式替代法律规定的处罚方式；"},{"lineNum":659,"text":"根据本条法律，若构成违法或刑事轻罪的行为存在直接受害者，且受害者提起诉讼，则执法人员不得行使自由裁量权。"},{"lineNum":660,"text":"12. 法律追诉期"},{"lineNum":661,"text":"根据本条法律，对涉嫌违法犯罪行为的诉讼须在本节规定的期限内提起，该期限称为法律追诉期。超过追诉期提起的诉讼无效；若某行为构成的犯罪已过追诉期，则对该罪名的证据收集、调查及对行为人的任何形式羁押均属违法，可能构成刑事犯罪；"},{"lineNum":662,"text":"根据本条法律，法律追诉期自涉嫌违法犯罪行为被发现之日起算，而非行为发生之日；"},{"lineNum":663,"text":"根据本条法律，《圣安地列斯州法律》所规定罪名的追诉期如下："},{"lineNum":664,"text":"涉及非法剥夺他人生命、挪用公款或其他最高可判处死刑、终身监禁（无论是否可假释）的重罪，无追诉期限制；"},{"lineNum":665,"text":"其他最高可判处八年及以上监禁的重罪，追诉期为六年；其他最高可判处八年以下监禁的重罪，追诉期为三年；"},{"lineNum":666,"text":"轻罪（除对14岁以下未成年人的轻罪侵犯、医生或治疗师性侵轻罪案件外），追诉期为一年；"},{"lineNum":667,"text":"对14岁以下未成年人的轻罪侵犯，追诉期为三年；医生或治疗师实施的性侵轻罪，追诉期为两年；"},{"lineNum":668,"text":"受害者为21岁以下未成年人的重罪，追诉期至受害者40岁生日前。"},{"lineNum":669,"text":"根据本条法律，若嫌疑人犯罪行为未发生在圣安地列斯州境内，或犯罪后逃离本州，其涉案罪名的法定追诉期最高可延长三年。"},{"lineNum":670,"text":"13. 保护令"},{"lineNum":671,"text":"根据本条法律，本州公民在下列情形下，可向法院申请保护令，以保障自身生命或财产安全："},{"lineNum":672,"text":"遭受骚扰；"},{"lineNum":673,"text":"遭受虐待；"},{"lineNum":674,"text":"遭受跟踪；"},{"lineNum":675,"text":"遭受威胁。"},{"lineNum":676,"text":"根据本条法律，违反法院签发的保护令构成犯罪，具体行为包括但不限于："},{"lineNum":677,"text":"与被保护人当面接触；"},{"lineNum":678,"text":"与被保护人通过电话、短信联系；"},{"lineNum":679,"text":"与被保护人通过电子邮件联系；"},{"lineNum":680,"text":"与被保护人在社交平台联系；"},{"lineNum":681,"text":"监视被保护人。"},{"lineNum":682,"text":"违反《刑法》第(9)13节的行为可构成轻罪或重罪："},{"lineNum":683,"text":"构成轻罪的，最高可判处州监狱一年监禁和/或2000美元罚款；"},{"lineNum":684,"text":"构成重罪的，最高可判处州监狱三年监禁。"},{"lineNum":685,"text":"15. 合法持有、购买和使用武器"},{"lineNum":686,"text":"根据本条法律，年满21岁的圣安地列斯州居民，若需销售、购买、租借或转让枪支（现役军人、退伍军人、执法人员除外），须向州政府支付25美元费用，并提交以下材料以获取有效期五年的枪支安全证书："},{"lineNum":687,"text":"本州身份证明；"},{"lineNum":688,"text":"经美国司法部认证教员监考的书面考试合格证明。"},{"lineNum":689,"text":"根据本条法律，仅符合圣安地列斯州法律规定的枪支，方可销售、购买、持有、租借或转让；"},{"lineNum":690,"text":"根据本条法律，枪支和弹药的销售、购买必须通过持牌经销商进行，州政府及相关部门需对购买者进行背景调查并记录交易信息，同时执行十天冷静期。登记信息包括但不限于：姓名、年龄、住址、电话、驾照及护照信息、指纹、枪支序列号等；"},{"lineNum":691,"text":"根据本条法律，购买、持有电击枪无需申请枪支安全证书；"},{"lineNum":692,"text":"根据本条法律，隐蔽式持枪证是普通公民在本州合法携带枪支的唯一途径。获得该证件前，在公共场所携带枪支或装卸弹药均构成犯罪；"},{"lineNum":693,"text":"根据本条法律，圣安地列斯州司法部或地方相关部门颁发的隐蔽式持枪证，在全州范围内有效；"},{"lineNum":694,"text":"根据本条法律，本州不承认其他州、国家及地区颁发的隐蔽式持枪证；"},{"lineNum":695,"text":"根据本条法律，非圣安地列斯州公民不得在本州申请隐蔽式持枪证；"},{"lineNum":696,"text":"根据本条法律，在私人交通工具内存放枪支，需持有有效的隐蔽式持枪证；"},{"lineNum":697,"text":"根据本条法律，未持有隐蔽式持枪证运输枪支时，须将枪支、弹夹、子弹分开放置，并锁定于箱体内；"},{"lineNum":698,"text":"根据《联邦执法人员安全法案》，符合条件的执法人员携带指定型号手枪、步枪或猎枪时，不受本州法律约束。“符合条件的执法人员”包括："},{"lineNum":699,"text":"经法律授权，从事违法犯罪预防、监督、发现、调查工作，且有权逮捕或监禁犯罪嫌疑人的执法人员；"},{"lineNum":700,"text":"经雇主或执法部门允许携带枪支，携带行为不会导致停职或纪律处分，且雇主已明确告知武器使用规定；"},{"lineNum":701,"text":"未受酒精或其他致幻物质影响；"},{"lineNum":702,"text":"未被联邦或州法律禁止持枪；"},{"lineNum":703,"text":"离职前符合上述执法人员条件，累计任职十年及以上，且近一年内通过前雇主或执法部门的枪支资格考试；"},{"lineNum":704,"text":"经前相关认证医疗专家诊断，无精神或心理障碍，未受酒精或其他致幻物质影响，且未被联邦或州法律禁止持枪。"},{"lineNum":705,"text":"根据本条法律，未获得圣安地列斯州司法部批准及序列号，擅自自制枪支构成轻罪，最高可判处州监狱一年监禁；"},{"lineNum":706,"text":"根据本条法律，合法持有枪支的圣安地列斯州新居民，须在入境六十天内依法向相关部门登记其枪支；"},{"lineNum":707,"text":"根据红旗法（Red Flag Law），警察、教员及其雇员或同事，若合理怀疑自身或家庭成员人身安全受到他人威胁，可向法院申请禁制令，要求没收对方枪支，禁制令有效期最长可达五年；"},{"lineNum":708,"text":"根据本条法律，BB枪、彩弹枪、弹丸枪及其他仿真玩具枪均属仿制枪支，所有仿制枪支必须标注明亮彩色标记，以区别于真枪；"},{"lineNum":709,"text":"根据本条法律，严禁未成年人持有仿制枪支，或向未成年人销售仿制枪支、电击枪；"},{"lineNum":710,"text":"根据本条法律，携带仿制枪支或电击枪进入公众可视线触及区域，或向公众展示仿制枪支，构成轻罪，最高可判处县或州监狱一年监禁。"},{"lineNum":711,"text":"\u000f\u001e\u001e\u001e\u001e\u001e\u001e\u001e"}];
+const laws = ["一、圣安地列斯州刑法","二、圣安地列斯州车辆法","三、圣安地列斯州公共安全法","四、港口与航海法","五、圣安地列斯州航空管理法","六、狩猎法和动物保护法","九. 圣安地列斯州商法"];
+const SENTENCING = {
+1:{type:"single",prison:1,fine:2000,label:"最高1年+$2,000"},
+2:{type:"single",prison:3,fine:5000,label:"最高3年+$5,000"},
+3:{type:"single",prison:3,fine:3500,label:"最高3年+$3,500"},
+4:{type:"single",prison:3,fine:5000,label:"最高3年+$5,000"},
+5:{type:"single",prison:7,fine:4000,label:"最高7年+$4,000"},
+6:{type:"single",prison:5,fine:6000,label:"最高5年+$6,000"},
+7:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+8:{type:"multi",levels:[{label:"轻罪",prison:3,fine:2500,desc:"最高3年+$2,500"},{label:"重罪(重伤/死亡/赎金)",prison:5,fine:5000,desc:"最高5年+$5,000"}]},
+9:{type:"multi",levels:[{label:"轻罪(未昏迷)",prison:2,fine:1000,desc:"2年+$1,000"},{label:"重罪(昏迷/死亡)",prison:3,fine:3000,desc:"3年+$3,000"}]},
+10:{type:"single",prison:3,fine:1500,label:"最高3年+$1,500"},
+11:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+12:{type:"single",prison:1,fine:500,label:"最高1年+$500"},
+13:{type:"single",prison:1,fine:1000,label:"最高1年+$1,000"},
+14:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+15:{type:"single",prison:3,fine:1500,label:"最高3年+$1,500"},
+16:{type:"single",prison:3,fine:1500,label:"最高3年+$1,500"},
+17:{type:"multi",levels:[{label:"轻罪",prison:1,fine:500,desc:"1年+$500"},{label:"重罪",prison:3,fine:3000,desc:"3年+$3,000"}]},
+18:{type:"multi",levels:[{label:"轻罪(<=$5000)",prison:1,fine:500,desc:"1年+$500"},{label:"重罪(>$5000)",prison:3,fine:2500,desc:"3年+$2,500"}]},
+19:{type:"single",prison:2,fine:1500,label:"最高2年+$1,500"},
+20:{type:"single",prison:2,fine:1500,label:"最高2年+$1,500"},
+21:{type:"single",prison:1,fine:500,label:"最高1年+$500"},
+22:{type:"single",prison:1,fine:500,label:"最高1年+$500"},
+23:{type:"single",prison:1,fine:500,label:"最高1年+$500"},
+24:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+25:{type:"single",prison:2,fine:1500,label:"最高2年+$1,500"},
+26:{type:"single",prison:1,fine:500,label:"最高1年+$500"},
+27:{type:"single",prison:1,fine:500,label:"最高1年+$500"},
+28:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+29:{type:"multi",levels:[{label:"轻罪(情节较轻)",prison:1,fine:500,desc:"1年+$500"},{label:"重罪(情节严重)",prison:3,fine:2500,desc:"3年+$2,500"}]},
+30:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+31:{type:"single",prison:1,fine:500,label:"最高1年+$500"},
+32:{type:"single",prison:1,fine:500,label:"最高1年+$500"},
+33:{type:"single",prison:3,fine:1500,label:"最高3年+$1,500"},
+34:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+35:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+36:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+37:{type:"single",prison:3,fine:1500,label:"最高3年+$1,500"},
+38:{type:"single",prison:3,fine:1500,label:"最高3年+$1,500"},
+39:{type:"single",prison:3,fine:1500,label:"最高3年+$1,500"},
+40:{type:"single",prison:3,fine:1500,label:"最高3年+$1,500"},
+41:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+42:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+43:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+44:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+45:{type:"multi",levels:[{label:"恶意拨打热线",prison:1,fine:500,desc:"最高1年+$500"},{label:"二审败诉方",prison:0,fine:2000,desc:"$2,000 无监禁"}]},
+46:{type:"single",prison:3,fine:1500,label:"最高3年+$1,500"},
+47:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+48:{type:"single",prison:3,fine:500,label:"最高3年+$500"},
+49:{type:"single",prison:3,fine:1500,label:"最高3年+$1,500"},
+50:{type:"single",prison:3,fine:3000,label:"最高3年+$3,000"},
+51:{type:"single",prison:1,fine:1000,label:"最高1年+$1,000"},
+52:{type:"single",prison:1,fine:500,label:"最高1年+$500"},
+53:{type:"single",prison:2,fine:2500,label:"最高2年+$2,500"},
+54:{type:"single",prison:2,fine:500,label:"最高2年+$500"},
+55:{type:"single",prison:1,fine:1500,label:"最高1年+$1,500"},
+56:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+57:{type:"single",prison:1,fine:1500,label:"最高1年+$1,500"},
+58:{type:"single",prison:3,fine:5000,label:"最高3年+$5,000"},
+59:{type:"single",prison:2,fine:1500,label:"最高2年+$1,500"},
+60:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+61:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+62:{type:"single",prison:3,fine:1500,label:"最高3年+$1,500"},
+63:{type:"single",prison:3,fine:2500,label:"最高3年+$2,500"},
+64:{type:"single",prison:7,fine:6000,label:"最高7年+$6,000"},
+65:{type:"single",prison:6,fine:5000,label:"最高6年+$5,000"},
+66:{type:"single",prison:4,fine:2500,label:"最高4年+$2,500"},
+67:{type:"single",prison:4,fine:2500,label:"最高4年+$2,500"},
+68:{type:"single",prison:3,fine:1500,label:"最高3年+$1,500"},
+69:{type:"single",prison:3,fine:0,label:"最高3年(无罚款)"},
+70:{type:"single",prison:3,fine:0,label:"最高3年(无罚款)"},
+71:{type:"single",prison:0,fine:1000,label:"$1,000 罚款"},
+72:{type:"multi",levels:[{label:"轻罪",prison:1,fine:2000,desc:"1年+$2,000"},{label:"重罪",prison:3,fine:0,desc:"3年 没收车辆"}]},
+73:{type:"multi",levels:[{label:"违法(财产损失>$1000)",prison:0,fine:1000,desc:"$1,000 扣押车辆"},{label:"重罪(造成伤亡)",prison:4,fine:2000,desc:"4年+$2,000"}]},
+74:{type:"single",prison:0,fine:500,label:"$500 罚款"},
+75:{type:"multi",levels:[{label:"车辆违规",prison:0,fine:200,desc:"$200"},{label:"行人违规",prison:0,fine:100,desc:"$100"}]},
+76:{type:"multi",levels:[{label:"违规转向/掉头",prison:0,fine:300,desc:"$300"},{label:"超速<10MPH",prison:0,fine:200,desc:"$200"},{label:"超速10-20MPH",prison:0,fine:600,desc:"$600"},{label:"超速>20MPH",prison:0,fine:1500,desc:"$1,500"}]},
+77:{type:"single",prison:0,fine:500,label:"$500 罚款"},
+78:{type:"single",prison:1,fine:1000,label:"1年+$1,000"},
+79:{type:"multi",levels:[{label:"监禁(二选一)",prison:1,fine:0,desc:"1年监禁"},{label:"罚款(二选一)",prison:0,fine:1000,desc:"$1,000"}]},
+80:{type:"single",prison:1,fine:1000,label:"1年+$1,000"},
+81:{type:"single",prison:1,fine:1000,label:"1年+$1,000"},
+82:{type:"single",prison:0,fine:500,label:"$500 罚款"},
+83:{type:"multi",levels:[{label:"城市超速",prison:0,fine:1500,desc:"$1,500"},{label:"公路超速",prison:0,fine:1000,desc:"$1,000"}]},
+84:{type:"multi",levels:[{label:"毒品/非法枪支",prison:4,fine:2000,desc:"4年+$2,000"},{label:"管制工具/2-4in刀",prison:1,fine:500,desc:"1年+$500"},{label:"4in以上刀具",prison:2,fine:1000,desc:"2年+$1,000"}]},
+85:{type:"multi",levels:[{label:"10-50份",prison:2,fine:3000,desc:"2年+$3,000"},{label:"51-200份",prison:5,fine:5000,desc:"5年+$5,000"},{label:"201-500份",prison:7,fine:10000,desc:"7年+$10,000"},{label:"501-999份",prison:10,fine:25000,desc:"10年+$25,000"}]},
+86:{type:"multi",levels:[{label:"非法贩卖",prison:3,fine:3000,desc:"3年+$1,000-$3,000"},{label:"非法制造",prison:5,fine:1000,desc:"5年+$1,000"}]},
+87:{type:"single",prison:1,fine:1000,label:"1年+$1,000"},
+88:{type:"single",prison:1,fine:500,label:"1年+$500"},
+89:{type:"single",prison:0,fine:275,label:"$275"},
+90:{type:"single",prison:0,fine:1070,label:"$1,070"},
+91:{type:"single",prison:0,fine:384,label:"$384"},
+92:{type:"single",prison:0,fine:2000,label:"$2,000"},
+93:{type:"single",prison:0,fine:6000,label:"$6,000"},
+94:{type:"single",prison:0,fine:500,label:"$500"},
+95:{type:"single",prison:0.5,fine:1000,label:"6个月+$1,000"},
+96:{type:"single",prison:0,fine:1000,label:"$1,000"},
+97:{type:"multi",levels:[{label:"无航行日志",prison:0,fine:3000,desc:"$3,000"},{label:"无船只保险",prison:0,fine:800,desc:"$800"}]},
+98:{type:"single",prison:0,fine:10000,label:"$10,000"},
+99:{type:"single",prison:0,fine:10000,label:"$10,000"},
+100:{type:"single",prison:0,fine:10000,label:"$10,000"},
+101:{type:"single",prison:0,fine:10000,label:"$10,000"},
+102:{type:"single",prison:0,fine:10000,label:"$10,000"},
+103:{type:"single",prison:0,fine:10000,label:"$10,000"},
+104:{type:"single",prison:3,fine:30000,label:"3年+$30,000"},
+105:{type:"single",prison:0,fine:1500,label:"$1,500"},
+106:{type:"single",prison:0,fine:2000,label:"$2,000"},
+107:{type:"single",prison:0,fine:2000,label:"$2,000"},
+108:{type:"single",prison:0,fine:2000,label:"$2,000"},
+109:{type:"single",prison:0,fine:2000,label:"$2,000"},
+110:{type:"single",prison:0,fine:0,label:"需法官裁量"},
+111:{type:"single",prison:0,fine:500,label:"$500"},
+112:{type:"single",prison:0,fine:500,label:"$500"},
+113:{type:"single",prison:0,fine:400,label:"$400"},
+114:{type:"single",prison:0,fine:2000,label:"$2,000"},
+115:{type:"single",prison:0,fine:0,label:"吊销执照(无罚金)"},
+116:{type:"single",prison:0,fine:0,label:"需法官裁量"},
+117:{type:"single",prison:0,fine:0,label:"不受法律保护"},
+118:{type:"single",prison:0,fine:3000,label:"$3,000"}};
+
+
+(function(){
+  var Q = '', C = 'all', L = 'all', T = 'a';
+
+  // Render law tags
+  var lawTagsContainer = document.querySelectorAll('.tags')[1];
+  for (var i = 0; i < laws.length; i++) {
+    var l = laws[i];
+    var el = document.createElement('span');
+    el.className = 'tag';
+    el.textContent = l.length > 14 ? l.substring(0, 14) + '...' : l;
+    el.title = l;
+    el.dataset.law = l;
+    lawTagsContainer.appendChild(el);
+  }
+
+  function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function highlight(text, query) {
+    if (!query) return esc(text);
+    var s = esc(text);
+    var terms = query.split(/\s+/).filter(function(x) { return x.length > 0; });
+    for (var ti = 0; ti < terms.length; ti++) {
+      var term = terms[ti];
+      var lo = s.toLowerCase();
+      var lt = term.toLowerCase();
+      var result = [];
+      var p = 0;
+      var i = lo.indexOf(lt);
+      while (i >= 0) {
+        result.push(s.substring(p, i));
+        result.push('<span class="hl">' + s.substring(i, i + term.length) + '</span>');
+        p = i + term.length;
+        i = lo.indexOf(lt, p);
+      }
+      result.push(s.substring(p));
+      s = result.join('');
+    }
+    return s;
+  }
+
+  function badgeClass(cat) {
+    if (cat === '重罪') return 'f';
+    if (cat === '轻罪') return 'm';
+    if (cat === '违法') return 'v';
+    return 'o';
+  }
+
+  function doSearch() {
+    var statusEl = document.getElementById('status-text');
+    statusEl.textContent = Q ? '查询中...' : '就绪';
+
+    var content = document.getElementById('content-main');
+
+    if (T === 'a') {
+      var filtered = [];
+      for (var i = 0; i < arts.length; i++) {
+        var a = arts[i];
+        var matchCat = (C === 'all' || a.category === C);
+        var matchLaw = (L === 'all' || a.law === L);
+        var matchQ = true;
+        if (Q) {
+          var kw = Q.split(/\s+/).filter(function(x) { return x.length > 0; });
+          for (var k = 0; k < kw.length; k++) {
+            var searchText = (a.name + ' ' + a.description + ' ' + a.penalty + ' ' + a.law).toLowerCase();
+            if (searchText.indexOf(kw[k].toLowerCase()) === -1) { matchQ = false; break; }
+          }
+        }
+        if (matchCat && matchLaw && matchQ) filtered.push(a);
+      }
+
+      document.getElementById('cnt').textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        content.innerHTML = '<div class="empty"><div class="big">§</div>未找到匹配结果</div>';
+        statusEl.textContent = '完成';
+        return;
+      }
+
+      var groups = {};
+      for (var gi = 0; gi < filtered.length; gi++) {
+        var ga = filtered[gi];
+        if (!groups[ga.law]) groups[ga.law] = [];
+        groups[ga.law].push(ga);
+      }
+
+      var html = '';
+      var lawNames = Object.keys(groups);
+      for (var ln = 0; ln < lawNames.length; ln++) {
+        var lawName = lawNames[ln];
+        html += '<div class="section">' + esc(lawName) + '</div>';
+        var articles = groups[lawName];
+        for (var ai = 0; ai < articles.length; ai++) {
+          var art = articles[ai];
+          html += '<div class="card">';
+          html += '<div class="card-head">';
+          html += '<span class="card-name">' + highlight(art.name, Q) + '</span>';
+          html += '<span class="badge ' + badgeClass(art.category) + '">' + (art.category || '其他') + '</span>';
+          html += '<button class="sentencing-btn" data-id="' + art.id + '">+量刑</button>';
+          html += '</div>';
+          html += '<div class="card-p">' + highlight(art.penalty, Q) + '</div>';
+          html += '<div class="card-d">' + highlight(art.description, Q) + '</div>';
+          if (art.chapter) html += '<div class="card-m">' + esc(art.chapter) + '</div>';
+          html += '</div>';
+        }
+      }
+      content.innerHTML = html;
+    } else {
+      var results = fts;
+      if (Q) {
+        var kw2 = Q.split(/\s+/).filter(function(x) { return x.length > 0; });
+        results = [];
+        for (var fi = 0; fi < fts.length; fi++) {
+          var match = true;
+          for (var fk = 0; fk < kw2.length; fk++) {
+            if (fts[fi].text.toLowerCase().indexOf(kw2[fk].toLowerCase()) === -1) { match = false; break; }
+          }
+          if (match) results.push(fts[fi]);
+        }
+      }
+      document.getElementById('cnt').textContent = results.length;
+      if (results.length === 0) {
+        content.innerHTML = '<div class="empty"><div class="big">§</div>未找到匹配结果</div>';
+        statusEl.textContent = '完成';
+        return;
+      }
+      var ftHTML = '';
+      for (var fr = 0; fr < results.length; fr++) {
+        ftHTML += '<div class="ft' + (Q ? ' found' : '') + '">' + highlight(results[fr].text, Q) + '</div>';
+      }
+      content.innerHTML = ftHTML;
+    }
+
+    statusEl.textContent = '完成';
+  }
+
+  // Search input
+  var qInput = document.getElementById('q');
+  qInput.addEventListener('input', function(e) { Q = e.target.value; doSearch(); });
+  qInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { doSearch(); e.preventDefault(); }
+  });
+
+  // Search button
+  document.getElementById('search-btn').addEventListener('click', function() { doSearch(); });
+
+  // Category and law tags
+  var allTags = document.querySelectorAll('.tag');
+  for (var ti = 0; ti < allTags.length; ti++) {
+    allTags[ti].addEventListener('click', function() {
+      var t = this;
+      if (t.dataset.cat !== undefined) {
+        C = t.dataset.cat;
+        L = 'all';
+        var tags = document.querySelectorAll('#cat-tags .tag, .tags:first-of-type .tag');
+        for (var j = 0; j < tags.length; j++) tags[j].classList.remove('on');
+        t.classList.add('on');
+        var lawAll = document.querySelector('.tag[data-law="all"]');
+        if (lawAll) lawAll.classList.add('on');
+        // Also uncheck non-'all' law tags
+        var lawTags = document.querySelectorAll('.tag[data-law]:not([data-law="all"])');
+        for (var k = 0; k < lawTags.length; k++) lawTags[k].classList.remove('on');
+        lawAll.classList.add('on');
+      } else if (t.dataset.law !== undefined) {
+        L = t.dataset.law;
+        if (L !== 'all') {
+          C = 'all';
+          var catAll = document.querySelector('#cat-tags .tag[data-cat="all"]');
+          var catTags = document.querySelectorAll('#cat-tags .tag');
+          for (var m = 0; m < catTags.length; m++) catTags[m].classList.remove('on');
+          catAll.classList.add('on');
+          var lawTags2 = document.querySelectorAll('.tag[data-law]');
+          for (var n = 0; n < lawTags2.length; n++) lawTags2[n].classList.remove('on');
+          t.classList.add('on');
+        } else {
+          var lawTags3 = document.querySelectorAll('.tag[data-law]');
+          for (var o = 0; o < lawTags3.length; o++) lawTags3[o].classList.remove('on');
+          t.classList.add('on');
+        }
+      }
+      doSearch();
+    });
+  }
+
+  // Tab switching
+  var tabs = document.querySelectorAll('.tab');
+  for (var tbi = 0; tbi < tabs.length; tbi++) {
+    tabs[tbi].addEventListener('click', function() {
+      var tabsAll = document.querySelectorAll('.tab');
+      for (var u = 0; u < tabsAll.length; u++) tabsAll[u].classList.remove('on');
+      this.classList.add('on');
+      T = this.dataset.tab;
+      doSearch();
+    });
+  }
+
+  // ===== 量刑面板逻辑 =====
+  var sentencingItems = [];
+  var sentencingPanel = document.getElementById('sentencing-panel');
+  var sentencingBody = document.getElementById('sentencing-body');
+  var sentencingToggle = document.getElementById('sentencing-toggle');
+  var sentencingList = document.getElementById('sentencing-list');
+  var sentencingTotal = document.getElementById('sentencing-total');
+  var sentencingCount = document.getElementById('sentencing-count');
+  var sentencingSummary = document.getElementById('sentencing-summary');
+  var sentencingDialog = document.getElementById('sentencing-dialog');
+  var pendingArtId = null;
+
+  // 面板展开/折叠
+  sentencingToggle.addEventListener('click', function() {
+    if (sentencingPanel.classList.contains('collapsed')) {
+      sentencingPanel.classList.remove('collapsed');
+      document.body.classList.add('has-panel');
+    } else {
+      sentencingPanel.classList.add('collapsed');
+      document.body.classList.remove('has-panel');
+    }
+  });
+
+  // ===== 警员信息保存/恢复 =====
+  var OFFICER_KEY = 'lspd_officer_info';
+  function officerFields() {
+    return {
+      name: document.getElementById('template-name'),
+      badge: document.getElementById('template-badge'),
+      rName: document.getElementById('report-name'),
+      rBadge: document.getElementById('report-badge')
+    };
+  }
+  function loadOfficer() {
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem(OFFICER_KEY) || 'null'); } catch(e) {}
+    if (!saved) return;
+    var f = officerFields();
+    if (f.name) f.name.value = saved.name || '';
+    if (f.badge) f.badge.value = saved.badge || '';
+    if (f.rName) f.rName.value = saved.name || '';
+    if (f.rBadge) f.rBadge.value = saved.badge || '';
+  }
+  function saveOfficer(btn) {
+    var f = officerFields();
+    var data = { name: f.name ? f.name.value : '', badge: f.badge ? f.badge.value : '' };
+    try { localStorage.setItem(OFFICER_KEY, JSON.stringify(data)); } catch(e) {}
+    if (btn) {
+      btn.textContent = '已保存';
+      btn.classList.add('saved');
+      setTimeout(function() { btn.textContent = '保存'; btn.classList.remove('saved'); }, 1500);
+    }
+  }
+  loadOfficer();
+  var tNameEl = document.getElementById('template-name');
+  var tBadgeEl = document.getElementById('template-badge');
+  var rNameEl = document.getElementById('report-name');
+  var rBadgeEl = document.getElementById('report-badge');
+  if (tNameEl) tNameEl.addEventListener('input', function() {
+    if (rNameEl) rNameEl.value = this.value;
+    updateTemplate();
+  });
+  if (tBadgeEl) tBadgeEl.addEventListener('input', function() {
+    if (rBadgeEl) rBadgeEl.value = this.value;
+    updateTemplate();
+  });
+  if (rNameEl) rNameEl.addEventListener('input', function() {
+    if (tNameEl) tNameEl.value = this.value;
+    updateReportText();
+  });
+  if (rBadgeEl) rBadgeEl.addEventListener('input', function() {
+    if (tBadgeEl) tBadgeEl.value = this.value;
+    updateReportText();
+  });
+  var tsaveBtn = document.getElementById('template-save-officer');
+  if (tsaveBtn) tsaveBtn.addEventListener('click', function() { saveOfficer(this); });
+  var rsaveBtn = document.getElementById('report-save-officer');
+  if (rsaveBtn) rsaveBtn.addEventListener('click', function() { saveOfficer(this); });
+
+  function updateTemplate() {
+    var names = [];
+    var tp = 0, tf = 0;
+    for (var i = 0; i < sentencingItems.length; i++) {
+      var item = sentencingItems[i];
+      names.push(item.artName);
+      tp += item.prison;
+      tf += item.fine;
+    }
+    var months = Math.round(tp * 12);
+    var nameStr = names.join(' ');
+    var deptEl = document.getElementById('template-dept');
+    var dept = deptEl ? deptEl.value : '中央巡逻分局';
+    var oName = (document.getElementById('template-name') || {}).value || '';
+    var oBadge = (document.getElementById('template-badge') || {}).value || '';
+    var text = '姓名：' + oName + '\n';
+    text += '警号：' + oBadge + '\n';
+    text += '隶属警局：密申罗分局-' + dept + '\n';
+    text += '-----------------------------------------------------\n';
+    text += '罪名：' + nameStr + '\n';
+    text += '证据：警员执法记录仪\n';
+    text += '地方裁量：' + months + '个月监禁 ' + tf + '美元罚款';
+    var ta = document.getElementById('template-area');
+    if (ta) ta.value = text;
+  }
+
+  // Copy button
+  var copyBtn = document.getElementById('copy-btn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function() {
+      var ta = document.getElementById('template-area');
+      if (!ta) return;
+      ta.select();
+      try {
+        document.execCommand('copy');
+        copyBtn.textContent = '已复制';
+        setTimeout(function() { copyBtn.textContent = '复制模板'; }, 1500);
+      } catch(e) {
+        // Fallback
+        var range = document.createRange();
+        range.selectNode(ta);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        document.execCommand('copy');
+        sel.removeAllRanges();
+        copyBtn.textContent = '已复制';
+        setTimeout(function() { copyBtn.textContent = '复制模板'; }, 1500);
+      }
+    });
+  }
+
+  // 部门切换实时更新量刑模板
+  var templateDept = document.getElementById('template-dept');
+  if (templateDept) {
+    templateDept.addEventListener('change', updateTemplate);
+  }
+  document.getElementById('sd-cancel').addEventListener('click', function() {
+    sentencingDialog.classList.remove('show');
+    pendingArtId = null;
+  });
+
+  // 点击弹窗外层关闭
+  sentencingDialog.addEventListener('click', function(e) {
+    if (e.target === sentencingDialog) {
+      sentencingDialog.classList.remove('show');
+      pendingArtId = null;
+    }
+  });
+
+  function fmtP(y) {
+    if (y === 0) return '无监禁';
+    if (y < 1) return Math.round(y*12)+'个月';
+    return y+'年监禁';
+  }
+  function fmtF(d) {
+    if (d === 0) return '无罚款';
+    return '$'+d.toLocaleString();
+  }
+
+  function updatePanel() {
+    var tp = 0, tf = 0;
+    var html = '';
+    for (var i = 0; i < sentencingItems.length; i++) {
+      var item = sentencingItems[i];
+      tp += item.prison;
+      tf += item.fine;
+      var artName = item.artName.length > 18 ? item.artName.substring(0,16)+'..' : item.artName;
+      html += '<div class="sentencing-item">';
+      html += '<span class="s-del" data-idx="'+i+'">x</span>';
+      html += '<span class="s-name" data-artid="'+item.artId+'" title="点击查看法条">'+esc(artName)+'</span>';
+      if (item.isMulti) {
+        var sData = SENTENCING[item.artId];
+        var opts = '';
+        if (sData && sData.levels) {
+          for (var li = 0; li < sData.levels.length; li++) {
+            opts += '<option value="'+li+'"'+(li === item.levelIdx ? ' selected' : '')+'>'+esc(sData.levels[li].label)+'</option>';
+          }
+        }
+        html += '<select class="s-level-select" data-idx="'+i+'">'+opts+'</select>';
+      } else {
+        html += '<span class="s-level">'+esc(item.levelLabel)+'</span>';
+      }
+      html += '<span class="s-prison">'+fmtP(item.prison)+'</span>';
+      html += '<span class="s-fine">'+fmtF(item.fine)+'</span>';
+      html += '</div>';
+    }
+    sentencingList.innerHTML = html;
+    sentencingTotal.innerHTML = '<span class="st-label">合计</span><span class="st-prison">'+fmtP(tp)+'</span><span class="st-fine">'+fmtF(tf)+'</span>';
+    sentencingCount.textContent = sentencingItems.length;
+    var sp = tp === 0 ? '无监禁' : tp+'年监禁';
+    var sf = tf === 0 ? '$0' : '$'+tf.toLocaleString();
+    sentencingSummary.innerHTML = '合计 <span style="color:#000;font-weight:700">'+sp+'</span> + <span style="color:#000;font-weight:700">'+sf+'</span>';
+    updateTemplate();
+
+    // 委托删除按钮事件
+    var delBtns = sentencingList.querySelectorAll('.s-del');
+    for (var d = 0; d < delBtns.length; d++) {
+      delBtns[d].addEventListener('click', function(e) {
+        e.stopPropagation();
+        var idx = parseInt(this.dataset.idx);
+        sentencingItems.splice(idx, 1);
+        updatePanel();
+        updateCardButtons();
+        if (sentencingItems.length === 0) {
+          sentencingPanel.classList.add('collapsed');
+          document.body.classList.remove('has-panel');
+        }
+      });
+    }
+
+    // 委托罪名点击 → 弹出法条详情
+    var nameEls = sentencingList.querySelectorAll('.s-name');
+    for (var ne = 0; ne < nameEls.length; ne++) {
+      nameEls[ne].addEventListener('click', function(e) {
+        e.stopPropagation();
+        showLawDetail(this.dataset.artid);
+      });
+    }
+
+    // 多级判罚切换
+    var levelSelects = sentencingList.querySelectorAll('.s-level-select');
+    for (var ls = 0; ls < levelSelects.length; ls++) {
+      levelSelects[ls].addEventListener('change', function(e) {
+        e.stopPropagation();
+        var idx = parseInt(this.dataset.idx);
+        var newLevel = parseInt(this.value);
+        var item = sentencingItems[idx];
+        if (item && item.isMulti) {
+          var sData = SENTENCING[item.artId];
+          if (sData && sData.levels && sData.levels[newLevel]) {
+            var lv = sData.levels[newLevel];
+            item.levelIdx = newLevel;
+            item.levelLabel = lv.label;
+            item.prison = lv.prison;
+            item.fine = lv.fine;
+            updatePanel();
+            updateCardButtons();
+          }
+        }
+      });
+    }
+  }
+
+  function updateCardButtons() {
+    var addedIds = {};
+    for (var i = 0; i < sentencingItems.length; i++) {
+      addedIds[sentencingItems[i].artId] = true;
+    }
+    var btns = document.querySelectorAll('.sentencing-btn');
+    for (var b = 0; b < btns.length; b++) {
+      if (addedIds[btns[b].dataset.id]) {
+        btns[b].classList.add('added');
+        btns[b].textContent = '已添加';
+      } else {
+        btns[b].classList.remove('added');
+        btns[b].textContent = '+量刑';
+      }
+    }
+  }
+
+  function showLevelDialog(artId, artName) {
+    var s = SENTENCING[artId];
+    if (!s || s.type !== 'multi') return;
+    document.getElementById('sd-title').textContent = artName;
+    var optHTML = '';
+    for (var l = 0; l < s.levels.length; l++) {
+      var lv = s.levels[l];
+      optHTML += '<button class="sentencing-dialog-option" data-level="'+l+'">';
+      optHTML += '<span class="opt-label">'+esc(lv.label)+'</span>';
+      optHTML += '<span class="opt-desc">'+esc(lv.desc)+'</span>';
+      optHTML += '</button>';
+    }
+    document.getElementById('sd-options').innerHTML = optHTML;
+    sentencingDialog.classList.add('show');
+    pendingArtId = artId;
+
+    // 委托选项按钮事件
+    var opts = document.querySelectorAll('.sentencing-dialog-option');
+    for (var o = 0; o < opts.length; o++) {
+      opts[o].addEventListener('click', function() {
+        var levelIdx = parseInt(this.dataset.level);
+        addToSentencing(artId, levelIdx);
+        sentencingDialog.classList.remove('show');
+        pendingArtId = null;
+      });
+    }
+  }
+
+  // 法条详情弹窗
+  var lawDialog = document.getElementById('law-dialog');
+  function showLawDetail(artId) {
+    var art = null;
+    for (var i = 0; i < arts.length; i++) { if (arts[i].id == artId) { art = arts[i]; break; } }
+    if (!art) return;
+    document.getElementById('law-d-title').textContent = art.name;
+    var html = '';
+    html += '<div class="law-block"><div class="lb-label">罪名分类</div><div class="lb-text">'+esc(art.category || '其他')+'</div></div>';
+    if (art.penalty) html += '<div class="law-block"><div class="lb-label">处罚标准</div><div class="lb-text">'+esc(art.penalty)+'</div></div>';
+    if (art.description) html += '<div class="law-block"><div class="lb-label">法条内容</div><div class="lb-text">'+esc(art.description)+'</div></div>';
+    if (art.chapter) html += '<div class="law-block"><div class="lb-label">所属章节</div><div class="lb-text">'+esc(art.chapter)+'</div></div>';
+    if (art.law) html += '<div class="law-block"><div class="lb-label">所属法律</div><div class="lb-text">'+esc(art.law)+'</div></div>';
+    document.getElementById('law-d-body').innerHTML = html;
+    lawDialog.classList.add('show');
+  }
+  if (lawDialog) {
+    document.getElementById('law-d-cancel').addEventListener('click', function() {
+      lawDialog.classList.remove('show');
+    });
+    lawDialog.addEventListener('click', function(e) {
+      if (e.target === lawDialog) lawDialog.classList.remove('show');
+    });
+  }
+
+  function addToSentencing(artId, levelIdx) {
+    var s = SENTENCING[artId];
+    if (!s) return;
+    var art = null;
+    for (var i = 0; i < arts.length; i++) { if (arts[i].id == artId) { art = arts[i]; break; } }
+    if (!art) return;
+
+    if (s.type === 'single') {
+      sentencingItems.push({
+        artId: artId,
+        artName: art.name,
+        levelLabel: s.label,
+        prison: s.prison,
+        fine: s.fine
+      });
+    } else if (s.type === 'multi' && levelIdx >= 0 && levelIdx < s.levels.length) {
+      var lv = s.levels[levelIdx];
+      sentencingItems.push({
+        artId: artId,
+        artName: art.name,
+        levelLabel: lv.label,
+        prison: lv.prison,
+        fine: lv.fine,
+        isMulti: true,
+        levelIdx: levelIdx
+      });
+    }
+
+    sentencingPanel.classList.remove('collapsed');
+    document.body.classList.add('has-panel');
+    updatePanel();
+    updateCardButtons();
+  }
+
+  // 清空清单
+  document.getElementById('sentencing-clear').addEventListener('click', function() {
+    sentencingItems = [];
+    updatePanel();
+    updateCardButtons();
+    sentencingPanel.classList.add('collapsed');
+    document.body.classList.remove('has-panel');
+  });
+
+  // 事件委托：点击 [+量刑] 按钮
+  document.getElementById('content-main').addEventListener('click', function(e) {
+    var btn = e.target.closest('.sentencing-btn');
+    if (!btn) return;
+    if (btn.classList.contains('added')) return; // 已添加
+    var artId = parseInt(btn.dataset.id);
+    var s = SENTENCING[artId];
+    if (!s) return;
+    var art = null;
+    for (var i = 0; i < arts.length; i++) { if (arts[i].id == artId) { art = arts[i]; break; } }
+    if (!art) return;
+    if (s.type === 'single') {
+      addToSentencing(artId, -1);
+    } else if (s.type === 'multi') {
+      showLevelDialog(artId, art.name);
+    }
+  });
+
+  // 更新所有卡牌的按钮状态
+  updateCardButtons();
+
+  // Initial render
+  doSearch();
+
+  // 欢迎弹窗
+  var welcomeOverlay = document.getElementById('welcome-overlay');
+  var welcomeClose = document.getElementById('welcome-close');
+  var welcomeNoShow = document.getElementById('welcome-noshow');
+  var shortcutBtn = document.getElementById('shortcut-btn');
+
+  function showWelcome() { if (welcomeOverlay) welcomeOverlay.classList.add('show'); }
+  function hideWelcome() { if (welcomeOverlay) welcomeOverlay.classList.remove('show'); }
+
+  function initWelcome() {
+    var isExe = !!(window.pywebview && window.pywebview.api);
+    if (isExe) {
+      if (welcomeNoShow) welcomeNoShow.style.display = 'block';
+      if (shortcutBtn) shortcutBtn.style.display = 'none';
+      try {
+        var p = window.pywebview.api.no_show_set();
+        if (p && typeof p.then === 'function') {
+          p.then(function(v){ if (!v) showWelcome(); });
+        } else if (!p) {
+          showWelcome();
+        }
+      } catch(e) { showWelcome(); }
+    } else {
+      if (shortcutBtn) shortcutBtn.style.display = 'flex';
+      if (welcomeNoShow) welcomeNoShow.style.display = 'block';
+      var noShow = false;
+      try { noShow = localStorage.getItem('lspd_noshow') === '1'; } catch(e) {}
+      if (!noShow) showWelcome();
+    }
+  }
+
+  // 欢迎弹窗不在加载时触发：改由首次进入二级界面（法律检索系统）时触发，见下方门户逻辑 enterModule()
+
+  if (welcomeClose) {
+    welcomeClose.addEventListener('click', hideWelcome);
+  }
+  if (welcomeOverlay) {
+    welcomeOverlay.addEventListener('click', function(e) {
+      if (e.target === welcomeOverlay) hideWelcome();
+    });
+  }
+  if (welcomeNoShow) {
+    welcomeNoShow.addEventListener('click', function() {
+      if (window.pywebview && window.pywebview.api) {
+        try { window.pywebview.api.set_no_show(); } catch(e) {}
+      } else {
+        try { localStorage.setItem('lspd_noshow', '1'); } catch(e) {}
+      }
+      hideWelcome();
+    });
+  }
+
+  // 快捷方式按钮：下载 .url 文件到桌面
+  if (shortcutBtn) {
+    shortcutBtn.addEventListener('click', function() {
+      var shortcutUrl = 'https://bradford12345.github.io/lspd-mdt/';
+      var shortcutContent = '[InternetShortcut]\nURL=' + shortcutUrl + '\n';
+      var blob = new Blob([shortcutContent], {type: 'application/octet-stream'});
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'LSPD MDT 圣安地列斯州法典检索系统.url';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    });
+  }
+
+
+  // ===== 警用报告弹窗 =====
+  var reportBtn = document.getElementById('report-btn');
+  var reportOverlay = document.getElementById('report-overlay');
+  var reportClose = document.getElementById('report-close');
+  var reportTextarea = document.getElementById('report-textarea');
+  var reportCopyBtn = document.getElementById('report-copy-btn');
+  var reportDept = document.getElementById('report-dept');
+
+  function updateReportText() {
+    var names = [];
+    var tp = 0, tf = 0;
+    for (var i = 0; i < sentencingItems.length; i++) {
+      var item = sentencingItems[i];
+      names.push(item.artName);
+      tp += item.prison;
+      tf += item.fine;
+    }
+    var months = Math.round(tp * 12);
+    var nameStr = names.length > 0 ? names.join(' ') : '';
+    var dept = reportDept ? reportDept.value : '中央巡逻分局';
+    var oName = (document.getElementById('report-name') || {}).value || '';
+    var oBadge = (document.getElementById('report-badge') || {}).value || '';
+    var text = '姓名：' + oName + '\n';
+    text += '警号：' + oBadge + '\n';
+    text += '隶属警局：密申罗分局-' + dept + '\n';
+    text += '-----------------------------------------------------\n';
+    text += '罪名：' + nameStr + '\n';
+    text += '证据：警员执法记录仪\n';
+    text += '地方裁量：' + months + '个月监禁 ' + tf + '美元罚款';
+    reportTextarea.value = text;
+  }
+
+  if (reportBtn) {
+    reportBtn.addEventListener('click', function() {
+      updateReportText();
+      reportOverlay.classList.add('show');
+    });
+  }
+  if (reportClose) {
+    reportClose.addEventListener('click', function() {
+      reportOverlay.classList.remove('show');
+    });
+  }
+  if (reportOverlay) {
+    reportOverlay.addEventListener('click', function(e) {
+      if (e.target === reportOverlay) reportOverlay.classList.remove('show');
+    });
+  }
+  if (reportCopyBtn) {
+    reportCopyBtn.addEventListener('click', function() {
+      reportTextarea.select();
+      try {
+        document.execCommand('copy');
+        reportCopyBtn.textContent = '已复制';
+        setTimeout(function(){ reportCopyBtn.textContent = '复制报告'; }, 1500);
+      } catch(e) {
+        reportTextarea.focus();
+        reportTextarea.select();
+      }
+    });
+  }
+  if (reportDept) {
+    reportDept.addEventListener('change', updateReportText);
+  }
+  // Also update report text when sentencing changes
+  var origUpdatePanel = updatePanel;
+  updatePanel = function() {
+    origUpdatePanel();
+    updateReportText();
+  };
+
+
+  // ===== 多页面：返回首页 =====
+  function goHome(){ location.href = 'index.html'; }
+  var lawBack = document.getElementById('law-back');
+  var lawHeaderEl = document.getElementById('law-header');
+  if (lawBack) lawBack.addEventListener('click', goHome);
+  if (lawHeaderEl) {
+    lawHeaderEl.addEventListener('click', function(e){
+      if (e.target.closest('.logo-box') || e.target.closest('h1')) goHome();
+    });
+  }
+  // 独立页面：加载即弹欢迎（原逻辑是首次进入二级界面时触发）
+  initWelcome();
+})();
+  /* ===== 服刑计算器 ===== */
+  function calcSentence() {
+    var y = parseInt(document.getElementById('calc-years').value) || 0;
+    var m = parseInt(document.getElementById('calc-months').value) || 0;
+    if (y < 0) y = 0; if (m < 0) m = 0;
+    var total = y * 12 + m;
+    document.getElementById('calc-total').textContent = total;
+    var bd = '';
+    if (y > 0) bd += y + '年';
+    if (m > 0) bd += (bd ? ' ' : '') + m + '个月';
+    document.getElementById('calc-breakdown').textContent = bd || '';
+  }
+
+
+  /* ===== 页面防护：禁用右键 / F12 / Ctrl+U / Ctrl+Shift+I / Ctrl+S ===== */
+  document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+  document.addEventListener('keydown', function(e) {
+    if (e.keyCode === 123) { e.preventDefault(); return; }                 // F12
+    if ((e.ctrlKey && e.shiftKey) && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) { e.preventDefault(); return; } // Ctrl+Shift+I/J/C
+    if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83)) { e.preventDefault(); return; } // Ctrl+U / Ctrl+S
+    if (e.keyCode === 114) { e.preventDefault(); return; }                 // F5（部分浏览器防刷新源码）
+  });
+
+  /* ===== 法律全文原文复制防护：仅作用于「全文」tab 的原文 ===== */
+  function inFullText(el) {
+    while (el && el !== document.body) {
+      if (el.classList && el.classList.contains('ft')) return true;
+      el = el.parentNode;
+    }
+    return false;
+  }
+  document.addEventListener('selectstart', function(e) {
+    if (inFullText(e.target)) e.preventDefault();
+  });
+  document.addEventListener('copy', function(e) {
+    if (inFullText(e.target)) e.preventDefault();
+  });
+  document.addEventListener('cut', function(e) {
+    if (inFullText(e.target)) e.preventDefault();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && (e.keyCode === 65)) {                              // Ctrl+A 全选：若焦点在全文原文内则拦截
+      var t = e.target;
+      if (t && t.closest && t.closest('.ft')) { e.preventDefault(); return; }
+    }
+  });
+
+</script>
+
+</body>
+</html>
