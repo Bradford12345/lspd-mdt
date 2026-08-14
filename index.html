@@ -2207,31 +2207,46 @@ const SENTENCING = {
       var btn = cfSubmit;
       btn.disabled = true;
       btn.textContent = '提交中...';
-      fetch('https://bryant-d6g0lr5jrd4c95f00.service.tcloudbase.com/submitComplaint', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).then(function(res){
-        return res.json();
-      }).then(function(data){
-        btn.disabled = false;
-        btn.textContent = '提 交';
-        if (data && data.code === 0) {
-          showToast('投诉已提交，感谢您的反馈');
-          document.getElementById('cf-name').value = '';
-          document.getElementById('cf-badge').value = '';
-          if (cfPhone) cfPhone.value = '';
-          document.getElementById('cf-time').value = '';
-          document.getElementById('cf-desc').value = '';
-          setTimeout(hideComplaint, 800);
-        } else {
-          showToast((data && data.msg) || '提交失败，请重试');
-        }
-      }).catch(function(){
-        btn.disabled = false;
-        btn.textContent = '提 交';
-        showToast('网络错误，请稍后重试');
-      });
+      var attempt = 0;
+      function doSubmit(){
+        attempt++;
+        var ctrl = new AbortController();
+        var timer = setTimeout(function(){ ctrl.abort(); }, 30000);
+        fetch('https://bryant-d6g0lr5jrd4c95f00.service.tcloudbase.com/submitComplaint', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: ctrl.signal
+        }).then(function(res){
+          clearTimeout(timer);
+          return res.json();
+        }).then(function(data){
+          btn.disabled = false;
+          btn.textContent = '提 交';
+          if (data && data.code === 0) {
+            showToast('投诉已提交，感谢您的反馈');
+            document.getElementById('cf-name').value = '';
+            document.getElementById('cf-badge').value = '';
+            if (cfPhone) cfPhone.value = '';
+            document.getElementById('cf-time').value = '';
+            document.getElementById('cf-desc').value = '';
+            setTimeout(hideComplaint, 800);
+          } else {
+            showToast((data && data.msg) || '提交失败，请重试');
+          }
+        }).catch(function(){
+          clearTimeout(timer);
+          if (attempt < 2) {
+            btn.textContent = '网络不稳定，重试中...';
+            setTimeout(doSubmit, 800);
+          } else {
+            btn.disabled = false;
+            btn.textContent = '提 交';
+            showToast('网络错误，请稍后重试');
+          }
+        });
+      }
+      doSubmit();
     });
   }
 
