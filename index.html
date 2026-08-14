@@ -2357,6 +2357,7 @@ const SENTENCING = {
   function showComplaint() {
     if (!complaintPanel) return;
     warmCloudFn();               // 预热云函数，避免冷启动卡顿
+    portal.classList.remove('show');   // 隐藏门户全屏容器，露出面板
     portalInner.style.display = 'none';
     complaintPanel.classList.add('show');
     if (complaintHeader) complaintHeader.classList.add('show');
@@ -2366,6 +2367,7 @@ const SENTENCING = {
     if (!complaintPanel) return;
     complaintPanel.classList.remove('show');
     if (complaintHeader) complaintHeader.classList.remove('show');
+    portal.classList.add('show');       // 恢复门户全屏容器
     portalInner.style.display = '';
     window.scrollTo(0, 0);
   }
@@ -2380,6 +2382,7 @@ const SENTENCING = {
   function showEnlist() {
     if (!enlistPanel) return;
     warmCloudFn();               // 预热云函数（投诉 + 征募两个端点）
+    portal.classList.remove('show');   // 隐藏门户全屏容器，露出面板
     portalInner.style.display = 'none';
     enlistPanel.classList.add('show');
     if (enlistHeader) enlistHeader.classList.add('show');
@@ -2390,6 +2393,7 @@ const SENTENCING = {
     if (!enlistPanel) return;
     enlistPanel.classList.remove('show');
     if (enlistHeader) enlistHeader.classList.remove('show');
+    portal.classList.add('show');       // 恢复门户全屏容器
     portalInner.style.display = '';
     window.scrollTo(0, 0);
   }
