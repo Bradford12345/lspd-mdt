@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>投诉我们的雇员 - LSPD MDT</title>
-<link rel="icon" type="image/png" href="assets/favicon-64.png">
-<link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico">
+<title>加入我们 - LSPD MDT</title>
+<link rel="icon" type="image/png" href="/assets/favicon-64.png">
+<link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
 <style>
 <style>
 :root {
@@ -987,60 +987,163 @@ html,body{background:#f2f4f7;min-height:100%}
 </head>
 
 <body>
-  <div class="header complaint-header" id="complaint-header">
-    <div class="header-top">
-      <div class="logo-box">
-        <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD" title="Los Santos Police Department">
+<div class="header complaint-header" id="enlist-header">
+  <div class="header-top">
+    <div class="logo-box">
+      <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD" title="Los Santos Police Department">
+    </div>
+    <div class="header-title">
+      <h1>Los Santos Police Department</h1>
+      <div class="motto">"To Protect and to Serve"</div>
+    </div>
+    <button class="home-btn" id="enlist-header-back" type="button" title="返回上一级">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      <span>返回上一级</span>
+    </button>
+  </div>
+</div>
+
+
+
+<div class="complaint-panel enlist-panel" id="enlist-panel">
+  <!-- 步骤1：选择申请类型 -->
+  <div id="enlist-choose">
+    <div class="complaint-head">
+      <div>
+        <div class="complaint-title">加入我们</div>
+        <div class="complaint-sub">Employment Opportunities</div>
       </div>
-      <div class="header-title">
-        <h1>Los Santos Police Department</h1>
-        <div class="motto">"To Protect and to Serve"</div>
-      </div>
-      <button class="home-btn" id="complaint-header-back" type="button" title="返回上一级">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        <span>返回上一级</span>
+    </div>
+    <div class="enlist-options">
+      <button class="enlist-option" type="button" data-enlist="join">
+        <span class="eo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></span>
+        <span class="eo-title">入职申请</span>
+        <span class="eo-desc">首次加入 LSPD，成为我们的一员</span>
+      </button>
+      <button class="enlist-option" type="button" data-enlist="transfer">
+        <span class="eo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span>
+        <span class="eo-title">调转申请</span>
+        <span class="eo-desc">从其他城市（服务器）调转至 LSPD</span>
       </button>
     </div>
   </div>
 
-
-  <div class="complaint-panel" id="complaint-panel">
+  <!-- 步骤2a：入职表单 -->
+  <div id="enlist-form-join" style="display:none">
     <div class="complaint-head">
       <div>
-        <div class="complaint-title">投诉我们的雇员</div>
-        <div class="complaint-sub">Citizen Complaint Form</div>
+        <div class="complaint-title">入职申请</div>
+        <div class="complaint-sub">New Hire Application</div>
       </div>
+      <button class="enlist-stepback" type="button" data-stepback="choose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>返回选择</span>
+      </button>
     </div>
     <div class="complaint-form">
-      <div class="cf-tip">请如实填写以下信息，提交后我们将尽快调查处理。带 * 为必填项。</div>
+      <div class="cf-tip">请如实填写以下信息，提交后我们将尽快审核处理。带 * 为必填项。</div>
       <div class="cf-field">
-        <label class="cf-label" for="cf-name">警员姓名（选填）</label>
-        <input class="cf-input" type="text" id="cf-name" placeholder="请输入警员姓名" maxlength="30">
+        <label class="cf-label" for="jn-name">姓名<span class="req">*</span></label>
+        <input class="cf-input" type="text" id="jn-name" placeholder="请输入姓名" maxlength="30">
       </div>
       <div class="cf-field">
-        <label class="cf-label" for="cf-badge">警员警号（选填）</label>
-        <input class="cf-input" type="text" id="cf-badge" placeholder="请输入警员警号" maxlength="20">
+        <label class="cf-label" for="jn-phone">电话<span class="req">*</span></label>
+        <input class="cf-input" type="tel" id="jn-phone" placeholder="请输入联系电话（仅数字与符号）" maxlength="30" autocomplete="off">
       </div>
       <div class="cf-field">
-        <label class="cf-label" for="cf-phone">手机号<span class="req">*</span></label>
-        <input class="cf-input" type="tel" id="cf-phone" placeholder="请输入手机号（仅数字与符号）" maxlength="30" autocomplete="off">
+        <label class="cf-label" for="jn-age">年龄<span class="req">*</span></label>
+        <input class="cf-input" type="number" id="jn-age" placeholder="请输入年龄" min="10" max="99" inputmode="numeric">
       </div>
       <div class="cf-field">
-        <label class="cf-label" for="cf-time">事件发生时间<span class="req">*</span></label>
-        <input class="cf-input" type="datetime-local" id="cf-time">
+        <label class="cf-label">是否有清晰的麦克风<span class="req">*</span></label>
+        <div class="cf-radio-group">
+          <label class="cf-radio"><input type="radio" name="jn-mic" value="yes"><span class="rbox"></span><span>是</span></label>
+          <label class="cf-radio"><input type="radio" name="jn-mic" value="no"><span class="rbox"></span><span>否</span></label>
+        </div>
       </div>
       <div class="cf-field">
-        <label class="cf-label" for="cf-desc">事发经过<span class="req">*</span></label>
-        <textarea class="cf-textarea" id="cf-desc" placeholder="请详细描述事件经过…"></textarea>
+        <label class="cf-label">是否有犯罪记录<span class="req">*</span></label>
+        <div class="cf-radio-group">
+          <label class="cf-radio"><input type="radio" name="jn-crime" value="yes"><span class="rbox"></span><span>是</span></label>
+          <label class="cf-radio"><input type="radio" name="jn-crime" value="no"><span class="rbox"></span><span>否</span></label>
+        </div>
       </div>
       <div class="cf-actions">
-        <button class="cf-btn submit" type="button" id="cf-submit">提 交</button>
-        <button class="cf-btn back" type="button" id="cf-cancel">取 消</button>
+        <button class="cf-btn submit" type="button" id="jn-submit">提 交</button>
+        <button class="cf-btn back" type="button" data-stepback="choose">取 消</button>
       </div>
     </div>
   </div>
 
+  <!-- 步骤2b：调转表单 -->
+  <div id="enlist-form-transfer" style="display:none">
+    <div class="complaint-head">
+      <div>
+        <div class="complaint-title">调转申请</div>
+        <div class="complaint-sub">Transfer Application</div>
+      </div>
+      <button class="enlist-stepback" type="button" data-stepback="choose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>返回选择</span>
+      </button>
+    </div>
+    <div class="complaint-form">
+      <div class="cf-tip">请如实填写以下信息，提交后我们将尽快审核处理。带 * 为必填项。</div>
+      <div class="cf-field">
+        <label class="cf-label" for="tf-name">姓名<span class="req">*</span></label>
+        <input class="cf-input" type="text" id="tf-name" placeholder="请输入姓名" maxlength="30">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="tf-phone">电话<span class="req">*</span></label>
+        <input class="cf-input" type="tel" id="tf-phone" placeholder="请输入联系电话（仅数字与符号）" maxlength="30" autocomplete="off">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="tf-age">年龄<span class="req">*</span></label>
+        <input class="cf-input" type="number" id="tf-age" placeholder="请输入年龄" min="10" max="99" inputmode="numeric">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label">是否有清晰的麦克风<span class="req">*</span></label>
+        <div class="cf-radio-group">
+          <label class="cf-radio"><input type="radio" name="tf-mic" value="yes"><span class="rbox"></span><span>是</span></label>
+          <label class="cf-radio"><input type="radio" name="tf-mic" value="no"><span class="rbox"></span><span>否</span></label>
+        </div>
+      </div>
+      <div class="cf-field">
+        <label class="cf-label">是否有犯罪记录<span class="req">*</span></label>
+        <div class="cf-radio-group">
+          <label class="cf-radio"><input type="radio" name="tf-crime" value="yes"><span class="rbox"></span><span>是</span></label>
+          <label class="cf-radio"><input type="radio" name="tf-crime" value="no"><span class="rbox"></span><span>否</span></label>
+        </div>
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="tf-prevcity">以前受雇的城市（服务器）<span class="req">*</span></label>
+        <input class="cf-input" type="text" id="tf-prevcity" placeholder="请输入原所在城市（服务器）" maxlength="50">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="tf-prevrank">以前担任的职位<span class="req">*</span></label>
+        <input class="cf-input" type="text" id="tf-prevrank" placeholder="请输入原担任职位" maxlength="50">
+      </div>
+      <div class="cf-actions">
+        <button class="cf-btn submit" type="button" id="tf-submit">提 交</button>
+        <button class="cf-btn back" type="button" data-stepback="choose">取 消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
   <div class="portal-toast" id="portal-toast"></div>
+
+<div class="sentencing-dialog" id="enlist-success-dialog">
+  <div class="sentencing-dialog-content">
+    <div class="sentencing-dialog-title">填写成功</div>
+    <div class="enlist-success-text">
+      请加入 LSPD KOOK 终端：<br>
+      <a href="https://kook.vip/Jiav4m" target="_blank" rel="noopener">https://kook.vip/Jiav4m</a>
+    </div>
+    <button class="enlist-success-btn" id="enlist-success-ok" type="button">我已添加</button>
+  </div>
+</div>
+
 
 <footer class="site-footer">
   <div class="site-footer-inner">
@@ -1067,94 +1170,169 @@ html,body{background:#f2f4f7;min-height:100%}
     toastTimer = setTimeout(function(){ portalToast.classList.remove('show'); }, 2200);
   }
   function goHome(){ location.href = '/'; }
-  var complaintHeaderEl = document.getElementById('complaint-header');
-  if (complaintHeaderEl) {
-    complaintHeaderEl.addEventListener('click', function(e){
+  var enlistHeaderEl = document.getElementById('enlist-header');
+  if (enlistHeaderEl) {
+    enlistHeaderEl.addEventListener('click', function(e){
       if (e.target.closest('.logo-box') || e.target.closest('h1')) goHome();
     });
   }
+  // ===== 征募表单（入职/调转，三级页面）=====
+  var enlistPanel = document.getElementById('enlist-panel');
+  var enlistHeader = document.getElementById('enlist-header');
+  var enlistChoose = document.getElementById('enlist-choose');
+  var enlistFormJoin = document.getElementById('enlist-form-join');
+  var enlistFormTransfer = document.getElementById('enlist-form-transfer');
 
-  var complaintBack = document.getElementById('complaint-header-back');
-  var cfCancel = document.getElementById('cf-cancel');
-  var cfSubmit = document.getElementById('cf-submit');
-  var cfPhone = document.getElementById('cf-phone');
-  // 手机号允许输入所有数字与符号，拦截汉字和英文字母
-  if (cfPhone) {
-    cfPhone.addEventListener('input', function(){
-      this.value = this.value.replace(/[\u4e00-\u9fa5a-zA-Z]/g, '');
+  function showEnlist() {
+    if (!enlistPanel) return;
+    enlistPanel.classList.add('show');
+    if (enlistHeader) enlistHeader.classList.add('show');
+    showEnlistStep('choose');
+    window.scrollTo(0, 0);
+  }
+  function hideEnlist() {
+    if (!enlistPanel) return;
+    enlistPanel.classList.remove('show');
+    if (enlistHeader) enlistHeader.classList.remove('show');
+    window.scrollTo(0, 0);
+  }
+  function showEnlistStep(step) {
+    if (enlistChoose) enlistChoose.style.display = step === 'choose' ? '' : 'none';
+    if (enlistFormJoin) enlistFormJoin.style.display = step === 'join' ? '' : 'none';
+    if (enlistFormTransfer) enlistFormTransfer.style.display = step === 'transfer' ? '' : 'none';
+  }
+
+  var enlistBack = document.getElementById('enlist-header-back');
+  if (enlistBack) enlistBack.addEventListener('click', goHome);
+
+  // 申请成功弹窗「我已添加」→ 返回主页
+  var enlistSuccessOk = document.getElementById('enlist-success-ok');
+  if (enlistSuccessOk) {
+    enlistSuccessOk.addEventListener('click', function(){
+      var sd = document.getElementById('enlist-success-dialog');
+      if (sd) sd.classList.remove('show');
+      goHome();
     });
   }
-  if (complaintBack) complaintBack.addEventListener('click', goHome);
-  if (cfCancel) cfCancel.addEventListener('click', goHome);
-  if (cfSubmit) {
-    cfSubmit.addEventListener('click', function(){
-      var t = document.getElementById('cf-time').value;
-      var d = document.getElementById('cf-desc').value.trim();
-      var p = cfPhone ? cfPhone.value.trim() : '';
-      if (!p) { showToast('请填写手机号'); return; }
-      if (!t) { showToast('请填写事件发生时间'); return; }
-      if (!d) { showToast('请填写事发经过'); return; }
-      // 提交给管理员：自动删除手机号里的所有符号，只保留数字
-      var phone = p.replace(/[^0-9]/g, '');
-      var payload = {
-        name: document.getElementById('cf-name').value.trim(),
-        badge: document.getElementById('cf-badge').value.trim(),
-        phone: phone,
-        time: t,
-        desc: d
-      };
-      var btn = cfSubmit;
-      btn.disabled = true;
-      btn.textContent = '提交中...';
-      var attempt = 0;
-      function doSubmit(){
-        attempt++;
-        var ctrl = new AbortController();
-        var timer = setTimeout(function(){ ctrl.abort(); }, 30000);
-        fetch('https://bryant-d6g0lr5jrd4c95f00.service.tcloudbase.com/submitComplaint', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-          signal: ctrl.signal
-        }).then(function(res){
-          clearTimeout(timer);
-          return res.json();
-        }).then(function(data){
+
+  // 选项卡片（入职/调转）与「返回选择」按钮
+  if (enlistPanel) {
+    enlistPanel.addEventListener('click', function(e){
+      var opt = e.target.closest('.enlist-option');
+      if (opt && opt.dataset.enlist) {
+        showEnlistStep(opt.dataset.enlist);
+        window.scrollTo(0, 0);
+        return;
+      }
+      var sb = e.target.closest('[data-stepback]');
+      if (sb) {
+        showEnlistStep('choose');
+        window.scrollTo(0, 0);
+        return;
+      }
+    });
+  }
+
+  // 电话输入拦截汉字和英文字母
+  ['jn-phone', 'tf-phone'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', function(){
+        this.value = this.value.replace(/[\u4e00-\u9fa5a-zA-Z]/g, '');
+      });
+    }
+  });
+
+  // 提交申请（入职/调转共用，字段前缀 jn/tf）
+  function submitApplication(type) {
+    var prefix = type === 'transfer' ? 'tf' : 'jn';
+    function $(id) { return document.getElementById(prefix + '-' + id); }
+    var name = $('name').value.trim();
+    var phone = $('phone').value.replace(/[^0-9]/g, '');
+    var age = $('age').value.trim();
+    var mic = document.querySelector('input[name="' + prefix + '-mic"]:checked');
+    var crime = document.querySelector('input[name="' + prefix + '-crime"]:checked');
+    var prevCity = type === 'transfer' ? $('prevcity').value.trim() : '';
+    var prevRank = type === 'transfer' ? $('prevrank').value.trim() : '';
+
+    if (!name) { showToast('请填写姓名'); return; }
+    if (!phone) { showToast('请填写电话'); return; }
+    if (!age) { showToast('请填写年龄'); return; }
+    if (!mic) { showToast('请选择是否有清晰麦克风'); return; }
+    if (!crime) { showToast('请选择是否有犯罪记录'); return; }
+    if (type === 'transfer' && !prevCity) { showToast('请填写以前受雇的城市（服务器）'); return; }
+    if (type === 'transfer' && !prevRank) { showToast('请填写以前担任的职位'); return; }
+
+    var payload = {
+      type: type,
+      name: name, phone: phone, age: age,
+      mic: mic.value, crime: crime.value,
+      prevCity: prevCity, prevRank: prevRank
+    };
+    var btn = document.getElementById(prefix + '-submit');
+    btn.disabled = true;
+    btn.textContent = '提交中...';
+    var attempt = 0;
+    function doSubmit(){
+      attempt++;
+      var ctrl = new AbortController();
+      var timer = setTimeout(function(){ ctrl.abort(); }, 30000);
+      fetch('https://bryant-d6g0lr5jrd4c95f00.service.tcloudbase.com/joinApplication', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: ctrl.signal
+      }).then(function(res){
+        clearTimeout(timer);
+        return res.json();
+      }).then(function(data){
+        btn.disabled = false;
+        btn.textContent = '提 交';
+        if (data && data.code === 0) {
+          var ids = type === 'transfer'
+            ? ['tf-name', 'tf-phone', 'tf-age', 'tf-prevcity', 'tf-prevrank']
+            : ['jn-name', 'jn-phone', 'jn-age'];
+          ids.forEach(function(id){ var el = document.getElementById(id); if (el) el.value = ''; });
+          document.querySelectorAll('input[name="' + prefix + '-mic"], input[name="' + prefix + '-crime"]').forEach(function(r){ r.checked = false; });
+          var sd = document.getElementById('enlist-success-dialog');
+          if (sd) sd.classList.add('show');
+        } else {
+          showToast((data && data.msg) || '提交失败，请重试');
+        }
+      }).catch(function(){
+        clearTimeout(timer);
+        if (attempt < 2) {
+          btn.textContent = '网络不稳定，重试中...';
+          setTimeout(doSubmit, 800);
+        } else {
           btn.disabled = false;
           btn.textContent = '提 交';
-          if (data && data.code === 0) {
-            showToast('投诉已提交，感谢您的反馈');
-            document.getElementById('cf-name').value = '';
-            document.getElementById('cf-badge').value = '';
-            if (cfPhone) cfPhone.value = '';
-            document.getElementById('cf-time').value = '';
-            document.getElementById('cf-desc').value = '';
-            setTimeout(goHome, 800);
-          } else {
-            showToast((data && data.msg) || '提交失败，请重试');
-          }
-        }).catch(function(){
-          clearTimeout(timer);
-          if (attempt < 2) {
-            btn.textContent = '网络不稳定，重试中...';
-            setTimeout(doSubmit, 800);
-          } else {
-            btn.disabled = false;
-            btn.textContent = '提 交';
-            showToast('网络错误，请稍后重试');
-          }
-        });
-      }
-      doSubmit();
-    });
+          showToast('网络错误，请稍后重试');
+        }
+      });
+    }
+    doSubmit();
   }
 
-  // 子页面直接显示投诉面板
-  var cp = document.getElementById('complaint-panel');
-  var ch = document.getElementById('complaint-header');
-  if (cp) cp.classList.add('show');
-  if (ch) ch.classList.add('show');
+  var jnSubmit = document.getElementById('jn-submit');
+  var tfSubmit = document.getElementById('tf-submit');
+  if (jnSubmit) jnSubmit.addEventListener('click', function(){ submitApplication('join'); });
+  if (tfSubmit) tfSubmit.addEventListener('click', function(){ submitApplication('transfer'); });
 
+  // 子页面直接显示征募面板
+  showEnlist();
+
+  // 云函数预热
+  var __warmed = false;
+  function warmCloudFn() {
+    if (__warmed) return;
+    __warmed = true;
+    try {
+      fetch('https://bryant-d6g0lr5jrd4c95f00.service.tcloudbase.com/submitComplaint', { method: 'GET', mode: 'cors' }).catch(function(){});
+      fetch('https://bryant-d6g0lr5jrd4c95f00.service.tcloudbase.com/joinApplication', { method: 'GET', mode: 'cors' }).catch(function(){});
+    } catch (e) {}
+  }
+  warmCloudFn();
 })();
 </script>
 </body>
