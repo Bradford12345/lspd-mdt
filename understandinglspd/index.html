@@ -208,8 +208,8 @@ body{
   <div class="dept-panel" id="dept-panel" style="flex:1;min-width:0">
     <div class="dept-tag" id="d-tag">DEPARTMENT PROFILE</div>
     <div class="dept-title" id="d-title">Patrol Division</div>
-    <div class="dept-sub" id="d-sub">Department of the Los Santos Police Department</div>
-    <div class="dept-chief" id="d-chief">Chief: <b>TBD</b></div>
+    <div class="dept-sub" id="d-sub">洛圣都警察局下属部门</div>
+    <div class="dept-chief" id="d-chief">主管：<b>待定</b></div>
     <div id="d-body"></div>
   </div>
 </div>
@@ -230,30 +230,30 @@ body{
       level: 'Office of the Chief of Police',
       levelCn: '局长办公室',
       items: [
-        { key: 'chief', name: 'Chief of Police', cn: '局长', desc: 'View Chief\'s Message' }
+        { key: 'chief', name: 'Chief of Police', cn: '局长', desc: '查看局长致辞' }
       ]
     },
     {
       level: 'Operations Bureau',
       levelCn: '行动局',
       items: [
-        { key: 'patrol', name: 'Patrol Division', cn: '巡逻部', desc: 'City Patrol · First Response' },
-        { key: 'traffic', name: 'Traffic Division', cn: '交通部', desc: 'Road Enforcement · Accident Response' }
+        { key: 'patrol', name: 'Patrol Division', cn: '巡逻部', desc: '城市巡逻 · 一线响应' },
+        { key: 'traffic', name: 'Traffic Division', cn: '交通部', desc: '道路执法 · 事故处置' }
       ]
     },
     {
       level: 'Detective Bureau',
       levelCn: '调查局',
       items: [
-        { key: 'detective', name: 'Detective Division', cn: '侦探局', desc: 'Major Cases · Criminal Investigation' }
+        { key: 'detective', name: 'Detective Division', cn: '侦探局', desc: '重大案件 · 刑事侦查' }
       ]
     },
     {
       level: 'Special Operations Bureau',
       levelCn: '特勤行动局',
       items: [
-        { key: 'swat', name: 'SWAT', cn: '特警队', desc: 'High-Risk Tactics · Hostage Rescue' },
-        { key: 'air', name: 'Air Support Division', cn: '空中支援', desc: 'Helicopter Patrol · Air Pursuit' }
+        { key: 'swat', name: 'SWAT', cn: '特警队', desc: '高危战术 · 人质救援' },
+        { key: 'air', name: 'Air Support Division', cn: '空中支援', desc: '直升机巡逻 · 空中追缉' }
       ]
     }
   ];
@@ -262,64 +262,64 @@ body{
     chief: {
       tag: 'OFFICE OF THE CHIEF',
       title: 'Office of the Chief of Police',
-      sub: 'The Command Core of the Department',
+      sub: '部门指挥核心',
       chief: { role: 'Chief of Police', name: 'Jacob Hood' },
-      intro: 'The Office of the Chief of Police is the highest decision-making and executive core of the Los Santos Police Department, reporting directly to the Board of Police Commissioners. It is responsible for strategic planning, policy implementation, and inter-departmental coordination.',
+      intro: '局长办公室是洛圣都警察局的最高决策与执行核心，直接向警察委员会汇报，负责战略规划、政策落实与跨部门协调。',
       sections: [
         {
-          h: 'Core Mission & Responsibilities',
+          h: '核心使命与职责',
           items: [
-            { b: 'Strategic Leadership', t: 'Develop long-term departmental goals, emphasizing community policing and technology integration, and supervise execution across all divisions.' },
-            { b: 'Policy Implementation', t: 'Execute resolutions passed by the Police Commissioners.' },
-            { b: 'Inter-Departmental Coordination', t: 'Integrate resources from the Operations Bureau, Detective Bureau, and Special Operations Bureau.' },
-            { b: 'Public Trust Building', t: 'Enhance transparency through community forums and public reports (e.g., Annual Use of Force Report).' }
+            { b: '战略领导', t: '制定部门长期目标，强调社区警务与技术整合，并监督各部门执行。' },
+            { b: '政策落实', t: '执行警察委员会通过的决议。' },
+            { b: '跨部门协调', t: '整合行动局、调查局与特勤行动局的资源。' },
+            { b: '公众信任建设', t: '通过社区论坛与公开报告（如年度武力使用报告）提升透明度。' }
           ]
         },
         {
-          h: 'Senior Management Structure',
+          h: '高层管理架构',
           items: [
-            { b: 'Chief of Police — Jacob Hood', t: 'Oversees all operations, reports directly to the Police Commissioners, and is responsible for major decisions.' },
-            { b: 'Assistant Chiefs', t: 'No current appointments. Responsibilities include coordinating internal affairs, policy implementation, and crisis response.' }
+            { b: '局长（雅各布·胡德）', t: '统筹全局，直接向警察委员会汇报，负责重大决策。' },
+            { b: '助理局长', t: '暂无任命。职责包括协调内务、政策落实与危机响应。' }
           ]
         },
         {
-          h: 'Direct Departments',
+          h: '直属部门',
           items: [
-            { b: 'Administration', t: 'Handles daily documents, scheduling, and meeting coordination for the Chief; manages departmental seals, records, and confidential information to ensure administrative compliance.' },
-            { b: 'Community Relations Section', t: 'Designs community engagement programs, promotes police-civilian cooperation, and monitors community sentiment.' }
+            { b: '行政管理', t: '负责局长日常文件、日程与会议协调；管理部门印章、档案及机密信息，确保行政合规。' },
+            { b: '社区关系科', t: '设计社区参与项目，促进警民合作，监测社区舆情。' }
           ]
         },
         {
-          h: 'Inter-Departmental Collaboration',
+          h: '跨部门协作',
           items: [
-            { b: 'Police Commissioners Liaison', t: 'The Chief submits monthly reports to the Commissioners, such as the 2025 Feasibility Report on Police Force Expansion. The Commissioners supervise office operations through audits and policy recommendations.' },
-            { b: 'Professional Standards Coordination', t: 'The Chief\'s Office formulates policies (e.g., Officer Conduct Code), while the Professional Standards Division conducts specific investigations. The Special Affairs Office collaborates with the Internal Affairs Division (IAD).' }
+            { b: '警察委员会联络', t: '局长每月向委员会提交报告（如 2025 年警力扩充可行性报告）；委员会通过审计与政策建议监督办公室运作。' },
+            { b: '职业标准协调', t: '局长办公室制定政策（如《警员行为规范》），职业标准科负责具体调查；特别事务办公室与内务部（IAD）协作。' }
           ]
         },
         {
-          h: 'Latest Reforms',
+          h: '最新改革',
           items: [
-            { b: 'LSPD Police Chief Advisory Council', t: 'Collects and organizes officer feedback and recommendations, implementing reasonable suggestions.' }
+            { b: 'LSPD 警察局长咨询委员会', t: '收集整理警员反馈与建议，采纳合理意见并落实。' }
           ]
         }
       ],
-      summary: 'The LSPD Office of the Chief of Police balances public safety and law enforcement credibility through strategic leadership, inter-departmental collaboration, and community engagement. Its 2025 reforms focus on efficiency improvement and transparency enhancement, such as optimizing internal processes and expanding technology applications, providing a governance model for other police departments. Moving forward, the Office must continue to address resource pressures and systemic reform challenges to ensure the department remains responsive to the diverse needs of the Los Santos community.'
+      summary: '洛圣都警察局局长办公室通过战略领导、跨部门协作与社区参与，在公共安全与执法公信力之间取得平衡。其 2025 年改革聚焦效率提升与透明度增强，如优化内部流程、扩大技术应用，为其他警局提供了治理范本。展望未来，办公室需持续应对资源压力与体系性改革挑战，确保部门始终响应洛圣都社区的多元需求。'
     },
     patrol: {
       tag: 'PATROL DIVISION',
       title: 'Patrol Division',
-      sub: 'Department of the Los Santos Police Department',
-      chief: 'TBD',
-      intro: 'The Patrol Division is the face and backbone of the Los Santos Police Department, responsible for daily patrol and first response across the entire city. Patrol officers are the first point of contact for citizens and the most fundamental and direct guarantee of urban security.',
+      sub: '洛圣都警察局下属部门',
+      chief: '待定',
+      intro: '巡逻部是洛圣都警察局的门面与中坚力量，负责全市日常巡逻与一线响应。巡逻警员是市民接触警察的第一人，也是城市安全最基础、最直接的保障。',
       sections: [
         {
-          h: 'Primary Responsibilities',
+          h: '主要职责',
           items: [
-            { t: 'Daily city patrol covering all jurisdictions of Los Santos' },
-            { t: 'First response to emergency calls, handling all types of incidents' },
-            { t: 'Traffic stops, pedestrian checks, and suspicious vehicle inspections' },
-            { t: 'Maintaining order at large events and public gatherings' },
-            { t: 'Providing frontline support and intelligence to investigative units' }
+            { t: '覆盖洛圣都全部辖区的日常城市巡逻' },
+            { t: '紧急报警的一线响应，处置各类事件' },
+            { t: '交通拦停、行人盘查与可疑车辆检查' },
+            { t: '大型活动与公众集会的秩序维护' },
+            { t: '为侦查单位提供一线支援与情报' }
           ]
         }
       ]
@@ -327,18 +327,18 @@ body{
     traffic: {
       tag: 'TRAFFIC DIVISION',
       title: 'Traffic Division',
-      sub: 'Department of the Los Santos Police Department',
-      chief: 'TBD',
-      intro: 'The Traffic Division is responsible for road safety in Los Santos. Officers focus on maintaining urban traffic order, from daily road patrols to on-scene handling of major traffic accidents.',
+      sub: '洛圣都警察局下属部门',
+      chief: '待定',
+      intro: '交通部负责洛圣都的道路安全。从日常道路巡逻到重大交通事故的现场处置，警员专注于维护城市交通秩序。',
       sections: [
         {
-          h: 'Primary Responsibilities',
+          h: '主要职责',
           items: [
-            { t: 'Urban road patrols and enforcement of traffic violations' },
-            { t: 'On-scene handling and liability determination of traffic accidents' },
-            { t: 'DUI and drug-impaired driving inspections and enforcement' },
-            { t: 'Coordinating road interception during pursuit operations' },
-            { t: 'Traffic control and guidance during large-scale events' }
+            { t: '城市道路巡逻与交通违法查处' },
+            { t: '交通事故现场处置与责任认定' },
+            { t: '酒驾与毒驾检查及执法' },
+            { t: '追缉行动中的道路拦截配合' },
+            { t: '大型活动期间的交通管控与疏导' }
           ]
         }
       ]
@@ -346,18 +346,18 @@ body{
     detective: {
       tag: 'DETECTIVE BUREAU',
       title: 'Detective Division',
-      sub: 'Department of the Los Santos Police Department',
-      chief: 'TBD',
-      intro: 'The Detective Division is the criminal investigation core of the Los Santos Police Department, responsible for solving major criminal cases across the city. Detectives do not wear uniforms, yet they guard the city in another way—through crime scene evidence collection, clue analysis, and suspect interrogation.',
+      sub: '洛圣都警察局下属部门',
+      chief: '待定',
+      intro: '侦探局是洛圣都警察局的刑事侦查核心，负责侦破全市重大刑事案件。侦探不穿制服，却以另一种方式守护这座城市——现场取证、线索分析与嫌犯审讯。',
       sections: [
         {
-          h: 'Primary Responsibilities',
+          h: '主要职责',
           items: [
-            { t: 'Investigation of major criminal cases including homicide and robbery' },
-            { t: 'Crime scene examination and physical evidence collection and analysis' },
-            { t: 'Surveillance tracking, clue analysis, and suspect interrogation' },
-            { t: 'Undercover operations and organized crime investigations' },
-            { t: 'Collaborating with patrol divisions across all areas to solve cases' }
+            { t: '侦办凶杀、抢劫等重大刑事案件' },
+            { t: '现场勘查与物证采集、分析' },
+            { t: '跟踪监控、线索分析与嫌犯审讯' },
+            { t: '卧底行动与有组织犯罪调查' },
+            { t: '与各区巡逻部门协作侦破案件' }
           ]
         }
       ]
@@ -365,18 +365,18 @@ body{
     swat: {
       tag: 'SWAT',
       title: 'SWAT',
-      sub: 'Special Weapons and Tactics',
-      chief: 'TBD',
-      intro: 'SWAT is the high-risk tactical unit of the Los Santos Police Department, specifically designed to handle extreme danger situations that regular police forces cannot manage. SWAT officers undergo intensive tactical training and are equipped with standard tactical gear, serving as the last line of defense when the city faces its most severe threats.',
+      sub: '特殊武器与战术',
+      chief: '待定',
+      intro: 'SWAT（特警队）是洛圣都警察局的高危战术单位，专门处置常规警力无法应对的极端危险情况。特警队员经过高强度战术训练，配备标准化战术装备，是城市面临最严峻威胁时的最后防线。',
       sections: [
         {
-          h: 'Primary Responsibilities',
+          h: '主要职责',
           items: [
-            { t: 'Arrest operations for armed suspects and other high-risk targets' },
-            { t: 'Negotiation and rescue in hostage situations' },
-            { t: 'Security details for high-profile individuals' },
-            { t: 'Handling large-scale riots and civil unrest' },
-            { t: 'Assault and clearance operations in high-risk areas' }
+            { t: '武装嫌犯等高危目标的逮捕行动' },
+            { t: '人质事件中的谈判与救援' },
+            { t: '重要人物的安保任务' },
+            { t: '大规模骚乱与群体性事件处置' },
+            { t: '高危区域的强攻与清剿行动' }
           ]
         }
       ]
@@ -384,18 +384,18 @@ body{
     air: {
       tag: 'AIR SUPPORT',
       title: 'Air Support Division',
-      sub: 'Department of the Los Santos Police Department',
-      chief: 'TBD',
-      intro: 'The Air Support Division is the aerial force of the Los Santos Police Department, equipped with police helicopters that provide an irreplaceable aerial perspective for ground units. In pursuit, search and rescue, and large-event security operations, airborne officers serve as the "eyes in the sky" for ground operations, maintaining situational awareness of the entire area.',
+      sub: '洛圣都警察局下属部门',
+      chief: '待定',
+      intro: '空中支援是洛圣都警察局的空中力量，装备警用直升机，为地面单位提供不可替代的空中视角。在追缉、搜救与大型活动安保中，空中警员是地面行动的「空中之眼」，掌握整个区域的态势。',
       sections: [
         {
-          h: 'Primary Responsibilities',
+          h: '主要职责',
           items: [
-            { t: 'Aerial surveillance and command during pursuit operations' },
-            { t: 'Aerial search for missing persons and suspects' },
-            { t: 'Aerial patrol and security at major events' },
-            { t: 'Rapid aerial support for urban emergencies' },
-            { t: 'Aerial photography and evidence collection to assist case investigations' }
+            { t: '追缉行动中的空中监控与指挥' },
+            { t: '失踪人员与嫌犯的空中搜索' },
+            { t: '大型活动的空中巡逻与安保' },
+            { t: '城市突发事件的快速空中支援' },
+            { t: '航拍取证，协助案件侦查' }
           ]
         }
       ]
@@ -420,11 +420,11 @@ body{
     if (!d) return;
     document.getElementById('d-tag').textContent = d.tag || 'DEPARTMENT PROFILE';
     document.getElementById('d-title').textContent = d.title;
-    document.getElementById('d-sub').textContent = d.sub || 'Department of the Los Santos Police Department';
+    document.getElementById('d-sub').textContent = d.sub || '洛圣都警察局下属部门';
     if (typeof d.chief === 'object') {
       document.getElementById('d-chief').innerHTML = d.chief.role + ': <b>' + d.chief.name + '</b>';
     } else {
-      document.getElementById('d-chief').innerHTML = 'Chief: <b>' + d.chief + '</b>';
+      document.getElementById('d-chief').innerHTML = '主管：<b>' + d.chief + '</b>';
     }
 
     var html = '';
@@ -439,7 +439,7 @@ body{
       });
       html += '</ul></div>';
     });
-    if (d.summary) html += '<div class="dept-section"><h3>Summary</h3><p>' + d.summary + '</p></div>';
+    if (d.summary) html += '<div class="dept-section"><h3>总结</h3><p>' + d.summary + '</p></div>';
     document.getElementById('d-body').innerHTML = html;
 
     document.querySelectorAll('.org-node').forEach(function(el){
