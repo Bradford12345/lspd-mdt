@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>了解LSPD - LSPD MDT</title>
+<link rel="icon" type="image/png" href="/assets/favicon-64.png">
+<link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+<style>
+:root {
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --card: #ffffff;
+  --border: #c8d4e0;
+  --border-glow: #a0b4c8;
+  --text: #1a1a1a;
+  --dim: #5a7a9c;
+  --accent: #012c49;
+  --accent-glow: #33558c;
+  --red: #c0392b;
+  --green: #012c49;
+  --yellow: #012c49;
+  --orange: #012c49;
+  --purple: #012c49;
+  --lspd-gold: #012c49;
+  --blue: #33558c;
+}
+html{scroll-behavior:smooth}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font:13px/1.6 'Segoe UI',-apple-system,'Microsoft YaHei',sans-serif;
+  overflow-x:hidden;
+}
+body::after{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background:none;
+  pointer-events:none;z-index:9999;
+}
+.header{
+  background:#012c49;
+  border-bottom:1px solid #001d33;
+  padding:0 20px;position:sticky;top:0;z-index:10;
+}
+.header-top{
+  display:flex;align-items:center;gap:16px;padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.logo-box{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo-box img{height:48px;width:48px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(59,130,246,.3))}
+.header-title{flex:1;cursor:pointer}
+.header-title h1{
+  font-size:18px;font-weight:700;letter-spacing:2px;
+  color:#fff;text-shadow:none;white-space:nowrap;
+}
+.header-title .motto{
+  font-family:Georgia,'Times New Roman',serif;
+  font-style:italic;font-size:13px;letter-spacing:2px;
+  color:rgba(255,255,255,.8);margin:2px 0 4px;
+  text-shadow:0 0 8px rgba(201,168,76,.25);
+}
+/* 返回首页按钮 */
+.home-btn{
+  display:flex;align-items:center;gap:5px;
+  background:#ffffff;border:2px solid #012c49;
+  color:#012c49;font-size:12px;font-weight:700;padding:8px 12px;
+  border-radius:0;cursor:pointer;text-decoration:none;letter-spacing:.5px;
+  white-space:nowrap;transition:all .2s;font-family:inherit;
+}
+.home-btn:hover{background:#012c49;border-color:#001d33;color:#fff}
+.home-btn svg{width:14px;height:14px;flex-shrink:0}
+/* 本页主体 */
+.page{max-width:960px;margin:0 auto;padding:40px 20px 60px}
+.page-head{border-left:4px solid #012c49;padding:2px 0 2px 18px;margin-bottom:28px}
+.page-title{font-size:28px;font-weight:700;letter-spacing:3px;color:#012c49}
+.page-sub{
+  font-family:Georgia,'Times New Roman',serif;
+  font-style:italic;font-size:14px;letter-spacing:2px;color:var(--dim);
+  margin-top:4px;
+}
+.placeholder{
+  border:1px dashed #c8d4e0;background:#f7fafc;
+  padding:60px 20px;text-align:center;color:var(--dim);
+  font-size:14px;letter-spacing:1px;
+}
+.foot{
+  text-align:center;padding:24px;color:var(--dim);
+  font-size:11px;letter-spacing:2px;
+  border-top:1px solid #eef2f6;
+}
+@media(max-width:700px){
+  .page{padding:24px 14px 40px}
+  .page-title{font-size:22px}
+  .logo-box img{height:32px;width:32px}
+  .header-title h1{font-size:13px;letter-spacing:1px}
+  .header-title .motto{font-size:11px}
+}
+@media(max-width:400px){
+  .home-btn span{display:none}
+  .home-btn{padding:6px 8px}
+}
+</style>
+</head>
+
+<body>
+<div class="header" id="learn-header">
+  <div class="header-top">
+    <div class="logo-box">
+      <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD" title="Los Santos Police Department">
+    </div>
+    <div class="header-title">
+      <h1>Los Santos Police Department</h1>
+      <div class="motto">"To Protect and to Serve"</div>
+    </div>
+    <a class="home-btn" href="understandinglspd/" title="了解LSPD">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>了解LSPD</span>
+    </a>
+    <button class="home-btn" id="learn-back" type="button" title="返回上一级">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      <span>返回上一级</span>
+    </button>
+  </div>
+</div>
+
+<div class="page">
+  <div class="page-head">
+    <div class="page-title">了解 LSPD</div>
+    <div class="page-sub">About Los Santos Police Department</div>
+  </div>
+  <div class="placeholder">内容建设中，敬请期待</div>
+</div>
+
+<div class="foot">By Bradford</div>
+<script>
+  (function(){
+    function goHome(){ location.href = '/'; }
+    var back = document.getElementById('learn-back');
+    if (back) back.addEventListener('click', goHome);
+    document.addEventListener('click', function(e){
+      if (e.target.closest('.logo-box') || e.target.closest('.header-title')) goHome();
+    });
+  })();
+</script>
+</body>
+</html>
