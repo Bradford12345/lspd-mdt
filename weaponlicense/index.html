@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>热武器执照申请 - LSPD MDT</title>
+<link rel="icon" type="image/png" href="/assets/favicon-64.png">
+<link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+<style>
+:root {
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --card: #ffffff;
+  --border: #c8d4e0;
+  --border-glow: #a0b4c8;
+  --text: #1a1a1a;
+  --dim: #5a7a9c;
+  --accent: #012c49;
+  --accent-glow: #33558c;
+  --red: #c0392b;
+  --green: #012c49;
+  --yellow: #012c49;
+  --orange: #012c49;
+  --purple: #012c49;
+  --lspd-gold: #012c49;
+  --blue: #33558c;
+}
+html{scroll-behavior:smooth}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font:13px/1.6 'Segoe UI',-apple-system,'Microsoft YaHei',sans-serif;
+  overflow-x:hidden;
+}
+.header{
+  background:#012c49;
+  border-bottom:1px solid #001d33;
+  padding:0 20px;position:sticky;top:0;z-index:10;
+}
+.header-top{
+  display:flex;align-items:center;gap:16px;padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.logo-box{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo-box img{height:48px;width:48px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(59,130,246,.3))}
+.header-title{flex:1}
+.header-title h1{
+  font-size:18px;font-weight:700;letter-spacing:2px;
+  color:#fff;text-shadow:none;white-space:nowrap;
+}
+.header-title .motto{
+  font-family:Georgia,'Times New Roman',serif;
+  font-style:italic;font-size:13px;letter-spacing:2px;
+  color:rgba(255,255,255,.8);margin:2px 0 4px;
+  text-shadow:0 0 8px rgba(201,168,76,.25);
+}
+/* 返回首页 / 返回上一级按钮 */
+.home-btn{
+  display:flex;align-items:center;gap:5px;
+  background:#ffffff;border:2px solid #012c49;
+  color:#012c49;font-size:12px;font-weight:700;padding:8px 12px;
+  border-radius:0;cursor:pointer;text-decoration:none;letter-spacing:.5px;
+  white-space:nowrap;transition:all .2s;font-family:inherit;
+}
+.home-btn:hover{background:#012c49;border-color:#001d33;color:#fff}
+.home-btn svg{width:14px;height:14px;flex-shrink:0}
+/* 主体面板（文档流，同入职页） */
+html,body{background:#f2f4f7;min-height:100%}
+.complaint-panel{
+  position:static;inset:auto;z-index:auto;
+  display:block;min-height:calc(100vh - 172px);
+  padding:40px 48px 48px;
+}
+.complaint-panel > *{max-width:960px;margin-left:auto;margin-right:auto}
+.complaint-head{
+  display:flex;align-items:center;gap:16px;margin-bottom:26px;
+  padding-bottom:16px;border-bottom:2px solid #012c49;position:relative;
+}
+.complaint-head::after{
+  content:'';position:absolute;left:0;bottom:-2px;width:76px;height:2px;
+  background:linear-gradient(90deg,#c9a84c,rgba(201,168,76,0));
+}
+.complaint-title{color:#000000;font-size:20px;font-weight:800;letter-spacing:3px}
+.complaint-sub{
+  color:#5a7a9c;font-size:12px;letter-spacing:2px;margin-top:4px;
+  text-transform:uppercase;font-family:Georgia,'Times New Roman',serif;font-style:italic;
+}
+/* 选项卡片（白底黑字，方角，同入职页） */
+.enlist-options{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.enlist-option{
+  background:#fff;border:1px solid #012c49;border-radius:0;
+  padding:34px 24px;cursor:pointer;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  font-family:inherit;transition:box-shadow .2s,transform .2s,border-color .2s;
+}
+.enlist-option:hover{
+  border-color:#c9a84c;
+  box-shadow:0 6px 20px rgba(1,44,73,.12),0 0 0 2px rgba(201,168,76,.35);
+  transform:translateY(-3px);
+}
+.enlist-option.soon{cursor:default;opacity:.72;border-color:#c8d4e0}
+.enlist-option.soon:hover{transform:none;box-shadow:none;border-color:#c8d4e0}
+.enlist-option.soon .eo-desc{color:#9aa4ae}
+.eo-icon{width:46px;height:46px;color:#012c49}
+.eo-icon svg{width:46px;height:46px}
+.eo-title{font-size:17px;font-weight:800;color:#000000;letter-spacing:3px}
+.eo-desc{font-size:12px;color:#5a7a9c;line-height:1.6}
+/* 表单 */
+.complaint-form{
+  background:#fff;padding:32px 36px;
+}
+.cf-tip{
+  font-size:12px;color:#33558c;margin-bottom:20px;padding:10px 14px;
+  background:#eef3f8;border-left:4px solid #012c49;letter-spacing:1px;
+  display:flex;align-items:center;gap:8px;
+}
+.cf-tip::before{content:'ℹ';font-size:14px;color:#012c49;flex-shrink:0}
+.cf-field{margin-bottom:20px}
+.cf-label{
+  display:block;font-size:13px;font-weight:700;color:#000000;
+  margin-bottom:8px;letter-spacing:1px;
+}
+.cf-label .req{color:#c0392b;margin-left:2px}
+.cf-label .hint{font-weight:400;color:#5a7a9c;font-size:11px;margin-left:6px}
+.cf-input,.cf-textarea{
+  width:100%;box-sizing:border-box;padding:11px 13px;font-size:13px;
+  border:1px solid #b9c6d2;background:#fbfcfd;color:#000;border-radius:0;
+  outline:none;font-family:inherit;transition:border-color .15s,box-shadow .15s;
+}
+.cf-input:focus,.cf-textarea:focus{
+  border-color:#012c49;background:#fff;
+  box-shadow:0 0 0 2px rgba(1,44,73,.12);
+}
+.cf-textarea{min-height:110px;resize:vertical;line-height:1.6}
+.cf-actions{display:flex;gap:12px;margin-top:26px}
+.cf-btn{
+  padding:11px 30px;font-size:13px;font-weight:700;border:none;border-radius:0;
+  cursor:pointer;letter-spacing:2px;font-family:inherit;transition:all .15s;
+}
+.cf-btn.submit{background:#012c49;color:#fff}
+.cf-btn.submit:hover{background:#001d33}
+.cf-btn.submit:disabled{background:#8ba0b3;cursor:not-allowed}
+.cf-btn.back{background:#fff;color:#000000;border:2px solid #012c49}
+.cf-btn.back:hover{background:#012c49;color:#fff}
+/* 单选组（方角自定义样式，黑色字体） */
+.cf-radio-group{display:flex;gap:26px;padding-top:2px}
+.cf-radio{
+  display:inline-flex;align-items:center;gap:9px;cursor:pointer;
+  font-size:13px;color:#000000;letter-spacing:1px;font-family:inherit;
+}
+.cf-radio input{position:absolute;opacity:0;pointer-events:none}
+.cf-radio .rbox{
+  width:16px;height:16px;border:1.5px solid #9fb2c4;background:#fff;border-radius:0;
+  display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:border-color .15s,background .15s;
+}
+.cf-radio input:checked + .rbox{border-color:#012c49;background:#012c49}
+.cf-radio input:checked + .rbox::after{
+  content:'';width:8px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;
+  transform:rotate(-45deg) translateY(-1px);
+}
+.cf-radio input:focus-visible + .rbox{box-shadow:0 0 0 2px rgba(1,44,73,.25)}
+/* 表单标题右侧返回选择按钮 */
+.enlist-stepback{
+  margin-left:auto;display:flex;align-items:center;gap:5px;
+  background:#fff;border:2px solid #012c49;color:#012c49;
+  font-size:12px;font-weight:700;padding:8px 12px;border-radius:0;cursor:pointer;
+  letter-spacing:.5px;font-family:inherit;transition:all .2s;white-space:nowrap;
+}
+.enlist-stepback:hover{background:#012c49;color:#fff}
+.enlist-stepback svg{width:13px;height:13px;flex-shrink:0}
+/* ===== 须知弹窗 ===== */
+.sentencing-dialog{
+  display:none;position:fixed;top:68px;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,.78);z-index:5500;justify-content:center;align-items:center;
+}
+.sentencing-dialog.show{display:flex}
+/* 弹窗挂在 wl-panel 内会被 max-width:960px;margin:auto 钳制，强制全屏铺满 */
+#wl-panel > #pf-notice-dialog{max-width:none;width:auto;margin:0}
+body.dialog-open{overflow:hidden}
+#pf-notice-dialog .sentencing-dialog-content{
+  background:#ffffff;border:1px solid #d8dde3;border-radius:0;
+  width:92%;max-width:620px;max-height:84vh;padding:0;
+  box-shadow:0 8px 40px rgba(0,0,0,.15);overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.pf-notice-head{
+  background:#012c49;color:#fff;padding:14px 22px;
+  font-size:15px;font-weight:800;letter-spacing:2px;flex-shrink:0;
+}
+.pf-notice-head small{display:block;font-size:11px;font-weight:400;letter-spacing:1px;color:rgba(255,255,255,.75);margin-top:2px}
+.pf-notice-body{
+  padding:16px 24px;font-size:13px;color:#1a1a1a;line-height:1.8;
+  overflow-y:auto;flex:1;
+}
+.pf-notice-body .nt-lead{font-size:14px;font-weight:700;color:#000;margin-bottom:10px}
+.pf-notice-body h4{
+  font-size:13px;color:#012c49;margin:14px 0 6px;letter-spacing:1px;
+  display:flex;align-items:center;gap:6px;
+}
+.pf-notice-body h4::before{content:'';width:4px;height:14px;background:#c0392b;flex-shrink:0}
+.pf-notice-body ol,.pf-notice-body ul{margin:0 0 4px 20px;padding:0}
+.pf-notice-body li{margin-bottom:4px}
+.pf-notice-body .nt-block{
+  background:#f5f7fa;border-left:3px solid #012c49;padding:8px 14px;margin:8px 0;
+  white-space:pre-line;
+}
+.pf-notice-foot{
+  border-top:1px solid #eef1f4;padding:14px 24px;
+  display:flex;align-items:center;gap:14px;flex-shrink:0;
+  background:#fff;
+}
+.pf-agree-btn{
+  flex:1;padding:11px;background:#012c49;color:#fff;border:none;border-radius:0;
+  font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;font-family:inherit;
+  transition:background .15s;
+}
+.pf-agree-btn:hover{background:#001d33}
+.pf-agree-btn:disabled{background:#8ba0b3;cursor:not-allowed}
+.pf-agree-btn:disabled:hover{background:#8ba0b3}
+.pf-agree-btn .cd{color:#ffd76e}
+.pf-cancel-btn{
+  padding:11px 18px;background:#fff;color:#000;border:2px solid #012c49;border-radius:0;
+  font-size:13px;font-weight:700;cursor:pointer;letter-spacing:1px;font-family:inherit;
+  transition:all .15s;
+}
+.pf-cancel-btn:hover{background:#012c49;color:#fff}
+/* 提交成功弹窗 */
+#wl-success-dialog{z-index:5700}
+#wl-success-dialog .sentencing-dialog-content{
+  background:#ffffff;border:1px solid #d8dde3;border-radius:0;
+  padding:28px 24px;min-width:340px;max-width:480px;text-align:center;
+  box-shadow:0 8px 40px rgba(0,0,0,.15);
+}
+.wl-success-text{color:#000;font-size:14px;line-height:1.9;margin:12px 0 18px}
+.wl-success-btn{
+  display:block;width:100%;padding:10px;
+  background:#012c49;border:none;border-radius:0;
+  color:#fff;font-size:14px;letter-spacing:2px;cursor:pointer;
+  transition:all .15s;
+}
+.wl-success-btn:hover{background:#001d33}
+/* toast */
+.portal-toast{
+  position:fixed;bottom:48px;left:50%;transform:translateX(-50%);
+  background:rgba(12,26,42,.95);border:1px solid rgba(201,168,76,.6);
+  color:#fff;padding:10px 22px;font-size:13px;letter-spacing:1px;white-space:nowrap;
+  display:none;box-shadow:0 0 16px rgba(201,168,76,.3);pointer-events:none;z-index:6000;
+}
+.portal-toast.show{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+/* 页脚 */
+.site-footer{
+  margin-top:30px;padding:26px 20px;text-align:center;
+  background:linear-gradient(180deg,#ffffff 0%,#f0f4f8 100%);
+  border-top:2px solid var(--accent);
+}
+.site-footer-inner{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  flex-wrap:wrap;
+}
+.site-footer img{
+  height:42px;width:42px;object-fit:contain;
+  filter:drop-shadow(0 2px 4px rgba(26,58,92,.3));
+}
+.site-footer .foot-brand{
+  font-family:Georgia,'Times New Roman',serif;font-style:italic;
+  font-size:16px;letter-spacing:2px;color:var(--accent);font-weight:700;
+}
+.site-footer .foot-tag{font-size:11px;color:var(--dim);letter-spacing:1px}
+/* 手机适配 */
+@media(max-width:640px){
+  .complaint-panel{padding:24px 20px 40px}
+  .complaint-form{padding:20px 16px}
+  .enlist-options{grid-template-columns:1fr;gap:14px}
+  .enlist-option{padding:22px 16px}
+  .header-top{flex-wrap:wrap;gap:8px;padding:8px 0}
+  .logo-box img{height:32px;width:32px}
+  .header-title h1{font-size:13px;letter-spacing:1px}
+  .header-title .motto{font-size:11px}
+  .pf-notice-body{padding:14px 18px}
+  .pf-notice-foot{flex-direction:column;gap:10px}
+  .pf-agree-btn,.pf-cancel-btn{width:100%}
+}
+@media(max-width:400px){
+  .home-btn span{display:none}
+  .home-btn{padding:6px 8px}
+  .logo-box img{height:26px}
+  .header-title h1{font-size:11px}
+  .header-title .motto{display:none}
+}
+</style>
+</head>
+
+<body>
+<div class="header" id="wl-header">
+  <div class="header-top">
+    <div class="logo-box" id="wl-logo">
+      <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD" title="Los Santos Police Department">
+    </div>
+    <div class="header-title">
+      <h1>Los Santos Police Department</h1>
+      <div class="motto">"To Protect and to Serve"</div>
+    </div>
+    <a class="home-btn" href="understandinglspd/" title="了解LSPD">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>了解LSPD</span>
+    </a>
+    <button class="home-btn" id="wl-header-back" type="button" title="返回上一级">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      <span>返回上一级</span>
+    </button>
+  </div>
+</div>
+
+<div class="complaint-panel" id="wl-panel">
+  <!-- 步骤1：选择执照类型 -->
+  <div id="wl-choose">
+    <div class="complaint-head">
+      <div>
+        <div class="complaint-title">热武器执照申请</div>
+        <div class="complaint-sub">Weapon License Application</div>
+      </div>
+    </div>
+    <div class="enlist-options">
+      <button class="enlist-option" type="button" data-wl="pf">
+        <span class="eo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10h-1a2 2 0 0 0 -2 2v0a2 2 0 0 0 2 2h1"/><path d="M7 12h14"/><path d="M18 10v-1a1 1 0 0 0 -1 -1h-2l-4 -3h-2v4"/><path d="M18 14v1a1 1 0 0 1 -1 1h-2l-4 3h-2v-4"/></svg></span>
+        <span class="eo-title">PF 武器购买许可证</span>
+        <span class="eo-desc">PF License &middot; 合法购买枪支的许可证书</span>
+      </button>
+      <button class="enlist-option soon" type="button" data-wl="soon">
+        <span class="eo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10h-1a2 2 0 0 0 -2 2v0a2 2 0 0 0 2 2h1"/><path d="M7 12h14"/><path d="M18 10v-1a1 1 0 0 0 -1 -1h-2l-4 -3h-2v4"/><path d="M18 14v1a1 1 0 0 1 -1 1h-2l-4 3h-2v-4"/></svg></span>
+        <span class="eo-title">执照类型 2</span>
+        <span class="eo-desc">即将开放，敬请期待</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 须知弹窗（PF） -->
+  <div class="sentencing-dialog" id="pf-notice-dialog">
+    <div class="sentencing-dialog-content">
+      <div class="pf-notice-head">
+        PF执照《武器购买许可证》
+        <small>Firearm Purchase License &middot; 请仔细阅读以下须知</small>
+      </div>
+      <div class="pf-notice-body">
+        <p class="nt-lead">是圣安地列斯州公民合法购买枪支的许可证书。</p>
+        <h4>办理须知</h4>
+        <ol>
+          <li>《圣安地列斯州热武器管理法》</li>
+          <li>每位市民只能同时拥有3支合法武器；</li>
+          <li>市民拥有的合法武器禁止加装一切配件；</li>
+          <li>只拥有PF执照的市民只能将合法武器存放在自己名下的房产与自己名下的车辆内，不允许携带在身上。</li>
+        </ol>
+        <h4>申领条件</h4>
+        <ol>
+          <li>美国圣安地列斯州公民。</li>
+          <li>在申领地区有固定住所。</li>
+          <li>必须有一栋房屋或者一辆汽车用于存放枪支。</li>
+          <li>年满 22 周岁。</li>
+          <li>圣安地列斯州境内无任何犯罪记录，包括轻罪拘役记录。</li>
+        </ol>
+        <div class="nt-block">---申请---
+请根据下面的格式，在「PF执照申请」频道内提交PF执照办理申请；
+我们会核实你的信息，审核通过后会有人员联系您进行办理；
+通过后请携带ID卡，以及现金前往办理。</div>
+        <div class="nt-block">---办理---
+当你被通知前往办理，请在规定时间前往警局面试、办理；
+你会被要求出示身份证件，请确保以上物品随身携带；
+你会被要求回答数个问题，以确保你已知晓相关法律事项；
+如果你的回答不尽人意，你的申请将会被否决；
+面试可能在某些不可抗力的因素影响下被拒绝或中断。</div>
+        <div class="nt-block">---费用---
+每次面试将会花费5000美金，不论通过与否，费用不退还；
+证件办理将会花费5000美金，每次办理请准备至少10,000美金。</div>
+      </div>
+      <div class="pf-notice-foot">
+        <button class="pf-cancel-btn" type="button" id="pf-notice-cancel">返回</button>
+        <button class="pf-agree-btn" type="button" id="pf-notice-agree" disabled>我已阅读并同意（<span class="cd" id="pf-countdown">10</span> 秒）</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 步骤2：PF 申请表 -->
+  <div id="wl-form-pf" style="display:none">
+    <div class="complaint-head">
+      <div>
+        <div class="complaint-title">PF 武器购买许可证申请</div>
+        <div class="complaint-sub">PF License Application</div>
+      </div>
+      <button class="enlist-stepback" type="button" data-stepback="choose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>返回选择</span>
+      </button>
+    </div>
+    <div class="complaint-form">
+      <div class="cf-tip">请如实填写以下信息，提交后我们将尽快核实，审核通过后会有人员联系您办理。带 * 为必填项。</div>
+      <div class="cf-field">
+        <label class="cf-label" for="pf-name">姓名<span class="req">*</span></label>
+        <input class="cf-input" type="text" id="pf-name" placeholder="请输入姓名" maxlength="30">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="pf-age">年龄<span class="req">*</span></label>
+        <input class="cf-input" type="number" id="pf-age" placeholder="请输入年龄" min="1" max="120" inputmode="numeric">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="pf-ssn">社安号<span class="req">*</span></label>
+        <input class="cf-input" type="text" id="pf-ssn" placeholder="请输入社安号" maxlength="30">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="pf-phone">手机号<span class="req">*</span></label>
+        <input class="cf-input" type="tel" id="pf-phone" placeholder="请输入手机号（仅数字与符号）" maxlength="30" autocomplete="off">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="pf-prop">个人房产<span class="req">*</span></label>
+        <input class="cf-input" type="text" id="pf-prop" placeholder="请输入个人房产" maxlength="60">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="pf-veh">个人车辆<span class="req">*</span><span class="hint">填写一个车牌</span></label>
+        <input class="cf-input" type="text" id="pf-veh" placeholder="请输入车牌号" maxlength="20">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="pf-job">职业<span class="req">*</span></label>
+        <input class="cf-input" type="text" id="pf-job" placeholder="请输入职业" maxlength="30">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label">你所持有的案底<span class="req">*</span></label>
+        <div class="cf-radio-group">
+          <label class="cf-radio"><input type="radio" name="pf-record" value="有"><span class="rbox"></span><span>有</span></label>
+          <label class="cf-radio"><input type="radio" name="pf-record" value="无"><span class="rbox"></span><span>无</span></label>
+        </div>
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="pf-reason">申请理由<span class="req">*</span></label>
+        <textarea class="cf-textarea" id="pf-reason" placeholder="请输入申请理由" maxlength="300"></textarea>
+      </div>
+      <div class="cf-field">
+        <label class="cf-label">是否知晓办理须知<span class="req">*</span></label>
+        <div class="cf-radio-group">
+          <label class="cf-radio"><input type="radio" name="pf-notice" value="是"><span class="rbox"></span><span>是</span></label>
+          <label class="cf-radio"><input type="radio" name="pf-notice" value="否"><span class="rbox"></span><span>否</span></label>
+        </div>
+      </div>
+      <div class="cf-actions">
+        <button class="cf-btn submit" type="button" id="pf-submit">提 交</button>
+        <button class="cf-btn back" type="button" data-stepback="choose">取 消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="portal-toast" id="portal-toast"></div>
+
+<div class="sentencing-dialog" id="wl-success-dialog">
+  <div class="sentencing-dialog-content">
+    <div class="complaint-title" style="font-size:17px">提交成功</div>
+    <div class="wl-success-text">
+      你的 PF 执照申请已提交。<br>
+      我们会核实你的信息，审核通过后<br>会有人员联系您进行办理。
+    </div>
+    <button class="wl-success-btn" id="wl-success-ok" type="button">知道了</button>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD">
+    <span class="foot-brand">by Bradford</span>
+    <span class="foot-tag">LSPD MDT &middot; To Protect and to Serve</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var portalToast = document.getElementById('portal-toast');
+  var toastTimer = null;
+  function showToast(msg) {
+    if (!portalToast) return;
+    portalToast.textContent = msg;
+    portalToast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ portalToast.classList.remove('show'); }, 2200);
+  }
+  function goHome(){ location.href = '/'; }
+  var logo = document.getElementById('wl-logo');
+  if (logo) logo.addEventListener('click', goHome);
+  var headerBack = document.getElementById('wl-header-back');
+  if (headerBack) headerBack.addEventListener('click', goHome);
+
+  var choose = document.getElementById('wl-choose');
+  var pfForm = document.getElementById('wl-form-pf');
+  var noticeDialog = document.getElementById('pf-notice-dialog');
+  var agreeBtn = document.getElementById('pf-notice-agree');
+  var countdownEl = document.getElementById('pf-countdown');
+  var cdTimer = null;
+  var cdLeft = 10;
+
+  function showStep(step) {
+    if (choose) choose.style.display = step === 'choose' ? '' : 'none';
+    if (pfForm) pfForm.style.display = step === 'pf' ? '' : 'none';
+    window.scrollTo(0, 0);
+  }
+
+  // 选项卡片
+  var panel = document.getElementById('wl-panel');
+  if (panel) {
+    panel.addEventListener('click', function(e){
+      var sb = e.target.closest('[data-stepback]');
+      if (sb) { showStep('choose'); return; }
+      var opt = e.target.closest('.enlist-option');
+      if (!opt || !opt.dataset.wl) return;
+      if (opt.classList.contains('soon') || opt.dataset.wl === 'soon') {
+        showToast('该执照类型暂未开放，敬请期待');
+        return;
+      }
+      if (opt.dataset.wl === 'pf') openNotice();
+    });
+  }
+
+  // 须知弹窗 + 10 秒倒计时（在表单页弹出）
+  function openNotice() {
+    if (!noticeDialog) return;
+    showStep('pf');   // 先切到表单页，弹窗盖在表单上
+    document.body.classList.add('dialog-open');   // 锁滚动，表单不可操作
+    // 遮罩从顶部栏下方开始，不盖 header
+    var hd = document.querySelector('.header');
+    noticeDialog.style.top = (hd ? hd.getBoundingClientRect().height : 68) + 'px';
+    noticeDialog.classList.add('show');
+    cdLeft = 10;
+    agreeBtn.disabled = true;
+    agreeBtn.innerHTML = '我已阅读并同意（<span class="cd" id="pf-countdown">10</span> 秒）';
+    countdownEl = document.getElementById('pf-countdown');
+    clearInterval(cdTimer);
+    cdTimer = setInterval(function(){
+      cdLeft--;
+      if (cdLeft <= 0) {
+        clearInterval(cdTimer);
+        agreeBtn.disabled = false;
+        agreeBtn.textContent = '我已阅读并同意';
+        return;
+      }
+      if (countdownEl) countdownEl.textContent = cdLeft;
+    }, 1000);
+  }
+  function closeNotice() {
+    if (!noticeDialog) return;
+    clearInterval(cdTimer);
+    noticeDialog.classList.remove('show');
+    document.body.classList.remove('dialog-open');   // 恢复滚动
+  }
+  var cancelBtn = document.getElementById('pf-notice-cancel');
+  if (cancelBtn) cancelBtn.addEventListener('click', function(){
+    closeNotice();
+    showStep('choose');   // 放弃申请，回选择页
+  });
+  if (agreeBtn) {
+    agreeBtn.addEventListener('click', function(){
+      closeNotice();   // 已在表单页，直接留在表单填写
+    });
+  }
+
+  // 手机号输入拦截汉字和英文字母
+  var phoneEl = document.getElementById('pf-phone');
+  if (phoneEl) {
+    phoneEl.addEventListener('input', function(){
+      this.value = this.value.replace(/[\u4e00-\u9fa5a-zA-Z]/g, '');
+    });
+  }
+
+  // 提交
+  var submitBtn = document.getElementById('pf-submit');
+  if (submitBtn) {
+    submitBtn.addEventListener('click', function(){
+      var name = document.getElementById('pf-name').value.trim();
+      var age = document.getElementById('pf-age').value.trim();
+      var ssn = document.getElementById('pf-ssn').value.trim();
+      var phone = document.getElementById('pf-phone').value.replace(/[^0-9]/g, '');
+      var prop = document.getElementById('pf-prop').value.trim();
+      var veh = document.getElementById('pf-veh').value.trim();
+      var job = document.getElementById('pf-job').value.trim();
+      var record = document.querySelector('input[name="pf-record"]:checked');
+      var reason = document.getElementById('pf-reason').value.trim();
+      var notice = document.querySelector('input[name="pf-notice"]:checked');
+
+      if (!name) { showToast('请填写姓名'); return; }
+      if (!age) { showToast('请填写年龄'); return; }
+      if (!ssn) { showToast('请填写社安号'); return; }
+      if (!phone) { showToast('请填写手机号'); return; }
+      if (!prop) { showToast('请填写个人房产'); return; }
+      if (!veh) { showToast('请填写个人车辆车牌'); return; }
+      if (!job) { showToast('请填写职业'); return; }
+      if (!record) { showToast('请选择你所持有的案底'); return; }
+      if (!reason) { showToast('请填写申请理由'); return; }
+      if (!notice) { showToast('请选择是否知晓办理须知'); return; }
+      if (notice.value !== '是') { showToast('须确认知晓办理须知后才能提交'); return; }
+
+      var payload = {
+        type: 'pf',
+        name: name, age: age, ssn: ssn, phone: phone,
+        property: prop, vehicle: veh, job: job,
+        record: record.value, reason: reason, notice: notice.value
+      };
+      submitBtn.disabled = true;
+      submitBtn.textContent = '提交中...';
+      var attempt = 0;
+      function doSubmit(){
+        attempt++;
+        var ctrl = new AbortController();
+        var timer = setTimeout(function(){ ctrl.abort(); }, 30000);
+        fetch('https://bryant-d6g0lr5jrd4c95f00.service.tcloudbase.com/weaponApplication', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: ctrl.signal
+        }).then(function(res){
+          clearTimeout(timer);
+          return res.json();
+        }).then(function(data){
+          submitBtn.disabled = false;
+          submitBtn.textContent = '提 交';
+          if (data && data.code === 0) {
+            ['pf-name','pf-age','pf-ssn','pf-phone','pf-prop','pf-veh','pf-job','pf-reason'].forEach(function(id){
+              var el = document.getElementById(id); if (el) el.value = '';
+            });
+            document.querySelectorAll('input[name="pf-record"], input[name="pf-notice"]').forEach(function(r){ r.checked = false; });
+            var sd = document.getElementById('wl-success-dialog');
+            if (sd) sd.classList.add('show');
+          } else {
+            showToast((data && data.msg) || '提交失败，请重试');
+          }
+        }).catch(function(){
+          clearTimeout(timer);
+          if (attempt < 2) {
+            submitBtn.textContent = '网络不稳定，重试中...';
+            setTimeout(doSubmit, 800);
+          } else {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '提 交';
+            showToast('网络错误，请稍后重试');
+          }
+        });
+      }
+      doSubmit();
+    });
+  }
+
+  // 成功弹窗「知道了」→ 返回选择
+  var successOk = document.getElementById('wl-success-ok');
+  if (successOk) {
+    successOk.addEventListener('click', function(){
+      var sd = document.getElementById('wl-success-dialog');
+      if (sd) sd.classList.remove('show');
+      showStep('choose');
+    });
+  }
+
+  // 云函数预热
+  try {
+    fetch('https://bryant-d6g0lr5jrd4c95f00.service.tcloudbase.com/weaponApplication', { method: 'GET', mode: 'cors' }).catch(function(){});
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>
