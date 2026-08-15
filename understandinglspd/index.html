@@ -3,196 +3,135 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Organization - Los Santos Police Department</title>
+<title>了解LSPD - 组织架构</title>
 <link rel="icon" type="image/png" href="/assets/favicon-64.png">
 <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
 <style>
+:root {
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --card: #ffffff;
+  --border: #c8d4e0;
+  --border-glow: #a0b4c8;
+  --text: #1a1a1a;
+  --dim: #5a7a9c;
+  --accent: #012c49;
+  --accent-glow: #33558c;
+  --red: #c0392b;
+  --blue: #33558c;
+}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
-  font-family:'Segoe UI',-apple-system,'Microsoft YaHei',sans-serif;
-  font-size:14px;color:#333;line-height:1.6;
-  background:#fff;
+  background:var(--bg);
+  color:var(--text);
+  font:13px/1.6 'Segoe UI',-apple-system,'Microsoft YaHei',sans-serif;
+  overflow-x:hidden;
 }
 
-/* === LAPD 风格顶部信息条 === */
-.info-bar{
-  background:#1a1a1a;color:#fff;font-size:12px;padding:8px 20px;
-  display:flex;justify-content:space-between;align-items:center;
+/* === LSPD 统一顶栏 === */
+.header{
+  background:#012c49;
+  border-bottom:1px solid #001d33;
+  padding:0 20px;position:sticky;top:0;z-index:10;
 }
-.info-bar .left{display:flex;align-items:center;gap:16px}
-.info-bar .left span{letter-spacing:1px}
-.info-bar .right{display:flex;align-items:center;gap:12px}
-.info-bar .right a{color:#fff;text-decoration:none;font-size:12px}
-.info-bar .right a:hover{text-decoration:underline}
-.info-bar .badge{letter-spacing:2px;font-weight:700;font-size:13px}
+.header-top{
+  display:flex;align-items:center;gap:16px;padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.1);
+  max-width:1200px;margin:0 auto;
+}
+.logo-box{display:flex;align-items:center;gap:10px}
+.logo-box img{height:48px;width:48px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(59,130,246,.3))}
+.header-title{flex:1}
+.header-title h1{
+  font-size:18px;font-weight:700;letter-spacing:2px;
+  color:#fff;white-space:nowrap;
+}
+.header-title .motto{
+  font-family:Georgia,'Times New Roman',serif;
+  font-style:italic;font-size:13px;letter-spacing:2px;
+  color:rgba(255,255,255,.8);margin:2px 0 4px;
+}
+.home-btn{
+  display:flex;align-items:center;gap:5px;
+  background:#ffffff;border:2px solid #012c49;
+  color:#012c49;font-size:12px;font-weight:700;padding:8px 12px;
+  border-radius:0;cursor:pointer;text-decoration:none;letter-spacing:.5px;
+  white-space:nowrap;transition:all .2s;font-family:inherit;
+}
+.home-btn:hover{background:#012c49;border-color:#001d33;color:#fff}
+.home-btn svg{width:14px;height:14px;flex-shrink:0}
 
-/* === Header === */
-.header-main{
-  background:#fff;border-bottom:1px solid #e0e0e0;
-  padding:0 20px;display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:100;
+/* === 页面标题区 === */
+.page-head{
+  max-width:1200px;margin:0 auto;padding:34px 20px 6px;
 }
-.header-main .logo-area{display:flex;align-items:center;gap:12px;padding:12px 0}
-.header-main .logo-area img{height:56px;width:56px;object-fit:contain}
-.header-main .logo-text{font-size:13px;color:#666;letter-spacing:1px}
+.page-h1{
+  font-size:26px;font-weight:700;color:#012c49;letter-spacing:1px;
+  margin-bottom:6px;line-height:1.2;
+}
+.page-h1-sub{font-size:13px;color:#5a7a9c;letter-spacing:.5px}
 
-/* 导航 */
-.nav-main{display:flex;align-items:center;gap:0}
-.nav-main a{
-  display:block;padding:24px 18px;color:#333;text-decoration:none;
-  font-size:13px;font-weight:600;letter-spacing:.5px;
-  text-transform:uppercase;transition:color .2s;
-  border-bottom:3px solid transparent;
-}
-.nav-main a:hover{color:#c0392b;border-bottom-color:#c0392b}
-.nav-main a.active{color:#c0392b;border-bottom-color:#c0392b}
-
-/* CONTACT 按钮 */
-.nav-contact{
-  background:#c0392b;color:#fff;padding:10px 20px;
-  font-size:13px;font-weight:700;letter-spacing:1px;
-  text-decoration:none;text-transform:uppercase;
-  margin-left:8px;transition:background .2s;
-}
-.nav-contact:hover{background:#a93226}
-
-/* 搜索图标 */
-.nav-search{
-  width:40px;height:40px;display:flex;align-items:center;justify-content:center;
-  cursor:pointer;margin-left:4px;
-}
-.nav-search svg{width:18px;height:18px;stroke:#333;stroke-width:2;fill:none}
-
-/* === 主视觉区 Hero === */
-.hero{
-  position:relative;height:380px;overflow:hidden;
-  background:#1a1a1a;display:flex;align-items:center;
-}
-.hero-img{
-  position:absolute;inset:0;opacity:.4;
-  background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 50%,#1a1a1a 100%);
-}
-.hero-img::after{
-  content:'';position:absolute;inset:0;
-  background:url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1920&q=80') center/cover;
-  opacity:.3;
-}
-.hero-content{
-  position:relative;z-index:2;padding:0 60px;max-width:1200px;margin:0 auto;width:100%;
-}
-.hero-label{
-  font-size:12px;letter-spacing:3px;color:rgba(255,255,255,.7);
-  text-transform:uppercase;margin-bottom:8px;
-}
-.hero-title{
-  font-size:42px;font-weight:700;color:#fff;letter-spacing:2px;
-  line-height:1.2;margin-bottom:12px;
-}
-.hero-title em{
-  font-family:Georgia,'Times New Roman',serif;font-style:italic;
-  font-weight:400;letter-spacing:1px;
-}
-.hero-sub{
-  font-size:16px;color:rgba(255,255,255,.8);letter-spacing:1px;
-}
-
-/* === 面包屑 === */
-.breadcrumb{
-  background:#f5f5f5;padding:10px 60px;font-size:12px;color:#666;
-  border-bottom:1px solid #e0e0e0;
-}
-.breadcrumb a{color:#c0392b;text-decoration:none}
-.breadcrumb a:hover{text-decoration:underline}
-.breadcrumb span{color:#999;margin:0 6px}
-
-/* === 页面内容区 === */
+/* === 中间主体：组织列表 + 详情面板（学 LAPD 的部分） === */
 .page-wrap{
-  max-width:1200px;margin:0 auto;padding:40px 60px 60px;
-  display:flex;gap:40px;
+  max-width:1200px;margin:0 auto;padding:24px 20px 40px;
+  display:flex;gap:24px;align-items:flex-start;
 }
 .page-main{flex:1;min-width:0}
-.page-sidebar{width:280px;flex-shrink:0}
 
-/* 页面标题 */
-.page-h1{
-  font-size:32px;font-weight:700;color:#1a1a1a;letter-spacing:1px;
-  margin-bottom:8px;line-height:1.2;
-}
-.page-h1-sub{
-  font-size:14px;color:#666;letter-spacing:1px;margin-bottom:30px;
-}
-
-/* 引言段 */
-.intro-box{
-  background:#f8f9fa;border-left:4px solid #c0392b;
-  padding:16px 20px;margin-bottom:30px;font-size:14px;color:#444;line-height:1.8;
-}
-.intro-box b{color:#1a1a1a}
-
-/* 组织架构图区域 */
 .org-chart-wrap{
-  background:#fff;border:1px solid #e0e0e0;margin-bottom:30px;
+  background:#fff;border:1px solid #e0e0e0;margin-bottom:24px;
 }
 .org-chart-head{
-  background:#1a1a1a;color:#fff;padding:14px 20px;
+  background:#012c49;color:#fff;padding:12px 18px;
   font-size:14px;font-weight:700;letter-spacing:2px;
   text-transform:uppercase;
 }
-
-/* 层级列表 */
 .org-tree{padding:0}
 .org-level{
-  background:#f0f0f0;padding:10px 20px;
+  background:#f0f4f8;padding:9px 18px;
   font-size:12px;font-weight:700;letter-spacing:1.5px;
-  color:#555;text-transform:uppercase;
+  color:#012c49;text-transform:uppercase;
   border-bottom:1px solid #e0e0e0;
 }
 .org-node{
-  display:block;padding:12px 20px;text-decoration:none;
+  display:block;padding:11px 18px;text-decoration:none;
   color:#333;font-size:14px;border-bottom:1px solid #f0f0f0;
   cursor:pointer;transition:all .15s;
   border-left:3px solid transparent;
 }
 .org-node:hover{background:#f8f9fa;border-left-color:#c0392b}
-.org-node.active{background:#fff3f3;border-left-color:#c0392b;color:#c0392b;font-weight:700}
-.org-node .en{
-  font-size:12px;color:#888;margin-left:6px;font-weight:400;
-}
-.org-node .desc{
-  display:block;font-size:12px;color:#888;margin-top:2px;
-}
+.org-node.active{background:#fdf1f1;border-left-color:#c0392b;color:#c0392b;font-weight:700}
+.org-node .en{font-size:12px;color:#888;margin-left:6px;font-weight:400}
+.org-node .desc{display:block;font-size:12px;color:#888;margin-top:2px}
 
-/* 详情面板 */
 .dept-panel{
-  border:1px solid #e0e0e0;background:#fff;padding:30px;
+  border:1px solid #e0e0e0;background:#fff;padding:26px 30px;
 }
 .dept-tag{
-  display:inline-block;background:#1a1a1a;color:#fff;
+  display:inline-block;background:#012c49;color:#fff;
   font-size:11px;letter-spacing:2px;padding:4px 12px;
-  text-transform:uppercase;margin-bottom:16px;
+  text-transform:uppercase;margin-bottom:14px;
 }
-.dept-title{font-size:24px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
+.dept-title{font-size:23px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
 .dept-sub{
-  font-size:14px;color:#888;font-style:italic;
-  font-family:Georgia,serif;margin-bottom:20px;
+  font-size:13px;color:#888;font-style:italic;
+  font-family:Georgia,serif;margin-bottom:16px;
 }
 .dept-chief{
   display:inline-block;background:#f8f9fa;border:1px solid #e0e0e0;
-  padding:8px 16px;font-size:13px;color:#555;margin-bottom:24px;
+  padding:8px 16px;font-size:13px;color:#555;margin-bottom:20px;
 }
 .dept-chief b{color:#1a1a1a}
 
-.dept-section{margin-bottom:24px}
+.dept-section{margin-bottom:22px}
 .dept-section h3{
-  font-size:14px;color:#1a1a1a;letter-spacing:1.5px;
+  font-size:14px;color:#012c49;letter-spacing:1.5px;
   text-transform:uppercase;margin-bottom:12px;
   padding-bottom:6px;border-bottom:2px solid #c0392b;
   display:inline-block;
 }
-.dept-section p{
-  font-size:14px;color:#444;line-height:1.8;margin-bottom:10px;
-}
+.dept-section p{font-size:14px;color:#444;line-height:1.8;margin-bottom:10px}
 .dept-section ul{list-style:none;padding:0}
 .dept-section li{
   padding:8px 0 8px 20px;position:relative;font-size:14px;color:#444;
@@ -205,194 +144,84 @@ body{
 }
 .dept-section li b{color:#1a1a1a}
 
-/* 侧边栏 */
-.sidebar-box{
-  background:#f8f9fa;border:1px solid #e0e0e0;padding:20px;margin-bottom:20px;
+/* === LSPD 统一页脚 === */
+.site-footer{
+  margin-top:30px;padding:26px 20px;text-align:center;
+  background:linear-gradient(180deg,#ffffff 0%,#f0f4f8 100%);
+  border-top:2px solid #012c49;
 }
-.sidebar-box h4{
-  font-size:13px;letter-spacing:1.5px;color:#1a1a1a;
-  text-transform:uppercase;margin-bottom:12px;
-  padding-bottom:8px;border-bottom:2px solid #c0392b;
+.site-footer-inner{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  flex-wrap:wrap;
 }
-.sidebar-box a{
-  display:block;padding:8px 0;color:#c0392b;text-decoration:none;
-  font-size:13px;border-bottom:1px solid #e8e8e8;
-  transition:color .2s;
+.site-footer img{height:42px;width:42px;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(26,58,92,.3))}
+.site-footer .foot-brand{
+  font-family:Georgia,'Times New Roman',serif;font-style:italic;
+  font-size:16px;letter-spacing:2px;color:#012c49;font-weight:700;
 }
-.sidebar-box a:hover{color:#a93226}
-.sidebar-box a:last-child{border-bottom:none}
-
-/* === Footer === */
-.footer{
-  background:#1a1a1a;color:#999;padding:40px 60px 20px;
-  font-size:12px;
-}
-.footer-wrap{
-  max-width:1200px;margin:0 auto;display:flex;gap:40px;
-}
-.footer-col{flex:1}
-.footer-col h5{
-  font-size:13px;color:#fff;letter-spacing:1.5px;
-  text-transform:uppercase;margin-bottom:16px;
-}
-.footer-col a{
-  display:block;color:#aaa;text-decoration:none;padding:4px 0;
-  font-size:12px;transition:color .2s;
-}
-.footer-col a:hover{color:#fff}
-.footer-bottom{
-  max-width:1200px;margin:30px auto 0;padding-top:20px;
-  border-top:1px solid #333;display:flex;justify-content:space-between;
-  align-items:center;
-}
-.footer-bottom .copy{color:#666;font-size:11px}
-.footer-bottom .design{color:#666;font-size:11px}
+.site-footer .foot-tag{font-size:11px;color:#5a7a9c;letter-spacing:1px}
 
 /* === 响应式 === */
 @media(max-width:960px){
-  .page-wrap{flex-direction:column;padding:30px 20px}
-  .page-sidebar{width:100%}
-  .hero-content{padding:0 20px}
-  .hero-title{font-size:28px}
-  .breadcrumb{padding:10px 20px}
-  .footer{padding:30px 20px}
-  .footer-wrap{flex-direction:column;gap:20px}
-  .nav-main{display:none}
+  .page-wrap{flex-direction:column}
+  .dept-panel{padding:20px}
 }
 @media(max-width:600px){
-  .hero{height:280px}
-  .hero-title{font-size:22px}
-  .page-h1{font-size:24px}
-  .header-main .logo-text{display:none}
+  .header-title .motto{display:none}
+  .page-h1{font-size:21px}
 }
 </style>
 </head>
 
 <body>
 
-<!-- 顶部信息条 -->
-<div class="info-bar">
-  <div class="left">
-    <span class="badge">LOS SANTOS</span>
-    <span>For Emergencies Dial 911</span>
-    <span>|</span>
-    <span>For Non-Emergency Police Response 877-ASK-LSPD</span>
-  </div>
-  <div class="right">
-    <a href="/">Home</a>
-    <a href="/searchlaw/">File a Report</a>
-    <a href="/joinlspd/">Join the Team</a>
-  </div>
-</div>
-
-<!-- Header -->
-<div class="header-main">
-  <div class="logo-area">
-    <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD">
-    <div class="logo-text">Los Santos Police Department</div>
-  </div>
-  <div style="display:flex;align-items:center">
-    <nav class="nav-main">
-      <a href="/">Home</a>
-      <a href="/searchlaw/">Search Law</a>
-      <a href="/internalaffairscomplaint/">Complaint</a>
-      <a href="/joinlspd/">Join LSPD</a>
-      <a href="/understandinglspd/" class="active">Organization</a>
-    </nav>
-    <a class="nav-contact" href="/internalaffairscomplaint/">Contact</a>
-    <div class="nav-search" onclick="alert('Search function coming soon')">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<!-- LSPD 统一顶栏 -->
+<div class="header">
+  <div class="header-top">
+    <div class="logo-box">
+      <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD" title="Los Santos Police Department">
     </div>
+    <div class="header-title">
+      <h1>Los Santos Police Department</h1>
+      <div class="motto">"To Protect and to Serve"</div>
+    </div>
+    <a class="home-btn" href="/" title="返回首页">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      <span>返回首页</span>
+    </a>
   </div>
 </div>
 
-<!-- Hero 主视觉 -->
-<div class="hero">
-  <div class="hero-img"></div>
-  <div class="hero-content">
-    <div class="hero-label">The Official Site of the Los Santos Police Department</div>
-    <div class="hero-title"><em>"to protect and to serve"</em></div>
-    <div class="hero-sub">Organization Chart & Department Information</div>
-  </div>
+<!-- 页面标题区 -->
+<div class="page-head">
+  <h1 class="page-h1">LSPD 组织架构</h1>
+  <div class="page-h1-sub">点击左侧部门名称，查看详细部门介绍</div>
 </div>
 
-<!-- 面包屑 -->
-<div class="breadcrumb">
-  <a href="/">Home</a> <span>/</span> <a href="/understandinglspd/">Organization</a>
-</div>
-
-<!-- 页面内容 -->
+<!-- 中间主体：组织列表 + 详情面板 -->
 <div class="page-wrap">
-  <div class="page-main">
-    <h1 class="page-h1">Organization Chart</h1>
-    <div class="page-h1-sub">Click on any department name below to view detailed information</div>
-
-    <div class="intro-box">
-      <b>Los Santos Police Department (LSPD)</b> is the primary law enforcement agency serving the City of Los Santos. Our officers come from all walks of life across the city, upholding the motto "To Protect and to Serve" in every corner of Los Santos. Click on any <b>department name</b> below to view its detailed profile.
-    </div>
-
-    <!-- 组织架构 -->
-    <div class="org-chart-wrap">
-      <div class="org-chart-head">LSPD Organization Chart</div>
-      <div class="org-tree" id="org-tree"></div>
-    </div>
-
-    <!-- 详情面板 -->
-    <div class="dept-panel" id="dept-panel">
-      <div class="dept-tag" id="d-tag">DEPARTMENT PROFILE</div>
-      <div class="dept-title" id="d-title">Patrol Division</div>
-      <div class="dept-sub" id="d-sub">Department of the Los Santos Police Department</div>
-      <div class="dept-chief" id="d-chief">Chief: <b>TBD</b></div>
-      <div id="d-body"></div>
-    </div>
+  <div class="org-chart-wrap" style="width:340px;flex-shrink:0;margin-bottom:0">
+    <div class="org-chart-head">LSPD Organization Chart</div>
+    <div class="org-tree" id="org-tree"></div>
   </div>
 
-  <!-- 侧边栏 -->
-  <div class="page-sidebar">
-    <div class="sidebar-box">
-      <h4>Quick Links</h4>
-      <a href="/searchlaw/">File a Police Report</a>
-      <a href="/joinlspd/">Join the Team</a>
-      <a href="/internalaffairscomplaint/">Contact Us</a>
-      <a href="/">Back to Home</a>
-    </div>
-    <div class="sidebar-box">
-      <h4>Related Pages</h4>
-      <a href="/searchlaw/">Search Law Database</a>
-      <a href="/internalaffairscomplaint/">Internal Affairs Complaint</a>
-      <a href="/joinlspd/">Recruitment Information</a>
-    </div>
+  <div class="dept-panel" id="dept-panel" style="flex:1;min-width:0">
+    <div class="dept-tag" id="d-tag">DEPARTMENT PROFILE</div>
+    <div class="dept-title" id="d-title">Patrol Division</div>
+    <div class="dept-sub" id="d-sub">Department of the Los Santos Police Department</div>
+    <div class="dept-chief" id="d-chief">Chief: <b>TBD</b></div>
+    <div id="d-body"></div>
   </div>
 </div>
 
-<!-- Footer -->
-<div class="footer">
-  <div class="footer-wrap">
-    <div class="footer-col">
-      <h5>Quick Links</h5>
-      <a href="/searchlaw/">File a Police Report</a>
-      <a href="/">Crime Mapping</a>
-      <a href="/joinlspd/">Join the Team</a>
-      <a href="/internalaffairscomplaint/">Contact Us</a>
-    </div>
-    <div class="footer-col">
-      <h5>Resources</h5>
-      <a href="/searchlaw/">Search Law</a>
-      <a href="/internalaffairscomplaint/">Complaint</a>
-      <a href="/understandinglspd/">Organization</a>
-    </div>
-    <div class="footer-col">
-      <h5>Contact</h5>
-      <a>Emergency: 911</a>
-      <a>Non-Emergency: 877-ASK-LSPD</a>
-      <a>Email: contact.lspd@gmail.com</a>
-    </div>
+<!-- LSPD 统一页脚 -->
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD">
+    <span class="foot-brand">by Bradford</span>
+    <span class="foot-tag">LSPD MDT &middot; To Protect and to Serve</span>
   </div>
-  <div class="footer-bottom">
-    <div class="copy">Copyright 2025 Los Santos Police Department. All Rights Reserved.</div>
-    <div class="design">Design By LSPD Digital</div>
-  </div>
-</div>
+</footer>
 
 <script>
 (function(){
