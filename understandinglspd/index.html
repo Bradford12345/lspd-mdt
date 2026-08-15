@@ -124,6 +124,26 @@ body{
 }
 .dept-chief b{color:#1a1a1a}
 
+/* 指挥官卡片（仿 LAPD 刑侦局部门卡） */
+.dept-cmd{
+  display:flex;align-items:center;gap:16px;
+  background:#f8f9fa;border:1px solid #e0e0e0;
+  padding:14px 18px;margin-bottom:20px;
+}
+.dept-cmd .avatar{
+  width:56px;height:56px;flex-shrink:0;
+  background:#012c49;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;font-weight:700;
+}
+.dept-cmd .cmd-info{min-width:0}
+.dept-cmd .cmd-name{font-size:17px;font-weight:700;color:#1a1a1a}
+.dept-cmd .cmd-rank{
+  font-size:11px;color:#c0392b;letter-spacing:1.5px;
+  text-transform:uppercase;font-weight:700;margin-top:2px;
+}
+.dept-cmd .cmd-role{font-size:12px;color:#888;margin-top:2px}
+
 .dept-section{margin-bottom:22px}
 .dept-section h3{
   font-size:14px;color:#012c49;letter-spacing:1.5px;
@@ -421,11 +441,24 @@ body{
     document.getElementById('d-tag').textContent = d.tag || 'DEPARTMENT PROFILE';
     document.getElementById('d-title').textContent = d.title;
     document.getElementById('d-sub').textContent = d.sub || '洛圣都警察局下属部门';
-    if (typeof d.chief === 'object') {
-      document.getElementById('d-chief').innerHTML = d.chief.role + ': <b>' + d.chief.name + '</b>';
+
+    // 指挥官卡片（仿 LAPD 刑侦局部门卡：照片位 + 姓名 + 警衔 + 职务）
+    var cmdHtml;
+    if (typeof d.chief === 'object' && d.chief.name) {
+      var initial = d.chief.name.charAt(0).toUpperCase();
+      cmdHtml = '<div class="dept-cmd"><div class="avatar">' + initial + '</div><div class="cmd-info">' +
+        '<div class="cmd-name">' + d.chief.name + '</div>' +
+        '<div class="cmd-rank">' + (d.chief.rank || 'Commanding Officer') + '</div>' +
+        '<div class="cmd-role">' + (d.chief.role || '主管') + '</div>' +
+        '</div></div>';
     } else {
-      document.getElementById('d-chief').innerHTML = '主管：<b>' + d.chief + '</b>';
+      cmdHtml = '<div class="dept-cmd"><div class="avatar">?</div><div class="cmd-info">' +
+        '<div class="cmd-name">' + (d.chief || '待定') + '</div>' +
+        '<div class="cmd-rank">Commanding Officer</div>' +
+        '<div class="cmd-role">主管</div>' +
+        '</div></div>';
     }
+    document.getElementById('d-chief').innerHTML = cmdHtml;
 
     var html = '';
     if (d.intro) html += '<div class="dept-section"><p>' + d.intro + '</p></div>';
