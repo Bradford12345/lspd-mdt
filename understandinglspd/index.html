@@ -33,11 +33,6 @@ body{
   font:13px/1.6 'Segoe UI',-apple-system,'Microsoft YaHei',sans-serif;
   overflow-x:hidden;
 }
-body::after{
-  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
-  background:none;
-  pointer-events:none;z-index:9999;
-}
 .header{
   background:#012c49;
   border-bottom:1px solid #001d33;
@@ -60,7 +55,6 @@ body::after{
   color:rgba(255,255,255,.8);margin:2px 0 4px;
   text-shadow:0 0 8px rgba(201,168,76,.25);
 }
-/* 返回首页按钮 */
 .home-btn{
   display:flex;align-items:center;gap:5px;
   background:#ffffff;border:2px solid #012c49;
@@ -70,31 +64,90 @@ body::after{
 }
 .home-btn:hover{background:#012c49;border-color:#001d33;color:#fff}
 .home-btn svg{width:14px;height:14px;flex-shrink:0}
-/* 本页主体 */
-.page{max-width:960px;margin:0 auto;padding:40px 20px 60px}
-.page-head{border-left:4px solid #012c49;padding:2px 0 2px 18px;margin-bottom:28px}
+.page{max-width:1080px;margin:0 auto;padding:40px 20px 60px}
+.page-head{border-left:4px solid #012c49;padding:2px 0 2px 18px;margin-bottom:24px}
 .page-title{font-size:28px;font-weight:700;letter-spacing:3px;color:#012c49}
 .page-sub{
   font-family:Georgia,'Times New Roman',serif;
   font-style:italic;font-size:14px;letter-spacing:2px;color:var(--dim);
   margin-top:4px;
 }
-.placeholder{
-  border:1px dashed #c8d4e0;background:#f7fafc;
-  padding:60px 20px;text-align:center;color:var(--dim);
-  font-size:14px;letter-spacing:1px;
+/* 引言段（仿 LAPD 官网顶部说明） */
+.intro{
+  border:1px solid #e0e8f0;background:#f7fafc;
+  padding:16px 20px;margin-bottom:28px;font-size:13px;color:#33475b;
+  border-left:3px solid #012c49;line-height:1.8;
 }
+.intro b{color:#012c49}
+/* 布局：左列表 + 右详情 */
+.org-layout{display:flex;gap:24px;align-items:flex-start}
+.org-list{width:320px;flex-shrink:0;border:1px solid #c8d4e0;background:#fff}
+.org-list-head{
+  background:#012c49;color:#fff;padding:12px 16px;
+  font-size:13px;font-weight:700;letter-spacing:2px;
+}
+.org-level{
+  background:#eef3f8;border-top:1px solid #d5dee8;border-bottom:1px solid #d5dee8;
+  padding:8px 14px;font-size:11px;font-weight:700;letter-spacing:1.5px;color:#33558c;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.org-level span.en{font-family:Georgia,serif;font-style:italic;font-weight:400;color:#7a93ad;font-size:11px}
+.org-item{
+  display:block;padding:11px 16px;text-decoration:none;color:#1a1a1a;
+  border-left:3px solid transparent;cursor:pointer;
+  font-size:13px;transition:background .15s;
+  border-bottom:1px solid #f0f4f8;
+}
+.org-item:hover{background:#f0f6fc}
+.org-item.active{background:#e8f0f9;border-left-color:#012c49;font-weight:700;color:#012c49}
+.org-item small{display:block;font-size:11px;color:#7a93ad;font-weight:400;margin-top:1px;letter-spacing:.5px}
+/* 详情面板 */
+.dept-detail{
+  flex:1;min-width:0;border:1px solid #c8d4e0;background:#fff;
+  padding:24px 26px 30px;
+}
+.dept-detail .d-tag{
+  display:inline-block;background:#012c49;color:#fff;
+  font-size:11px;letter-spacing:2px;padding:3px 10px;margin-bottom:14px;
+}
+.dept-detail .d-title{font-size:22px;font-weight:700;color:#012c49;letter-spacing:1px;line-height:1.3}
+.dept-detail .d-en{
+  font-family:Georgia,serif;font-style:italic;font-size:13px;color:#7a93ad;letter-spacing:1px;
+  margin:2px 0 18px;
+}
+.dept-detail .d-chief{
+  display:inline-block;border:1px solid #c8d4e0;padding:6px 14px;margin-bottom:20px;
+  font-size:12px;color:#33475b;background:#f7fafc;
+}
+.dept-detail .d-chief b{color:#012c49}
+.dept-detail h3{
+  font-size:13px;color:#012c49;letter-spacing:2px;margin:20px 0 8px;
+  padding-left:10px;border-left:3px solid #012c49;
+}
+.dept-detail .d-desc p{font-size:13px;line-height:1.9;color:#33475b;margin-bottom:8px}
+.dept-detail .d-duties{list-style:none}
+.dept-detail .d-duties li{
+  padding:7px 0 7px 22px;position:relative;font-size:13px;color:#33475b;
+  border-bottom:1px solid #f0f4f8;
+}
+.dept-detail .d-duties li:before{
+  content:'';position:absolute;left:6px;top:13px;width:6px;height:6px;background:#012c49;
+}
+.dept-detail .d-duties li b{color:#012c49}
 .foot{
   text-align:center;padding:24px;color:var(--dim);
   font-size:11px;letter-spacing:2px;
   border-top:1px solid #eef2f6;
 }
-@media(max-width:700px){
+@media(max-width:760px){
+  .org-layout{flex-direction:column}
+  .org-list{width:100%}
   .page{padding:24px 14px 40px}
   .page-title{font-size:22px}
   .logo-box img{height:32px;width:32px}
   .header-title h1{font-size:13px;letter-spacing:1px}
   .header-title .motto{font-size:11px}
+  .dept-detail{padding:18px 16px 24px}
 }
 @media(max-width:400px){
   .home-btn span{display:none}
@@ -129,19 +182,152 @@ body::after{
     <div class="page-title">了解 LSPD</div>
     <div class="page-sub">About Los Santos Police Department</div>
   </div>
-  <div class="placeholder">内容建设中，敬请期待</div>
+
+  <div class="intro">
+    <b>洛圣都警察局（Los Santos Police Department）</b> 是洛圣都这座城市的执法机构，肩负着维护城市秩序、保障市民安全的职责。我们的警员来自洛圣都的各行各业，秉持「To Protect and to Serve」的信条，在城市的每个角落执行法律。<br>
+    点击下方<b>任意部门名称</b>，查看该部门的详细介绍。
+  </div>
+
+  <div class="org-layout">
+    <div class="org-list">
+      <div class="org-list-head">LSPD 组织架构</div>
+
+      <div class="org-level">Office of the Chief of Police<span class="en">局长办公室</span></div>
+      <div class="org-item"><span id="org-chief-name">Chief of Police 局长</span><small>点击查看局长致辞</small></div>
+
+      <div class="org-level">Operations Bureau<span class="en">行动局</span></div>
+      <a class="org-item" data-dept="patrol">Patrol Division 巡逻部<small>城市巡逻 · 第一响应</small></a>
+      <a class="org-item" data-dept="traffic">Traffic Division 交通部<small>道路执法 · 事故处理</small></a>
+      <a class="org-item" data-dept="k9">K-9 Unit 警犬队<small>缉毒 · 追踪 · 搜救</small></a>
+
+      <div class="org-level">Detective Bureau<span class="en">调查局</span></div>
+      <a class="org-item" data-dept="detective">Detective Division 侦探局<small>重大案件 · 刑事侦查</small></a>
+
+      <div class="org-level">Special Operations<span class="en">特勤行动</span></div>
+      <a class="org-item" data-dept="swat">SWAT 特警队<small>高危战术 · 人质营救</small></a>
+      <a class="org-item" data-dept="air">Air Support 空中支援<small>直升机巡逻 · 空中追捕</small></a>
+    </div>
+
+    <div class="dept-detail" id="dept-detail">
+      <div class="d-tag">DEPARTMENT PROFILE</div>
+      <div class="d-title" id="d-title">巡逻部 Patrol Division</div>
+      <div class="d-en" id="d-en">Department of the Los Santos Police Department</div>
+      <div class="d-chief" id="d-chief">部门主管：<b>待定</b></div>
+      <div class="d-desc" id="d-desc"></div>
+      <h3>主要职责</h3>
+      <ul class="d-duties" id="d-duties"></ul>
+    </div>
+  </div>
 </div>
 
 <div class="foot">By Bradford</div>
+
 <script>
-  (function(){
-    function goHome(){ location.href = '/'; }
-    var back = document.getElementById('learn-back');
-    if (back) back.addEventListener('click', goHome);
-    document.addEventListener('click', function(e){
-      if (e.target.closest('.logo-box') || e.target.closest('.header-title')) goHome();
+(function(){
+  var DEPTS = {
+    patrol: {
+      title: '巡逻部 Patrol Division',
+      chief: '待定',
+      desc: '巡逻部是洛圣都警察局的门面和主力，负责整个城市范围内的日常巡逻与第一响应。巡逻警员是市民最先接触到的执法人员，也是城市治安最基础、最直接的保障力量。无论白天还是夜晚，巡逻车都穿梭在洛圣都的大街小巷，随时准备处理任何突发警情。',
+      duties: [
+        '城市日常巡逻，覆盖洛圣都全部辖区',
+        '接警后第一时间赶赴现场，处置各类突发警情',
+        '交通拦截、人员盘查与可疑车辆查控',
+        '维护大型活动与公共场合的现场秩序',
+        '为调查部门提供一线支援与情报'
+      ]
+    },
+    traffic: {
+      title: '交通部 Traffic Division',
+      chief: '待定',
+      desc: '交通部负责洛圣都的道路交通安全。部门警员专注于城市交通秩序的维护，从日常道路巡逻到重大交通事故的现场处置，都是交通部的职责范围。他们确保城市道路畅通，让每一位市民都能安全抵达目的地。',
+      duties: [
+        '城市道路巡逻，查处交通违法行为',
+        '交通事故现场处置与责任认定',
+        '酒驾、毒驾专项检查与执法',
+        '配合追捕行动实施道路拦截',
+        '大型活动期间的交通管制与疏导'
+      ]
+    },
+    k9: {
+      title: 'K-9 警犬队 K-9 Unit',
+      chief: '待定',
+      desc: '警犬队是洛圣都警察局的特殊执法力量，由经过严格训练的警犬和它们的训导员组成。警犬凭借远超人类的嗅觉与追踪能力，在缉毒、追踪、搜救等任务中发挥着不可替代的作用，是警队值得信赖的四脚战友。',
+      duties: [
+        '毒品搜查，协助缉毒行动',
+        '追踪逃逸嫌疑人，缩小搜索范围',
+        '失踪人员与走失群众的搜救任务',
+        '大型事件现场的爆炸物排查',
+        '高危险情下的嫌疑人控制'
+      ]
+    },
+    detective: {
+      title: '侦探局 Detective Division',
+      chief: '待定',
+      desc: '侦探局是洛圣都警察局的刑事侦查核心，负责全市范围内重大刑事案件的侦破工作。侦探们不穿制服，却以另一种方式守护这座城市——通过现场取证、线索研判与嫌疑人审讯，将罪犯绳之以法。',
+      duties: [
+        '谋杀、抢劫等重大刑事案件的侦破',
+        '犯罪现场勘查与物证收集分析',
+        '监控追踪、线索研判与嫌疑人审讯',
+        '卧底侦查与有组织犯罪调查',
+        '与各区巡逻部门协作侦办案件'
+      ]
+    },
+    swat: {
+      title: 'SWAT 特警队 SWAT',
+      chief: '待定',
+      desc: '特警队是洛圣都警察局的高危战术单位，专门应对普通警力无法处理的极端危险情况。特警队员经过高强度的战术训练，配备制式战术装备，是城市面对最严重威胁时的最后防线。',
+      duties: [
+        '持械嫌疑人等高危对象的逮捕行动',
+        '人质劫持事件的谈判与营救',
+        '重要人物的安全保卫任务',
+        '大规模骚乱与暴动事件的处置',
+        '高危区域的突击与清剿行动'
+      ]
+    },
+    air: {
+      title: '空中支援 Air Support Division',
+      chief: '待定',
+      desc: '空中支援部是洛圣都警察局的空中力量，装备警用直升机，为地面警力提供无法替代的空中视角。在追捕、搜救、大型事件保障等任务中，空中的警员是地面行动的「天眼」，掌握着全局态势。',
+      duties: [
+        '追捕行动中的空中监视与指挥',
+        '失踪人员与嫌疑人的空中搜索',
+        '重大活动现场的空中巡逻与安保',
+        '城市突发事件的快速空中支援',
+        '空中摄影取证，协助案件侦办'
+      ]
+    }
+  };
+
+  function render(key){
+    var d = DEPTS[key];
+    if (!d) return;
+    document.getElementById('d-title').textContent = d.title;
+    document.getElementById('d-chief').innerHTML = '部门主管：<b>' + d.chief + '</b>';
+    document.getElementById('d-desc').innerHTML = '<p>' + d.desc + '</p>';
+    document.getElementById('d-duties').innerHTML = d.duties.map(function(x){
+      return '<li>' + x + '</li>';
+    }).join('');
+    document.querySelectorAll('.org-item').forEach(function(el){
+      el.classList.toggle('active', el.getAttribute('data-dept') === key);
     });
-  })();
+  }
+
+  document.querySelectorAll('.org-item[data-dept]').forEach(function(el){
+    el.addEventListener('click', function(){
+      render(el.getAttribute('data-dept'));
+    });
+  });
+
+  function goHome(){ location.href = '/'; }
+  var back = document.getElementById('learn-back');
+  if (back) back.addEventListener('click', goHome);
+  document.addEventListener('click', function(e){
+    if (e.target.closest('.logo-box') || e.target.closest('.header-title')) goHome();
+  });
+
+  render('patrol');
+})();
 </script>
 </body>
 </html>
