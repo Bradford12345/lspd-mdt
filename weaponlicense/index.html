@@ -591,6 +591,10 @@ body.dialog-open{overflow:hidden}
       if (!veh) { showToast('请填写个人车辆车牌'); return; }
       if (!job) { showToast('请填写职业'); return; }
       if (!record) { showToast('请选择你所持有的案底'); return; }
+      if (record.value === '有') {
+        showToast('办理PF执照要求在圣安地列斯州境内无任何犯罪记录，包括轻罪拘役记录。');
+        return;
+      }
       if (!reason) { showToast('请填写申请理由'); return; }
       if (!notice) { showToast('请选择是否知晓办理须知'); return; }
       if (notice.value !== '是') { showToast('须确认知晓办理须知后才能提交'); return; }
