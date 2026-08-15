@@ -193,7 +193,7 @@ body{
       <div class="org-list-head">LSPD 组织架构</div>
 
       <div class="org-level">Office of the Chief of Police<span class="en">局长办公室</span></div>
-      <div class="org-item"><span id="org-chief-name">Chief of Police 局长</span><small>点击查看局长致辞</small></div>
+      <a class="org-item" data-dept="chief">Chief of Police 局长<small>点击查看局长致辞</small></a>
 
       <div class="org-level">Operations Bureau<span class="en">行动局</span></div>
       <a class="org-item" data-dept="patrol">Patrol Division 巡逻部<small>城市巡逻 · 第一响应</small></a>
@@ -208,13 +208,11 @@ body{
     </div>
 
     <div class="dept-detail" id="dept-detail">
-      <div class="d-tag">DEPARTMENT PROFILE</div>
+      <div class="d-tag" id="d-tag">DEPARTMENT PROFILE</div>
       <div class="d-title" id="d-title">巡逻部 Patrol Division</div>
       <div class="d-en" id="d-en">Department of the Los Santos Police Department</div>
       <div class="d-chief" id="d-chief">部门主管：<b>待定</b></div>
-      <div class="d-desc" id="d-desc"></div>
-      <h3>主要职责</h3>
-      <ul class="d-duties" id="d-duties"></ul>
+      <div id="d-body"></div>
     </div>
   </div>
 </div>
@@ -224,6 +222,52 @@ body{
 <script>
 (function(){
   var DEPTS = {
+    chief: {
+      tag: 'OFFICE OF THE CHIEF',
+      title: '局长办公室 Office of the Chief of Police',
+      en: 'The Command Core of the Department',
+      chief: { role: '局长（Chief of Police）', name: '雅各布·胡德' },
+      desc: '局长办公室是 LSPD 的最高决策与执行核心，直接向洛圣都警察委员会（Board of Police Commissioners）报告，负责统筹战略规划、政策执行及跨部门协调。',
+      sections: [
+        {
+          h: '核心定位与职责',
+          items: [
+            { b: '战略领导', t: '制定部门长期目标，强调「社区警务与技术融合」，并监督各分局执行。' },
+            { b: '政策执行', t: '落实警察委员会决议。' },
+            { b: '跨部门协调', t: '整合行动局、调查局、特别行动局等资源。' },
+            { b: '公众信任建设', t: '通过社区论坛、公开报告（如《使用武力年度报告》）增强透明度。' }
+          ]
+        },
+        {
+          h: '高层管理结构',
+          items: [
+            { b: '局长（Chief of Police）雅各布·胡德', t: '统筹全局，直接向警察委员会汇报，负责重大决策。' },
+            { b: '助理局长（Assistant Chiefs）', t: '暂无任职人员。职责包括协调内部事务、政策落地及危机应对。' }
+          ]
+        },
+        {
+          h: '直属部门',
+          items: [
+            { b: '行政管理', t: '处理局长日常文件、行程安排及会议协调；管理部门印章、档案及机密信息，确保行政流程合规。' },
+            { b: '社区关系科（Community Relations Section）', t: '设计社区参与项目，推动警民合作，监测社区舆情。' }
+          ]
+        },
+        {
+          h: '跨部门协作机制',
+          items: [
+            { b: '与警察委员会的联动', t: '局长每月向委员会汇报工作，例如 2025 年提交《警力扩招可行性报告》供审议。委员会通过审计和政策建议（如优化纪律听证流程）监督办公室运作。' },
+            { b: '与专业标准科的分工', t: '局长办公室制定政策（《警员行为准则》），专业标准科负责具体调查。特别事务办公室与内务组（IAD）协作。' }
+          ]
+        },
+        {
+          h: '最新改革',
+          items: [
+            { b: 'LSPD 警察局长委员会', t: '收集并整理警员的意见和建议，并采取合理的意见。' }
+          ]
+        }
+      ],
+      summary: 'LSPD 局长办公室通过战略引领、跨部门协作与社区互动，在维护公共安全与执法公信力间寻求平衡。其 2025 年改革聚焦「效率提升」与「透明度强化」，例如优化内部流程、扩大技术应用，为其他警局提供了可借鉴的治理范式。未来，办公室需持续应对资源压力与系统性改革挑战，确保部门始终适应洛圣都多元社区的需求。'
+    },
     patrol: {
       title: '巡逻部 Patrol Division',
       chief: '待定',
@@ -290,12 +334,37 @@ body{
     var d = DEPTS[key];
     if (!d) return;
     document.getElementById('d-title').textContent = d.title;
-    document.getElementById('d-chief').innerHTML = '部门主管：<b>' + d.chief + '</b>';
-    document.getElementById('d-desc').innerHTML = '<p>' + d.desc + '</p>';
-    document.getElementById('d-duties').innerHTML = d.duties.map(function(x){
-      return '<li>' + x + '</li>';
-    }).join('');
-    document.querySelectorAll('.org-item').forEach(function(el){
+    document.getElementById('d-tag').textContent = d.tag || 'DEPARTMENT PROFILE';
+    document.getElementById('d-en').textContent = d.en || 'Department of the Los Santos Police Department';
+    var chiefHtml;
+    if (typeof d.chief === 'object') {
+      chiefHtml = (d.chief.role || '部门主管') + '：<b>' + d.chief.name + '</b>';
+    } else {
+      chiefHtml = '部门主管：<b>' + d.chief + '</b>';
+    }
+    document.getElementById('d-chief').innerHTML = chiefHtml;
+
+    var html = '';
+    if (d.desc) html += '<div class="d-desc"><p>' + d.desc + '</p></div>';
+    (d.sections || []).forEach(function(s){
+      html += '<h3>' + s.h + '</h3><ul class="d-duties">';
+      s.items.forEach(function(it){
+        html += '<li>';
+        if (it.b) html += '<b>' + it.b + '</b>' + (it.t ? '：' : '');
+        if (it.t) html += it.t;
+        html += '</li>';
+      });
+      html += '</ul>';
+    });
+    if (d.duties) {
+      html += '<h3>主要职责</h3><ul class="d-duties">';
+      d.duties.forEach(function(x){ html += '<li>' + x + '</li>'; });
+      html += '</ul>';
+    }
+    if (d.summary) html += '<h3>总结</h3><div class="d-desc"><p>' + d.summary + '</p></div>';
+    document.getElementById('d-body').innerHTML = html;
+
+    document.querySelectorAll('.org-item[data-dept]').forEach(function(el){
       el.classList.toggle('active', el.getAttribute('data-dept') === key);
     });
   }
