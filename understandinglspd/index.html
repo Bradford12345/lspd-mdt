@@ -3,386 +3,629 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>了解LSPD - LSPD MDT</title>
+<title>Organization - Los Santos Police Department</title>
 <link rel="icon" type="image/png" href="/assets/favicon-64.png">
 <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
 <style>
-:root {
-  --bg: #ffffff;
-  --panel: #ffffff;
-  --card: #ffffff;
-  --border: #c8d4e0;
-  --border-glow: #a0b4c8;
-  --text: #1a1a1a;
-  --dim: #5a7a9c;
-  --accent: #012c49;
-  --accent-glow: #33558c;
-  --red: #c0392b;
-  --green: #012c49;
-  --yellow: #012c49;
-  --orange: #012c49;
-  --purple: #012c49;
-  --lspd-gold: #012c49;
-  --blue: #33558c;
-}
-html{scroll-behavior:smooth}
 *{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{
-  background:var(--bg);
-  color:var(--text);
-  font:13px/1.6 'Segoe UI',-apple-system,'Microsoft YaHei',sans-serif;
-  overflow-x:hidden;
+  font-family:'Segoe UI',-apple-system,'Microsoft YaHei',sans-serif;
+  font-size:14px;color:#333;line-height:1.6;
+  background:#fff;
 }
-.header{
-  background:#012c49;
-  border-bottom:1px solid #001d33;
-  padding:0 20px;position:sticky;top:0;z-index:10;
-}
-.header-top{
-  display:flex;align-items:center;gap:16px;padding:10px 0;
-  border-bottom:1px solid rgba(255,255,255,.1);
-}
-.logo-box{display:flex;align-items:center;gap:10px;cursor:pointer}
-.logo-box img{height:48px;width:48px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(59,130,246,.3))}
-.header-title{flex:1;cursor:pointer}
-.header-title h1{
-  font-size:18px;font-weight:700;letter-spacing:2px;
-  color:#fff;text-shadow:none;white-space:nowrap;
-}
-.header-title .motto{
-  font-family:Georgia,'Times New Roman',serif;
-  font-style:italic;font-size:13px;letter-spacing:2px;
-  color:rgba(255,255,255,.8);margin:2px 0 4px;
-  text-shadow:0 0 8px rgba(201,168,76,.25);
-}
-.home-btn{
-  display:flex;align-items:center;gap:5px;
-  background:#ffffff;border:2px solid #012c49;
-  color:#012c49;font-size:12px;font-weight:700;padding:8px 12px;
-  border-radius:0;cursor:pointer;text-decoration:none;letter-spacing:.5px;
-  white-space:nowrap;transition:all .2s;font-family:inherit;
-}
-.home-btn:hover{background:#012c49;border-color:#001d33;color:#fff}
-.home-btn svg{width:14px;height:14px;flex-shrink:0}
-.page{max-width:1080px;margin:0 auto;padding:40px 20px 60px}
-.page-head{border-left:4px solid #012c49;padding:2px 0 2px 18px;margin-bottom:24px}
-.page-title{font-size:28px;font-weight:700;letter-spacing:3px;color:#012c49}
-.page-sub{
-  font-family:Georgia,'Times New Roman',serif;
-  font-style:italic;font-size:14px;letter-spacing:2px;color:var(--dim);
-  margin-top:4px;
-}
-/* 引言段（仿 LAPD 官网顶部说明） */
-.intro{
-  border:1px solid #e0e8f0;background:#f7fafc;
-  padding:16px 20px;margin-bottom:28px;font-size:13px;color:#33475b;
-  border-left:3px solid #012c49;line-height:1.8;
-}
-.intro b{color:#012c49}
-/* 布局：左列表 + 右详情 */
-.org-layout{display:flex;gap:24px;align-items:flex-start}
-.org-list{width:320px;flex-shrink:0;border:1px solid #c8d4e0;background:#fff}
-.org-list-head{
-  background:#012c49;color:#fff;padding:12px 16px;
-  font-size:13px;font-weight:700;letter-spacing:2px;
-}
-.org-level{
-  background:#eef3f8;border-top:1px solid #d5dee8;border-bottom:1px solid #d5dee8;
-  padding:8px 14px;font-size:11px;font-weight:700;letter-spacing:1.5px;color:#33558c;
+
+/* === LAPD 风格顶部信息条 === */
+.info-bar{
+  background:#1a1a1a;color:#fff;font-size:12px;padding:8px 20px;
   display:flex;justify-content:space-between;align-items:center;
 }
-.org-level span.en{font-family:Georgia,serif;font-style:italic;font-weight:400;color:#7a93ad;font-size:11px}
-.org-item{
-  display:block;padding:11px 16px;text-decoration:none;color:#1a1a1a;
-  border-left:3px solid transparent;cursor:pointer;
-  font-size:13px;transition:background .15s;
-  border-bottom:1px solid #f0f4f8;
+.info-bar .left{display:flex;align-items:center;gap:16px}
+.info-bar .left span{letter-spacing:1px}
+.info-bar .right{display:flex;align-items:center;gap:12px}
+.info-bar .right a{color:#fff;text-decoration:none;font-size:12px}
+.info-bar .right a:hover{text-decoration:underline}
+.info-bar .badge{letter-spacing:2px;font-weight:700;font-size:13px}
+
+/* === Header === */
+.header-main{
+  background:#fff;border-bottom:1px solid #e0e0e0;
+  padding:0 20px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
 }
-.org-item:hover{background:#f0f6fc}
-.org-item.active{background:#e8f0f9;border-left-color:#012c49;font-weight:700;color:#012c49}
-.org-item small{display:block;font-size:11px;color:#7a93ad;font-weight:400;margin-top:1px;letter-spacing:.5px}
+.header-main .logo-area{display:flex;align-items:center;gap:12px;padding:12px 0}
+.header-main .logo-area img{height:56px;width:56px;object-fit:contain}
+.header-main .logo-text{font-size:13px;color:#666;letter-spacing:1px}
+
+/* 导航 */
+.nav-main{display:flex;align-items:center;gap:0}
+.nav-main a{
+  display:block;padding:24px 18px;color:#333;text-decoration:none;
+  font-size:13px;font-weight:600;letter-spacing:.5px;
+  text-transform:uppercase;transition:color .2s;
+  border-bottom:3px solid transparent;
+}
+.nav-main a:hover{color:#c0392b;border-bottom-color:#c0392b}
+.nav-main a.active{color:#c0392b;border-bottom-color:#c0392b}
+
+/* CONTACT 按钮 */
+.nav-contact{
+  background:#c0392b;color:#fff;padding:10px 20px;
+  font-size:13px;font-weight:700;letter-spacing:1px;
+  text-decoration:none;text-transform:uppercase;
+  margin-left:8px;transition:background .2s;
+}
+.nav-contact:hover{background:#a93226}
+
+/* 搜索图标 */
+.nav-search{
+  width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;margin-left:4px;
+}
+.nav-search svg{width:18px;height:18px;stroke:#333;stroke-width:2;fill:none}
+
+/* === 主视觉区 Hero === */
+.hero{
+  position:relative;height:380px;overflow:hidden;
+  background:#1a1a1a;display:flex;align-items:center;
+}
+.hero-img{
+  position:absolute;inset:0;opacity:.4;
+  background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 50%,#1a1a1a 100%);
+}
+.hero-img::after{
+  content:'';position:absolute;inset:0;
+  background:url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1920&q=80') center/cover;
+  opacity:.3;
+}
+.hero-content{
+  position:relative;z-index:2;padding:0 60px;max-width:1200px;margin:0 auto;width:100%;
+}
+.hero-label{
+  font-size:12px;letter-spacing:3px;color:rgba(255,255,255,.7);
+  text-transform:uppercase;margin-bottom:8px;
+}
+.hero-title{
+  font-size:42px;font-weight:700;color:#fff;letter-spacing:2px;
+  line-height:1.2;margin-bottom:12px;
+}
+.hero-title em{
+  font-family:Georgia,'Times New Roman',serif;font-style:italic;
+  font-weight:400;letter-spacing:1px;
+}
+.hero-sub{
+  font-size:16px;color:rgba(255,255,255,.8);letter-spacing:1px;
+}
+
+/* === 面包屑 === */
+.breadcrumb{
+  background:#f5f5f5;padding:10px 60px;font-size:12px;color:#666;
+  border-bottom:1px solid #e0e0e0;
+}
+.breadcrumb a{color:#c0392b;text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb span{color:#999;margin:0 6px}
+
+/* === 页面内容区 === */
+.page-wrap{
+  max-width:1200px;margin:0 auto;padding:40px 60px 60px;
+  display:flex;gap:40px;
+}
+.page-main{flex:1;min-width:0}
+.page-sidebar{width:280px;flex-shrink:0}
+
+/* 页面标题 */
+.page-h1{
+  font-size:32px;font-weight:700;color:#1a1a1a;letter-spacing:1px;
+  margin-bottom:8px;line-height:1.2;
+}
+.page-h1-sub{
+  font-size:14px;color:#666;letter-spacing:1px;margin-bottom:30px;
+}
+
+/* 引言段 */
+.intro-box{
+  background:#f8f9fa;border-left:4px solid #c0392b;
+  padding:16px 20px;margin-bottom:30px;font-size:14px;color:#444;line-height:1.8;
+}
+.intro-box b{color:#1a1a1a}
+
+/* 组织架构图区域 */
+.org-chart-wrap{
+  background:#fff;border:1px solid #e0e0e0;margin-bottom:30px;
+}
+.org-chart-head{
+  background:#1a1a1a;color:#fff;padding:14px 20px;
+  font-size:14px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+/* 层级列表 */
+.org-tree{padding:0}
+.org-level{
+  background:#f0f0f0;padding:10px 20px;
+  font-size:12px;font-weight:700;letter-spacing:1.5px;
+  color:#555;text-transform:uppercase;
+  border-bottom:1px solid #e0e0e0;
+}
+.org-node{
+  display:block;padding:12px 20px;text-decoration:none;
+  color:#333;font-size:14px;border-bottom:1px solid #f0f0f0;
+  cursor:pointer;transition:all .15s;
+  border-left:3px solid transparent;
+}
+.org-node:hover{background:#f8f9fa;border-left-color:#c0392b}
+.org-node.active{background:#fff3f3;border-left-color:#c0392b;color:#c0392b;font-weight:700}
+.org-node .en{
+  font-size:12px;color:#888;margin-left:6px;font-weight:400;
+}
+.org-node .desc{
+  display:block;font-size:12px;color:#888;margin-top:2px;
+}
+
 /* 详情面板 */
-.dept-detail{
-  flex:1;min-width:0;border:1px solid #c8d4e0;background:#fff;
-  padding:24px 26px 30px;
+.dept-panel{
+  border:1px solid #e0e0e0;background:#fff;padding:30px;
 }
-.dept-detail .d-tag{
-  display:inline-block;background:#012c49;color:#fff;
-  font-size:11px;letter-spacing:2px;padding:3px 10px;margin-bottom:14px;
+.dept-tag{
+  display:inline-block;background:#1a1a1a;color:#fff;
+  font-size:11px;letter-spacing:2px;padding:4px 12px;
+  text-transform:uppercase;margin-bottom:16px;
 }
-.dept-detail .d-title{font-size:22px;font-weight:700;color:#012c49;letter-spacing:1px;line-height:1.3}
-.dept-detail .d-en{
-  font-family:Georgia,serif;font-style:italic;font-size:13px;color:#7a93ad;letter-spacing:1px;
-  margin:2px 0 18px;
+.dept-title{font-size:24px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
+.dept-sub{
+  font-size:14px;color:#888;font-style:italic;
+  font-family:Georgia,serif;margin-bottom:20px;
 }
-.dept-detail .d-chief{
-  display:inline-block;border:1px solid #c8d4e0;padding:6px 14px;margin-bottom:20px;
-  font-size:12px;color:#33475b;background:#f7fafc;
+.dept-chief{
+  display:inline-block;background:#f8f9fa;border:1px solid #e0e0e0;
+  padding:8px 16px;font-size:13px;color:#555;margin-bottom:24px;
 }
-.dept-detail .d-chief b{color:#012c49}
-.dept-detail h3{
-  font-size:13px;color:#012c49;letter-spacing:2px;margin:20px 0 8px;
-  padding-left:10px;border-left:3px solid #012c49;
+.dept-chief b{color:#1a1a1a}
+
+.dept-section{margin-bottom:24px}
+.dept-section h3{
+  font-size:14px;color:#1a1a1a;letter-spacing:1.5px;
+  text-transform:uppercase;margin-bottom:12px;
+  padding-bottom:6px;border-bottom:2px solid #c0392b;
+  display:inline-block;
 }
-.dept-detail .d-desc p{font-size:13px;line-height:1.9;color:#33475b;margin-bottom:8px}
-.dept-detail .d-duties{list-style:none}
-.dept-detail .d-duties li{
-  padding:7px 0 7px 22px;position:relative;font-size:13px;color:#33475b;
-  border-bottom:1px solid #f0f4f8;
+.dept-section p{
+  font-size:14px;color:#444;line-height:1.8;margin-bottom:10px;
 }
-.dept-detail .d-duties li:before{
-  content:'';position:absolute;left:6px;top:13px;width:6px;height:6px;background:#012c49;
+.dept-section ul{list-style:none;padding:0}
+.dept-section li{
+  padding:8px 0 8px 20px;position:relative;font-size:14px;color:#444;
+  border-bottom:1px solid #f0f0f0;
 }
-.dept-detail .d-duties li b{color:#012c49}
-.foot{
-  text-align:center;padding:24px;color:var(--dim);
-  font-size:11px;letter-spacing:2px;
-  border-top:1px solid #eef2f6;
+.dept-section li:last-child{border-bottom:none}
+.dept-section li:before{
+  content:'';position:absolute;left:0;top:14px;
+  width:8px;height:8px;background:#c0392b;
 }
-@media(max-width:760px){
-  .org-layout{flex-direction:column}
-  .org-list{width:100%}
-  .page{padding:24px 14px 40px}
-  .page-title{font-size:22px}
-  .logo-box img{height:32px;width:32px}
-  .header-title h1{font-size:13px;letter-spacing:1px}
-  .header-title .motto{font-size:11px}
-  .dept-detail{padding:18px 16px 24px}
+.dept-section li b{color:#1a1a1a}
+
+/* 侧边栏 */
+.sidebar-box{
+  background:#f8f9fa;border:1px solid #e0e0e0;padding:20px;margin-bottom:20px;
 }
-@media(max-width:400px){
-  .home-btn span{display:none}
-  .home-btn{padding:6px 8px}
+.sidebar-box h4{
+  font-size:13px;letter-spacing:1.5px;color:#1a1a1a;
+  text-transform:uppercase;margin-bottom:12px;
+  padding-bottom:8px;border-bottom:2px solid #c0392b;
+}
+.sidebar-box a{
+  display:block;padding:8px 0;color:#c0392b;text-decoration:none;
+  font-size:13px;border-bottom:1px solid #e8e8e8;
+  transition:color .2s;
+}
+.sidebar-box a:hover{color:#a93226}
+.sidebar-box a:last-child{border-bottom:none}
+
+/* === Footer === */
+.footer{
+  background:#1a1a1a;color:#999;padding:40px 60px 20px;
+  font-size:12px;
+}
+.footer-wrap{
+  max-width:1200px;margin:0 auto;display:flex;gap:40px;
+}
+.footer-col{flex:1}
+.footer-col h5{
+  font-size:13px;color:#fff;letter-spacing:1.5px;
+  text-transform:uppercase;margin-bottom:16px;
+}
+.footer-col a{
+  display:block;color:#aaa;text-decoration:none;padding:4px 0;
+  font-size:12px;transition:color .2s;
+}
+.footer-col a:hover{color:#fff}
+.footer-bottom{
+  max-width:1200px;margin:30px auto 0;padding-top:20px;
+  border-top:1px solid #333;display:flex;justify-content:space-between;
+  align-items:center;
+}
+.footer-bottom .copy{color:#666;font-size:11px}
+.footer-bottom .design{color:#666;font-size:11px}
+
+/* === 响应式 === */
+@media(max-width:960px){
+  .page-wrap{flex-direction:column;padding:30px 20px}
+  .page-sidebar{width:100%}
+  .hero-content{padding:0 20px}
+  .hero-title{font-size:28px}
+  .breadcrumb{padding:10px 20px}
+  .footer{padding:30px 20px}
+  .footer-wrap{flex-direction:column;gap:20px}
+  .nav-main{display:none}
+}
+@media(max-width:600px){
+  .hero{height:280px}
+  .hero-title{font-size:22px}
+  .page-h1{font-size:24px}
+  .header-main .logo-text{display:none}
 }
 </style>
 </head>
 
 <body>
-<div class="header" id="learn-header">
-  <div class="header-top">
-    <div class="logo-box">
-      <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD" title="Los Santos Police Department">
-    </div>
-    <div class="header-title">
-      <h1>Los Santos Police Department</h1>
-      <div class="motto">"To Protect and to Serve"</div>
-    </div>
-    <a class="home-btn" href="understandinglspd/" title="了解LSPD">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      <span>了解LSPD</span>
-    </a>
-    <button class="home-btn" id="learn-back" type="button" title="返回上一级">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-      <span>返回上一级</span>
-    </button>
+
+<!-- 顶部信息条 -->
+<div class="info-bar">
+  <div class="left">
+    <span class="badge">LOS SANTOS</span>
+    <span>For Emergencies Dial 911</span>
+    <span>|</span>
+    <span>For Non-Emergency Police Response 877-ASK-LSPD</span>
+  </div>
+  <div class="right">
+    <a href="/">Home</a>
+    <a href="/searchlaw/">File a Report</a>
+    <a href="/joinlspd/">Join the Team</a>
   </div>
 </div>
 
-<div class="page">
-  <div class="page-head">
-    <div class="page-title">了解 LSPD</div>
-    <div class="page-sub">About Los Santos Police Department</div>
+<!-- Header -->
+<div class="header-main">
+  <div class="logo-area">
+    <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD">
+    <div class="logo-text">Los Santos Police Department</div>
   </div>
-
-  <div class="intro">
-    <b>洛圣都警察局（Los Santos Police Department）</b> 是洛圣都这座城市的执法机构，肩负着维护城市秩序、保障市民安全的职责。我们的警员来自洛圣都的各行各业，秉持「To Protect and to Serve」的信条，在城市的每个角落执行法律。<br>
-    点击下方<b>任意部门名称</b>，查看该部门的详细介绍。
+  <div style="display:flex;align-items:center">
+    <nav class="nav-main">
+      <a href="/">Home</a>
+      <a href="/searchlaw/">Search Law</a>
+      <a href="/internalaffairscomplaint/">Complaint</a>
+      <a href="/joinlspd/">Join LSPD</a>
+      <a href="/understandinglspd/" class="active">Organization</a>
+    </nav>
+    <a class="nav-contact" href="/internalaffairscomplaint/">Contact</a>
+    <div class="nav-search" onclick="alert('Search function coming soon')">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </div>
   </div>
+</div>
 
-  <div class="org-layout">
-    <div class="org-list">
-      <div class="org-list-head">LSPD 组织架构</div>
+<!-- Hero 主视觉 -->
+<div class="hero">
+  <div class="hero-img"></div>
+  <div class="hero-content">
+    <div class="hero-label">The Official Site of the Los Santos Police Department</div>
+    <div class="hero-title"><em>"to protect and to serve"</em></div>
+    <div class="hero-sub">Organization Chart & Department Information</div>
+  </div>
+</div>
 
-      <div class="org-level">Office of the Chief of Police<span class="en">局长办公室</span></div>
-      <a class="org-item" data-dept="chief">Chief of Police 局长<small>点击查看局长致辞</small></a>
+<!-- 面包屑 -->
+<div class="breadcrumb">
+  <a href="/">Home</a> <span>/</span> <a href="/understandinglspd/">Organization</a>
+</div>
 
-      <div class="org-level">Operations Bureau<span class="en">行动局</span></div>
-      <a class="org-item" data-dept="patrol">Patrol Division 巡逻部<small>城市巡逻 · 第一响应</small></a>
-      <a class="org-item" data-dept="traffic">Traffic Division 交通部<small>道路执法 · 事故处理</small></a>
+<!-- 页面内容 -->
+<div class="page-wrap">
+  <div class="page-main">
+    <h1 class="page-h1">Organization Chart</h1>
+    <div class="page-h1-sub">Click on any department name below to view detailed information</div>
 
-      <div class="org-level">Detective Bureau<span class="en">调查局</span></div>
-      <a class="org-item" data-dept="detective">Detective Division 侦探局<small>重大案件 · 刑事侦查</small></a>
-
-      <div class="org-level">Special Operations<span class="en">特勤行动</span></div>
-      <a class="org-item" data-dept="swat">SWAT 特警队<small>高危战术 · 人质营救</small></a>
-      <a class="org-item" data-dept="air">Air Support 空中支援<small>直升机巡逻 · 空中追捕</small></a>
+    <div class="intro-box">
+      <b>Los Santos Police Department (LSPD)</b> is the primary law enforcement agency serving the City of Los Santos. Our officers come from all walks of life across the city, upholding the motto "To Protect and to Serve" in every corner of Los Santos. Click on any <b>department name</b> below to view its detailed profile.
     </div>
 
-    <div class="dept-detail" id="dept-detail">
-      <div class="d-tag" id="d-tag">DEPARTMENT PROFILE</div>
-      <div class="d-title" id="d-title">巡逻部 Patrol Division</div>
-      <div class="d-en" id="d-en">Department of the Los Santos Police Department</div>
-      <div class="d-chief" id="d-chief">部门主管：<b>待定</b></div>
+    <!-- 组织架构 -->
+    <div class="org-chart-wrap">
+      <div class="org-chart-head">LSPD Organization Chart</div>
+      <div class="org-tree" id="org-tree"></div>
+    </div>
+
+    <!-- 详情面板 -->
+    <div class="dept-panel" id="dept-panel">
+      <div class="dept-tag" id="d-tag">DEPARTMENT PROFILE</div>
+      <div class="dept-title" id="d-title">Patrol Division</div>
+      <div class="dept-sub" id="d-sub">Department of the Los Santos Police Department</div>
+      <div class="dept-chief" id="d-chief">Chief: <b>TBD</b></div>
       <div id="d-body"></div>
     </div>
   </div>
+
+  <!-- 侧边栏 -->
+  <div class="page-sidebar">
+    <div class="sidebar-box">
+      <h4>Quick Links</h4>
+      <a href="/searchlaw/">File a Police Report</a>
+      <a href="/joinlspd/">Join the Team</a>
+      <a href="/internalaffairscomplaint/">Contact Us</a>
+      <a href="/">Back to Home</a>
+    </div>
+    <div class="sidebar-box">
+      <h4>Related Pages</h4>
+      <a href="/searchlaw/">Search Law Database</a>
+      <a href="/internalaffairscomplaint/">Internal Affairs Complaint</a>
+      <a href="/joinlspd/">Recruitment Information</a>
+    </div>
+  </div>
 </div>
 
-<div class="foot">By Bradford</div>
+<!-- Footer -->
+<div class="footer">
+  <div class="footer-wrap">
+    <div class="footer-col">
+      <h5>Quick Links</h5>
+      <a href="/searchlaw/">File a Police Report</a>
+      <a href="/">Crime Mapping</a>
+      <a href="/joinlspd/">Join the Team</a>
+      <a href="/internalaffairscomplaint/">Contact Us</a>
+    </div>
+    <div class="footer-col">
+      <h5>Resources</h5>
+      <a href="/searchlaw/">Search Law</a>
+      <a href="/internalaffairscomplaint/">Complaint</a>
+      <a href="/understandinglspd/">Organization</a>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <a>Emergency: 911</a>
+      <a>Non-Emergency: 877-ASK-LSPD</a>
+      <a>Email: contact.lspd@gmail.com</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="copy">Copyright 2025 Los Santos Police Department. All Rights Reserved.</div>
+    <div class="design">Design By LSPD Digital</div>
+  </div>
+</div>
 
 <script>
 (function(){
+  var TREE = [
+    {
+      level: 'Office of the Chief of Police',
+      levelCn: '局长办公室',
+      items: [
+        { key: 'chief', name: 'Chief of Police', cn: '局长', desc: 'View Chief\'s Message' }
+      ]
+    },
+    {
+      level: 'Operations Bureau',
+      levelCn: '行动局',
+      items: [
+        { key: 'patrol', name: 'Patrol Division', cn: '巡逻部', desc: 'City Patrol · First Response' },
+        { key: 'traffic', name: 'Traffic Division', cn: '交通部', desc: 'Road Enforcement · Accident Response' }
+      ]
+    },
+    {
+      level: 'Detective Bureau',
+      levelCn: '调查局',
+      items: [
+        { key: 'detective', name: 'Detective Division', cn: '侦探局', desc: 'Major Cases · Criminal Investigation' }
+      ]
+    },
+    {
+      level: 'Special Operations Bureau',
+      levelCn: '特勤行动局',
+      items: [
+        { key: 'swat', name: 'SWAT', cn: '特警队', desc: 'High-Risk Tactics · Hostage Rescue' },
+        { key: 'air', name: 'Air Support Division', cn: '空中支援', desc: 'Helicopter Patrol · Air Pursuit' }
+      ]
+    }
+  ];
+
   var DEPTS = {
     chief: {
       tag: 'OFFICE OF THE CHIEF',
-      title: '局长办公室 Office of the Chief of Police',
-      en: 'The Command Core of the Department',
-      chief: { role: '局长（Chief of Police）', name: '雅各布·胡德' },
-      desc: '局长办公室是 LSPD 的最高决策与执行核心，直接向洛圣都警察委员会（Board of Police Commissioners）报告，负责统筹战略规划、政策执行及跨部门协调。',
+      title: 'Office of the Chief of Police',
+      sub: 'The Command Core of the Department',
+      chief: { role: 'Chief of Police', name: 'Jacob Hood' },
+      intro: 'The Office of the Chief of Police is the highest decision-making and executive core of the Los Santos Police Department, reporting directly to the Board of Police Commissioners. It is responsible for strategic planning, policy implementation, and inter-departmental coordination.',
       sections: [
         {
-          h: '核心定位与职责',
+          h: 'Core Mission & Responsibilities',
           items: [
-            { b: '战略领导', t: '制定部门长期目标，强调「社区警务与技术融合」，并监督各分局执行。' },
-            { b: '政策执行', t: '落实警察委员会决议。' },
-            { b: '跨部门协调', t: '整合行动局、调查局、特别行动局等资源。' },
-            { b: '公众信任建设', t: '通过社区论坛、公开报告（如《使用武力年度报告》）增强透明度。' }
+            { b: 'Strategic Leadership', t: 'Develop long-term departmental goals, emphasizing community policing and technology integration, and supervise execution across all divisions.' },
+            { b: 'Policy Implementation', t: 'Execute resolutions passed by the Police Commissioners.' },
+            { b: 'Inter-Departmental Coordination', t: 'Integrate resources from the Operations Bureau, Detective Bureau, and Special Operations Bureau.' },
+            { b: 'Public Trust Building', t: 'Enhance transparency through community forums and public reports (e.g., Annual Use of Force Report).' }
           ]
         },
         {
-          h: '高层管理结构',
+          h: 'Senior Management Structure',
           items: [
-            { b: '局长（Chief of Police）雅各布·胡德', t: '统筹全局，直接向警察委员会汇报，负责重大决策。' },
-            { b: '助理局长（Assistant Chiefs）', t: '暂无任职人员。职责包括协调内部事务、政策落地及危机应对。' }
+            { b: 'Chief of Police — Jacob Hood', t: 'Oversees all operations, reports directly to the Police Commissioners, and is responsible for major decisions.' },
+            { b: 'Assistant Chiefs', t: 'No current appointments. Responsibilities include coordinating internal affairs, policy implementation, and crisis response.' }
           ]
         },
         {
-          h: '直属部门',
+          h: 'Direct Departments',
           items: [
-            { b: '行政管理', t: '处理局长日常文件、行程安排及会议协调；管理部门印章、档案及机密信息，确保行政流程合规。' },
-            { b: '社区关系科（Community Relations Section）', t: '设计社区参与项目，推动警民合作，监测社区舆情。' }
+            { b: 'Administration', t: 'Handles daily documents, scheduling, and meeting coordination for the Chief; manages departmental seals, records, and confidential information to ensure administrative compliance.' },
+            { b: 'Community Relations Section', t: 'Designs community engagement programs, promotes police-civilian cooperation, and monitors community sentiment.' }
           ]
         },
         {
-          h: '跨部门协作机制',
+          h: 'Inter-Departmental Collaboration',
           items: [
-            { b: '与警察委员会的联动', t: '局长每月向委员会汇报工作，例如 2025 年提交《警力扩招可行性报告》供审议。委员会通过审计和政策建议（如优化纪律听证流程）监督办公室运作。' },
-            { b: '与专业标准科的分工', t: '局长办公室制定政策（《警员行为准则》），专业标准科负责具体调查。特别事务办公室与内务组（IAD）协作。' }
+            { b: 'Police Commissioners Liaison', t: 'The Chief submits monthly reports to the Commissioners, such as the 2025 Feasibility Report on Police Force Expansion. The Commissioners supervise office operations through audits and policy recommendations.' },
+            { b: 'Professional Standards Coordination', t: 'The Chief\'s Office formulates policies (e.g., Officer Conduct Code), while the Professional Standards Division conducts specific investigations. The Special Affairs Office collaborates with the Internal Affairs Division (IAD).' }
           ]
         },
         {
-          h: '最新改革',
+          h: 'Latest Reforms',
           items: [
-            { b: 'LSPD 警察局长委员会', t: '收集并整理警员的意见和建议，并采取合理的意见。' }
+            { b: 'LSPD Police Chief Advisory Council', t: 'Collects and organizes officer feedback and recommendations, implementing reasonable suggestions.' }
           ]
         }
       ],
-      summary: 'LSPD 局长办公室通过战略引领、跨部门协作与社区互动，在维护公共安全与执法公信力间寻求平衡。其 2025 年改革聚焦「效率提升」与「透明度强化」，例如优化内部流程、扩大技术应用，为其他警局提供了可借鉴的治理范式。未来，办公室需持续应对资源压力与系统性改革挑战，确保部门始终适应洛圣都多元社区的需求。'
+      summary: 'The LSPD Office of the Chief of Police balances public safety and law enforcement credibility through strategic leadership, inter-departmental collaboration, and community engagement. Its 2025 reforms focus on efficiency improvement and transparency enhancement, such as optimizing internal processes and expanding technology applications, providing a governance model for other police departments. Moving forward, the Office must continue to address resource pressures and systemic reform challenges to ensure the department remains responsive to the diverse needs of the Los Santos community.'
     },
     patrol: {
-      title: '巡逻部 Patrol Division',
-      chief: '待定',
-      desc: '巡逻部是洛圣都警察局的门面和主力，负责整个城市范围内的日常巡逻与第一响应。巡逻警员是市民最先接触到的执法人员，也是城市治安最基础、最直接的保障力量。无论白天还是夜晚，巡逻车都穿梭在洛圣都的大街小巷，随时准备处理任何突发警情。',
-      duties: [
-        '城市日常巡逻，覆盖洛圣都全部辖区',
-        '接警后第一时间赶赴现场，处置各类突发警情',
-        '交通拦截、人员盘查与可疑车辆查控',
-        '维护大型活动与公共场合的现场秩序',
-        '为调查部门提供一线支援与情报'
+      tag: 'PATROL DIVISION',
+      title: 'Patrol Division',
+      sub: 'Department of the Los Santos Police Department',
+      chief: 'TBD',
+      intro: 'The Patrol Division is the face and backbone of the Los Santos Police Department, responsible for daily patrol and first response across the entire city. Patrol officers are the first point of contact for citizens and the most fundamental and direct guarantee of urban security.',
+      sections: [
+        {
+          h: 'Primary Responsibilities',
+          items: [
+            { t: 'Daily city patrol covering all jurisdictions of Los Santos' },
+            { t: 'First response to emergency calls, handling all types of incidents' },
+            { t: 'Traffic stops, pedestrian checks, and suspicious vehicle inspections' },
+            { t: 'Maintaining order at large events and public gatherings' },
+            { t: 'Providing frontline support and intelligence to investigative units' }
+          ]
+        }
       ]
     },
     traffic: {
-      title: '交通部 Traffic Division',
-      chief: '待定',
-      desc: '交通部负责洛圣都的道路交通安全。部门警员专注于城市交通秩序的维护，从日常道路巡逻到重大交通事故的现场处置，都是交通部的职责范围。他们确保城市道路畅通，让每一位市民都能安全抵达目的地。',
-      duties: [
-        '城市道路巡逻，查处交通违法行为',
-        '交通事故现场处置与责任认定',
-        '酒驾、毒驾专项检查与执法',
-        '配合追捕行动实施道路拦截',
-        '大型活动期间的交通管制与疏导'
+      tag: 'TRAFFIC DIVISION',
+      title: 'Traffic Division',
+      sub: 'Department of the Los Santos Police Department',
+      chief: 'TBD',
+      intro: 'The Traffic Division is responsible for road safety in Los Santos. Officers focus on maintaining urban traffic order, from daily road patrols to on-scene handling of major traffic accidents.',
+      sections: [
+        {
+          h: 'Primary Responsibilities',
+          items: [
+            { t: 'Urban road patrols and enforcement of traffic violations' },
+            { t: 'On-scene handling and liability determination of traffic accidents' },
+            { t: 'DUI and drug-impaired driving inspections and enforcement' },
+            { t: 'Coordinating road interception during pursuit operations' },
+            { t: 'Traffic control and guidance during large-scale events' }
+          ]
+        }
       ]
     },
     detective: {
-      title: '侦探局 Detective Division',
-      chief: '待定',
-      desc: '侦探局是洛圣都警察局的刑事侦查核心，负责全市范围内重大刑事案件的侦破工作。侦探们不穿制服，却以另一种方式守护这座城市——通过现场取证、线索研判与嫌疑人审讯，将罪犯绳之以法。',
-      duties: [
-        '谋杀、抢劫等重大刑事案件的侦破',
-        '犯罪现场勘查与物证收集分析',
-        '监控追踪、线索研判与嫌疑人审讯',
-        '卧底侦查与有组织犯罪调查',
-        '与各区巡逻部门协作侦办案件'
+      tag: 'DETECTIVE BUREAU',
+      title: 'Detective Division',
+      sub: 'Department of the Los Santos Police Department',
+      chief: 'TBD',
+      intro: 'The Detective Division is the criminal investigation core of the Los Santos Police Department, responsible for solving major criminal cases across the city. Detectives do not wear uniforms, yet they guard the city in another way—through crime scene evidence collection, clue analysis, and suspect interrogation.',
+      sections: [
+        {
+          h: 'Primary Responsibilities',
+          items: [
+            { t: 'Investigation of major criminal cases including homicide and robbery' },
+            { t: 'Crime scene examination and physical evidence collection and analysis' },
+            { t: 'Surveillance tracking, clue analysis, and suspect interrogation' },
+            { t: 'Undercover operations and organized crime investigations' },
+            { t: 'Collaborating with patrol divisions across all areas to solve cases' }
+          ]
+        }
       ]
     },
     swat: {
-      title: 'SWAT 特警队 SWAT',
-      chief: '待定',
-      desc: '特警队是洛圣都警察局的高危战术单位，专门应对普通警力无法处理的极端危险情况。特警队员经过高强度的战术训练，配备制式战术装备，是城市面对最严重威胁时的最后防线。',
-      duties: [
-        '持械嫌疑人等高危对象的逮捕行动',
-        '人质劫持事件的谈判与营救',
-        '重要人物的安全保卫任务',
-        '大规模骚乱与暴动事件的处置',
-        '高危区域的突击与清剿行动'
+      tag: 'SWAT',
+      title: 'SWAT',
+      sub: 'Special Weapons and Tactics',
+      chief: 'TBD',
+      intro: 'SWAT is the high-risk tactical unit of the Los Santos Police Department, specifically designed to handle extreme danger situations that regular police forces cannot manage. SWAT officers undergo intensive tactical training and are equipped with standard tactical gear, serving as the last line of defense when the city faces its most severe threats.',
+      sections: [
+        {
+          h: 'Primary Responsibilities',
+          items: [
+            { t: 'Arrest operations for armed suspects and other high-risk targets' },
+            { t: 'Negotiation and rescue in hostage situations' },
+            { t: 'Security details for high-profile individuals' },
+            { t: 'Handling large-scale riots and civil unrest' },
+            { t: 'Assault and clearance operations in high-risk areas' }
+          ]
+        }
       ]
     },
     air: {
-      title: '空中支援 Air Support Division',
-      chief: '待定',
-      desc: '空中支援部是洛圣都警察局的空中力量，装备警用直升机，为地面警力提供无法替代的空中视角。在追捕、搜救、大型事件保障等任务中，空中的警员是地面行动的「天眼」，掌握着全局态势。',
-      duties: [
-        '追捕行动中的空中监视与指挥',
-        '失踪人员与嫌疑人的空中搜索',
-        '重大活动现场的空中巡逻与安保',
-        '城市突发事件的快速空中支援',
-        '空中摄影取证，协助案件侦办'
+      tag: 'AIR SUPPORT',
+      title: 'Air Support Division',
+      sub: 'Department of the Los Santos Police Department',
+      chief: 'TBD',
+      intro: 'The Air Support Division is the aerial force of the Los Santos Police Department, equipped with police helicopters that provide an irreplaceable aerial perspective for ground units. In pursuit, search and rescue, and large-event security operations, airborne officers serve as the "eyes in the sky" for ground operations, maintaining situational awareness of the entire area.',
+      sections: [
+        {
+          h: 'Primary Responsibilities',
+          items: [
+            { t: 'Aerial surveillance and command during pursuit operations' },
+            { t: 'Aerial search for missing persons and suspects' },
+            { t: 'Aerial patrol and security at major events' },
+            { t: 'Rapid aerial support for urban emergencies' },
+            { t: 'Aerial photography and evidence collection to assist case investigations' }
+          ]
+        }
       ]
     }
   };
 
+  // 渲染左侧树
+  var treeHtml = '';
+  TREE.forEach(function(group){
+    treeHtml += '<div class="org-level">' + group.level + '<span style="margin-left:8px;color:#888;font-weight:400">' + group.levelCn + '</span></div>';
+    group.items.forEach(function(item){
+      treeHtml += '<a class="org-node" data-dept="' + item.key + '">' +
+        item.name + '<span class="en">' + item.cn + '</span>' +
+        '<span class="desc">' + item.desc + '</span></a>';
+    });
+  });
+  document.getElementById('org-tree').innerHTML = treeHtml;
+
+  // 渲染详情
   function render(key){
     var d = DEPTS[key];
     if (!d) return;
-    document.getElementById('d-title').textContent = d.title;
     document.getElementById('d-tag').textContent = d.tag || 'DEPARTMENT PROFILE';
-    document.getElementById('d-en').textContent = d.en || 'Department of the Los Santos Police Department';
-    var chiefHtml;
+    document.getElementById('d-title').textContent = d.title;
+    document.getElementById('d-sub').textContent = d.sub || 'Department of the Los Santos Police Department';
     if (typeof d.chief === 'object') {
-      chiefHtml = (d.chief.role || '部门主管') + '：<b>' + d.chief.name + '</b>';
+      document.getElementById('d-chief').innerHTML = d.chief.role + ': <b>' + d.chief.name + '</b>';
     } else {
-      chiefHtml = '部门主管：<b>' + d.chief + '</b>';
+      document.getElementById('d-chief').innerHTML = 'Chief: <b>' + d.chief + '</b>';
     }
-    document.getElementById('d-chief').innerHTML = chiefHtml;
 
     var html = '';
-    if (d.desc) html += '<div class="d-desc"><p>' + d.desc + '</p></div>';
+    if (d.intro) html += '<div class="dept-section"><p>' + d.intro + '</p></div>';
     (d.sections || []).forEach(function(s){
-      html += '<h3>' + s.h + '</h3><ul class="d-duties">';
+      html += '<div class="dept-section"><h3>' + s.h + '</h3><ul>';
       s.items.forEach(function(it){
         html += '<li>';
-        if (it.b) html += '<b>' + it.b + '</b>' + (it.t ? '：' : '');
+        if (it.b) html += '<b>' + it.b + '</b>' + (it.t ? ' — ' : '');
         if (it.t) html += it.t;
         html += '</li>';
       });
-      html += '</ul>';
+      html += '</ul></div>';
     });
-    if (d.duties) {
-      html += '<h3>主要职责</h3><ul class="d-duties">';
-      d.duties.forEach(function(x){ html += '<li>' + x + '</li>'; });
-      html += '</ul>';
-    }
-    if (d.summary) html += '<h3>总结</h3><div class="d-desc"><p>' + d.summary + '</p></div>';
+    if (d.summary) html += '<div class="dept-section"><h3>Summary</h3><p>' + d.summary + '</p></div>';
     document.getElementById('d-body').innerHTML = html;
 
-    document.querySelectorAll('.org-item[data-dept]').forEach(function(el){
+    document.querySelectorAll('.org-node').forEach(function(el){
       el.classList.toggle('active', el.getAttribute('data-dept') === key);
     });
   }
 
-  document.querySelectorAll('.org-item[data-dept]').forEach(function(el){
-    el.addEventListener('click', function(){
+  document.querySelectorAll('.org-node').forEach(function(el){
+    el.addEventListener('click', function(e){
+      e.preventDefault();
       render(el.getAttribute('data-dept'));
     });
   });
 
-  function goHome(){ location.href = '/'; }
-  var back = document.getElementById('learn-back');
-  if (back) back.addEventListener('click', goHome);
-  document.addEventListener('click', function(e){
-    if (e.target.closest('.logo-box') || e.target.closest('.header-title')) goHome();
-  });
-
-  render('patrol');
+  render('chief');
 })();
 </script>
 </body>
