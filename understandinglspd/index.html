@@ -103,20 +103,13 @@ body{
 .org-node:hover{background:#f8f9fa;border-left-color:#c0392b}
 .org-node.active{background:#fdf1f1;border-left-color:#c0392b;color:#c0392b;font-weight:700}
 .org-node .en{font-size:12px;color:#888;margin-left:6px;font-weight:400}
-.org-node .desc{display:block;font-size:12px;color:#888;margin-top:2px}
 
 .dept-panel{
   border:1px solid #e0e0e0;background:#fff;padding:26px 30px;
 }
-.dept-tag{
-  display:inline-block;background:#012c49;color:#fff;
-  font-size:11px;letter-spacing:2px;padding:4px 12px;
-  text-transform:uppercase;margin-bottom:14px;
-}
-.dept-title{font-size:23px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
-.dept-sub{
-  font-size:13px;color:#888;font-style:italic;
-  font-family:Georgia,serif;margin-bottom:16px;
+.dept-title{
+  font-size:26px;font-weight:700;color:#1a1a1a;
+  letter-spacing:.5px;line-height:1.35;margin-bottom:2px;
 }
 .dept-chief{
   display:inline-block;background:#f8f9fa;border:1px solid #e0e0e0;
@@ -124,11 +117,28 @@ body{
 }
 .dept-chief b{color:#1a1a1a}
 
+/* 部门标题行 + 徽章 */
+.dept-header-row{display:flex;align-items:flex-start;gap:16px;margin-bottom:16px}
+.dept-header-text{
+  flex:1;min-width:0;
+  padding-left:14px;border-left:4px solid #c0392b;
+}
+.dept-header-text::after{
+  content:'';display:block;height:1px;background:#e0e0e0;margin-top:12px;
+}
+.dept-badge{width:78px;height:78px;border:1px solid #e0e0e0;background:#fff;padding:6px;flex-shrink:0}
+.dept-badge:empty{display:none}
+.dept-badge img{width:100%;height:100%;object-fit:contain}
+
 /* 指挥官卡片（仿 LAPD 刑侦局部门卡） */
+.dept-cmd-wrap{
+  display:flex;gap:16px;flex-wrap:wrap;
+  margin-bottom:20px;
+}
 .dept-cmd{
   display:flex;align-items:center;gap:16px;
   background:#f8f9fa;border:1px solid #e0e0e0;
-  padding:14px 18px;margin-bottom:20px;
+  padding:14px 18px;flex:1;min-width:280px;
 }
 .dept-cmd .avatar{
   width:56px;height:56px;flex-shrink:0;
@@ -138,6 +148,7 @@ body{
 }
 .dept-cmd .cmd-info{min-width:0}
 .dept-cmd .cmd-name{font-size:17px;font-weight:700;color:#1a1a1a}
+.dept-cmd .cmd-en{font-size:13px;font-weight:400;color:#888}
 .dept-cmd .cmd-rank{
   font-size:11px;color:#c0392b;letter-spacing:1.5px;
   text-transform:uppercase;font-weight:700;margin-top:2px;
@@ -163,6 +174,25 @@ body{
   width:8px;height:8px;background:#c0392b;
 }
 .dept-section li b{color:#1a1a1a}
+
+/* 旗下部门卡片（子部门，如交通分局下的高速巡捕单位） */
+.subunit{background:#fff;border:1px solid #e0e0e0;padding:16px 18px;margin-bottom:12px}
+.subunit-name{font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:8px}
+.subunit-name .en{font-size:12px;color:#888;font-weight:400;margin-left:6px}
+.subunit p{font-size:14px;color:#444;line-height:1.8;margin-bottom:10px}
+.subunit ul{list-style:none;padding:0;margin:0 0 10px}
+.subunit li{
+  padding:8px 0 8px 20px;position:relative;font-size:14px;color:#444;
+  border-bottom:1px solid #f0f0f0;
+}
+.subunit li:last-child{border-bottom:none}
+.subunit li:before{
+  content:'';position:absolute;left:0;top:14px;
+  width:8px;height:8px;background:#c0392b;
+}
+.subunit li b{color:#1a1a1a}
+.subunit-sub{margin-top:8px}
+.subunit-sub b{font-size:13px;color:#1a1a1a}
 
 /* === LSPD 统一页脚 === */
 .site-footer{
@@ -226,9 +256,12 @@ body{
   </div>
 
   <div class="dept-panel" id="dept-panel" style="flex:1;min-width:0">
-    <div class="dept-tag" id="d-tag">DEPARTMENT PROFILE</div>
-    <div class="dept-title" id="d-title">Patrol Division</div>
-    <div class="dept-sub" id="d-sub">洛圣都警察局下属部门</div>
+    <div class="dept-header-row" id="dept-header-row">
+      <div class="dept-badge" id="d-badge"></div>
+      <div class="dept-header-text">
+        <div class="dept-title" id="d-title">Central Patrol Division</div>
+      </div>
+    </div>
     <div class="dept-chief" id="d-chief">主管：<b>待定</b></div>
     <div id="d-body"></div>
   </div>
@@ -250,30 +283,33 @@ body{
       level: 'Office of the Chief of Police',
       levelCn: '局长办公室',
       items: [
-        { key: 'chief', name: 'Chief of Police', cn: '局长', desc: '查看局长致辞' }
+        { key: 'chief', name: 'Chief of Police', cn: '局长' },
+        { key: 'asst-chief', name: 'Assistant Chief', cn: '助理局长' }
+      ]
+    },
+    {
+      level: 'Administrative Services Bureau',
+      levelCn: '行政服务局',
+      items: [
+        { key: 'media', name: 'Media and Public Relations Division', cn: '媒体与公共关系分局' },
+        { key: 'recruit', name: 'Recruitment & Employment Office', cn: '招募与就业分局' }
       ]
     },
     {
       level: 'Operations Bureau',
       levelCn: '行动局',
       items: [
-        { key: 'patrol', name: 'Patrol Division', cn: '巡逻部', desc: '城市巡逻 · 一线响应' },
-        { key: 'traffic', name: 'Traffic Division', cn: '交通部', desc: '道路执法 · 事故处置' }
-      ]
-    },
-    {
-      level: 'Detective Bureau',
-      levelCn: '调查局',
-      items: [
-        { key: 'detective', name: 'Detective Division', cn: '侦探局', desc: '重大案件 · 刑事侦查' }
+        { key: 'patrol', name: 'Central Patrol Division', cn: '中央巡逻分局' },
+        { key: 'traffic', name: 'Central Traffic Division', cn: '中央交通分局' },
+        { key: 'detective', name: 'Detective Division', cn: '警探局' }
       ]
     },
     {
       level: 'Special Operations Bureau',
       levelCn: '特勤行动局',
       items: [
-        { key: 'swat', name: 'SWAT', cn: '特警队', desc: '高危战术 · 人质救援' },
-        { key: 'air', name: 'Air Support Division', cn: '空中支援', desc: '直升机巡逻 · 空中追缉' }
+        { key: 'swat', name: 'SWAT', cn: '特警队' },
+        { key: 'air', name: 'Air Support Division', cn: '空中支援' }
       ]
     }
   ];
@@ -282,83 +318,92 @@ body{
     chief: {
       tag: 'OFFICE OF THE CHIEF',
       title: 'Office of the Chief of Police',
-      sub: '部门指挥核心',
-      chief: { role: 'Chief of Police', name: 'Jacob Hood' },
-      intro: '局长办公室是洛圣都警察局的最高决策与执行核心，直接向警察委员会汇报，负责战略规划、政策落实与跨部门协调。',
-      sections: [
-        {
-          h: '核心使命与职责',
-          items: [
-            { b: '战略领导', t: '制定部门长期目标，强调社区警务与技术整合，并监督各部门执行。' },
-            { b: '政策落实', t: '执行警察委员会通过的决议。' },
-            { b: '跨部门协调', t: '整合行动局、调查局与特勤行动局的资源。' },
-            { b: '公众信任建设', t: '通过社区论坛与公开报告（如年度武力使用报告）提升透明度。' }
-          ]
-        },
-        {
-          h: '高层管理架构',
-          items: [
-            { b: '局长（雅各布·胡德）', t: '统筹全局，直接向警察委员会汇报，负责重大决策。' },
-            { b: '助理局长', t: '暂无任命。职责包括协调内务、政策落实与危机响应。' }
-          ]
-        },
-        {
-          h: '直属部门',
-          items: [
-            { b: '行政管理', t: '负责局长日常文件、日程与会议协调；管理部门印章、档案及机密信息，确保行政合规。' },
-            { b: '社区关系科', t: '设计社区参与项目，促进警民合作，监测社区舆情。' }
-          ]
-        },
-        {
-          h: '跨部门协作',
-          items: [
-            { b: '警察委员会联络', t: '局长每月向委员会提交报告（如 2025 年警力扩充可行性报告）；委员会通过审计与政策建议监督办公室运作。' },
-            { b: '职业标准协调', t: '局长办公室制定政策（如《警员行为规范》），职业标准科负责具体调查；特别事务办公室与内务部（IAD）协作。' }
-          ]
-        },
-        {
-          h: '最新改革',
-          items: [
-            { b: 'LSPD 警察局长咨询委员会', t: '收集整理警员反馈与建议，采纳合理意见并落实。' }
-          ]
-        }
+      sub: 'LSPD 最高决策与执行核心',
+      chief: { role: 'Chief of Police', name: '雅各布·胡德', en: 'Jacob Hood', rank: 'Commanding Officer' },
+      team: [
+        { role: 'Assistant Chief', name: '兰斯·伊莱亚斯', en: 'Lance Elias', rank: 'Commanding Officer' }
       ],
-      summary: '洛圣都警察局局长办公室通过战略领导、跨部门协作与社区参与，在公共安全与执法公信力之间取得平衡。其 2025 年改革聚焦效率提升与透明度增强，如优化内部流程、扩大技术应用，为其他警局提供了治理范本。展望未来，办公室需持续应对资源压力与体系性改革挑战，确保部门始终响应洛圣都社区的多元需求。'
-    },
-    patrol: {
-      tag: 'PATROL DIVISION',
-      title: 'Patrol Division',
-      sub: '洛圣都警察局下属部门',
-      chief: '待定',
-      intro: '巡逻部是洛圣都警察局的门面与中坚力量，负责全市日常巡逻与一线响应。巡逻警员是市民接触警察的第一人，也是城市安全最基础、最直接的保障。',
+      intro: '局长办公室（Office of the Chief of Police）是部门最高决策与执行核心，直接向洛圣都警察委员会（Board of Police Commissioners）报告，负责统筹战略规划、政策执行及跨部门协调。',
       sections: [
         {
-          h: '主要职责',
+          h: '核心定位与职责',
           items: [
-            { t: '覆盖洛圣都全部辖区的日常城市巡逻' },
-            { t: '紧急报警的一线响应，处置各类事件' },
-            { t: '交通拦停、行人盘查与可疑车辆检查' },
-            { t: '大型活动与公众集会的秩序维护' },
-            { t: '为侦查单位提供一线支援与情报' }
+            { b: '战略领导', t: '制定部门长期目标，强调「社区警务与技术融合」，并监督各分局执行。' },
+            { b: '政策执行', t: '落实警察委员会决议。' },
+            { b: '跨部门协调', t: '整合行动局、调查局、特别行动局等资源。' },
+            { b: '公众信任建设', t: '通过社区论坛、公开报告（如《使用武力年度报告》）增强透明度。' }
+          ]
+        },
+        {
+          h: '高层管理结构',
+          items: [
+            { b: '局长（Chief of Police）雅各布·胡德', t: '统筹全局，直接向警察委员会汇报，负责重大决策。' },
+            { b: '助理局长（Assistant Chiefs）兰斯·伊莱亚斯', t: '协调内部事务、政策落地及危机应对。' }
+          ]
+        },
+        {
+          h: '直属部门与职能',
+          items: [
+            { b: '行政管理', t: '处理局长日常文件、行程安排及会议协调；管理部门印章、档案及机密信息，确保行政流程合规。' },
+            { b: '社区关系科（Community Relations Section）', t: '设计社区参与项目，推动警民合作，监测社区舆情。' }
+          ]
+        },
+        {
+          h: '跨部门协作机制',
+          items: [
+            { b: '与警察委员会的联动', t: '局长每月向委员会汇报工作，例如 2026 年提交《警力扩招可行性报告》供审议；委员会通过审计和政策建议（如优化纪律听证流程）监督办公室运作。' },
+            { b: '与专业标准科的分工', t: '局长办公室制定政策（如《警员行为准则》），专业标准科负责具体调查；特别事务办公室与内务组（IAD）协作。' }
+          ]
+        },
+        {
+          h: '最新改革与成效',
+          items: [
+            { b: 'LSPD 警察局长委员会', t: '收集并整理警员的意见和建议，并采取合理的意见。' }
           ]
         }
       ]
     },
-    traffic: {
-      tag: 'TRAFFIC DIVISION',
-      title: 'Traffic Division',
+    patrol: {
+      tag: 'OPERATIONS BUREAU',
+      title: 'Central Patrol Division',
       sub: '洛圣都警察局下属部门',
+      chief: { role: 'Lieutenant.I', name: '本杰明·利亚姆', en: 'Benjamin Liam', rank: 'Commanding Officer' },
+      intro: '中央巡逻分局是地方执法部门的核心组成部分，隶属于洛圣都警察局（Los Santos Police Department），主要负责辖区内的日常治安维护、应急响应、犯罪预防及社区警务服务。其核心使命是通过高可见性巡逻和快速反应，保障公共安全、降低犯罪率、增强居民幸福感。'
+    },
+    traffic: {
+      tag: 'OPERATIONS BUREAU',
+      title: 'Central Traffic Division',
+      sub: '洛圣都警察局下属部门',
+      badge: 'https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/traffic_badge.png',
       chief: '待定',
-      intro: '交通部负责洛圣都的道路安全。从日常道路巡逻到重大交通事故的现场处置，警员专注于维护城市交通秩序。',
-      sections: [
+      intro: '洛圣都警察局交通分局（Central Traffic Division）致力于维护城市交通秩序、确保道路安全，为市民创造一个高效、有序的交通环境。交通分局汇聚了一支经验丰富、高度专业的警务团队，以其卓越的执法技能和敏锐的责任心，成为市内交通治理的中流砥柱。\n\n该分局的职责范围广泛，涵盖了巡逻监测交通违法行为、深入开展交通事故调查、执行科学的交通管理计划等多个方面。精湛的工作技能使得交通分局能够高效应对各类交通挑战，从而确保市民的出行安全和道路的通畅。\n\n作为城市安全的守护者，LSPD交通分局积极参与社区教育活动，通过举办交通安全讲座、推广安全驾驶理念等方式，提升市民的交通安全意识。这一全方位的服务不仅仅关注治安问题，更关注市民的福祉，努力打造一个宜居、安全的都市环境。LSPD交通分局的不懈努力为洛圣都市民提供了更高品质的生活，为城市的可持续发展贡献着积极的力量。',
+      subunits: [
         {
-          h: '主要职责',
-          items: [
-            { t: '城市道路巡逻与交通违法查处' },
-            { t: '交通事故现场处置与责任认定' },
-            { t: '酒驾与毒驾检查及执法' },
-            { t: '追缉行动中的道路拦截配合' },
-            { t: '大型活动期间的交通管控与疏导' }
+          name: '高速巡捕单位',
+          en: 'Highway Patrol Unit',
+          intro: '高速巡捕单位是警察部门的一个重要部门，主要负责在高速公路和其他道路上进行巡逻和执法工作。',
+          duties: [
+            { b: '高速公路巡逻', t: '在高速公路上执行巡逻任务，监控交通安全，应对紧急情况，协助事故处理，并确保道路畅通。' },
+            { b: '交通执法', t: '对违规驾驶行为进行执法，包括超速、酒驾、违法变道等，以确保道路上的交通秩序。' },
+            { b: '应急响应', t: '在发生交通事故、紧急事件或其他突发情况时，迅速响应，提供救援和支援。' },
+            { b: '协助调查', t: '在需要协助其他部门进行调查或执行任务时，提供支持和协助。' }
+          ],
+          summary: '高速巡捕单位的工作对维护道路交通秩序、减少交通事故、保障驾驶人员和行人的安全具有重要意义。'
+        },
+        {
+          name: '摩托巡逻单位',
+          en: 'Motorcycle Patrol Unit',
+          intro: '摩托巡逻单位是负责维护特定区域内交通秩序和执行相关执法任务的专业部门。其优势在于机动性强，可以快速到达拥堵或偏远区域，提高执法效率和响应速度。警员通常配备专业的摩托车装备和通讯设备，以保障工作的顺利进行。',
+          duties: [
+            { b: '巡逻管控', t: '在负责区域的道路上进行巡逻，及时发现和处理交通违法行为，如超速、闯红灯、违规变道等，确保道路交通安全顺畅。' },
+            { b: '事故处理', t: '迅速响应并处理交通事故，包括现场勘查、责任认定、疏导交通等，以减少事故对交通的影响，并保障当事人的合法权益。' },
+            { b: '应急响应', t: '在发生交通事故、紧急事件或其他突发情况时，迅速响应，提供救援和支援。' },
+            { b: '协助其他执法', t: '与其他执法部门协作，配合完成相关任务，如追捕犯罪嫌疑人、协助处理治安案件等。' }
+          ],
+          skills: [
+            '熟练的摩托车驾驶技能，能够在各种路况下安全、快速地行驶。',
+            '熟悉交通法规和执法程序，准确判断和处理各类交通违法行为。',
+            '具备良好的观察力和应变能力，能够迅速发现问题并做出适当的反应。'
           ]
         }
       ]
@@ -367,17 +412,31 @@ body{
       tag: 'DETECTIVE BUREAU',
       title: 'Detective Division',
       sub: '洛圣都警察局下属部门',
-      chief: '待定',
-      intro: '侦探局是洛圣都警察局的刑事侦查核心，负责侦破全市重大刑事案件。侦探不穿制服，却以另一种方式守护这座城市——现场取证、线索分析与嫌犯审讯。',
+      chief: { role: 'Lieutenant.I', name: '巴特·摩根', en: 'Bart Morgan', rank: 'Commanding Officer' },
+      intro: '警探局（Detective Division）是美国最大的警察部门之一，负责维护洛圣都市的安全与秩序。作为其核心执法单位，警探局专注于复杂案件的调查与侦破，保障市民权益与社会稳定。',
       sections: [
         {
-          h: '主要职责',
+          h: '组织架构与职能部门划分',
           items: [
-            { t: '侦办凶杀、抢劫等重大刑事案件' },
-            { t: '现场勘查与物证采集、分析' },
-            { t: '跟踪监控、线索分析与嫌犯审讯' },
-            { t: '卧底行动与有组织犯罪调查' },
-            { t: '与各区巡逻部门协作侦破案件' }
+            { b: '刑事侦查部', t: '处理谋杀、绑架、抢劫等重大刑事案件，整合证据链进行深度调查。' },
+            { b: '经济犯罪科', t: '打击金融诈骗、贪污、洗钱等经济领域犯罪，协同联邦机构合作办案。' },
+            { b: '网络犯罪中心', t: '应对黑客攻击、网络诈骗、数字犯罪，追踪虚拟空间中的违法行为。' },
+            { b: '特别行动组', t: '针对跨国犯罪、恐怖威胁等高危案件，开展跨区域联合执法行动。' }
+          ]
+        },
+        {
+          h: '技术支持',
+          items: [
+            { t: '配备先进的犯罪分析系统、DNA 数据库、实时监控网络及人工智能辅助侦查工具。' },
+            { t: '与 FBI、DEA（美国缉毒局）等联邦机构共享情报资源，提升案件破解效率。' }
+          ]
+        },
+        {
+          h: '核心使命',
+          items: [
+            { b: '精准打击犯罪', t: '通过专业侦查手段降低恶性案件发生率，维护公共安全。' },
+            { b: '司法公正保障', t: '确保证据链条合法完整，为法庭审判提供坚实依据。' },
+            { b: '社区安全共建', t: '开展犯罪预防讲座、高危区域巡逻，推动警民协作减少犯罪隐患。' }
           ]
         }
       ]
@@ -419,6 +478,63 @@ body{
           ]
         }
       ]
+    },
+    media: {
+      tag: 'MEDIA & PUBLIC RELATIONS',
+      title: 'Media and Public Relations Division',
+      sub: '洛圣都警察局下属部门',
+      badge: 'https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/media_badge.png',
+      chief: '待定',
+      intro: '媒体与公共关系分局（Media and Public Relations Division）致力于通过社区参与、教育和合作项目，促进警察与社区之间的积极互动，增强公共安全，发布警务情报，通过多方的信息保卫城市第二道防线。',
+      sections: [
+        {
+          h: '主要职责',
+          items: [
+            { b: '社区参与', t: '组织活动，增进警察与居民的联系。' },
+            { b: '教育与培训', t: '提供公共安全、犯罪预防等培训。' },
+            { b: '合作项目', t: '与社区组织合作，解决安全问题。' },
+            { b: '危机沟通', t: '在紧急情况下提供信息，维护公众信任。' },
+            { b: '多元文化事务', t: '促进多元文化理解，确保服务公平。' }
+          ]
+        },
+        {
+          h: '组织结构',
+          items: [
+            { b: '社区关系科', t: '负责日常社区互动。' },
+            { b: '多元文化事务科', t: '处理多元文化社区事务。' },
+            { b: '志愿者与实习生科', t: '管理志愿者和实习生项目。' }
+          ]
+        },
+        {
+          h: '重点项目',
+          items: [
+            { b: '邻里守望', t: '鼓励居民参与社区安全。' },
+            { b: '青少年项目', t: '为青少年提供正面引导。' },
+            { b: '老年人安全计划', t: '保护老年人免受犯罪侵害。' },
+            { b: '社区警务', t: '警察与社区合作解决安全问题。' }
+          ]
+        }
+      ]
+    },
+    recruit: {
+      tag: 'RECRUITMENT & EMPLOYMENT',
+      title: 'Recruitment & Employment Office',
+      sub: '洛圣都警察局下属部门',
+      badge: 'https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/recruit_badge.png',
+      chief: '待定',
+      intro: '洛圣都警察局招聘与就业办公室是 LSPD 吸纳精英人才的核心门户。我们的使命是积极招募、精心筛选并成功聘用具备最高诚信、卓越能力和坚定服务社区意愿的优秀男女，加入洛圣都警察局的崇高事业。我们致力于为警局输送最能代表其核心价值——正直、勇气、尊重、专业、服务的未来警官和文职雇员，共同肩负起维护洛圣都安全与秩序的重任。',
+      sections: [
+        {
+          h: '我们所做',
+          items: [
+            { b: '人才招募 (Talent Acquisition)', t: '制定并执行全方位的招募策略，深入社区、高校、职业博览会及线上平台，发掘和吸引具有执法潜质的多元化人才。展示洛圣都警察局作为圣安地列斯州领先执法机构的职业发展机会、丰厚福利及独特使命。解答潜在申请者对警局生涯、薪资福利、选拔流程及工作环境的咨询。' },
+            { b: '申请管理 (Application Management)', t: '接收、审核并处理所有警务人员（宣誓警官）及文职岗位的申请。确保申请流程高效、透明并严格遵守相关法律法规及部门政策。指导申请人顺利完成线上申请、背景调查问卷提交等环节。' },
+            { b: '选拔流程协调 (Selection Process Coordination)', t: '组织并协调严格的选拔环节，包括笔试 (Written Examination)、体能测试 (Physical Agility Test - PAT)、结构化面试 (Oral Board Interview)、全面的背景调查 (Thorough Background Investigation)、心理评估 (Psychological Evaluation)、医疗检查 (Medical Examination)。确保整个选拔过程公平、公正、客观，并以最高专业标准进行。' },
+            { b: '入职准备 (Onboarding Preparation)', t: '为成功通过选拔的候选人提供入职前指导与支持。协调入职文件签署、装备发放及洛圣都警察学院入学事宜。为新成员融入警局大家庭奠定基础。' },
+            { b: '文职人员招聘 (Civilian Recruitment)', t: '为警局运营不可或缺的文职岗位（如调度员、记录员、技术支持、法证人员、行政人员等）招募专业人才。强调文职团队在支持一线警务、保障警局高效运转中的关键作用。' }
+          ]
+        }
+      ]
     }
   };
 
@@ -428,40 +544,53 @@ body{
     treeHtml += '<div class="org-level">' + group.level + '<span style="margin-left:8px;color:#888;font-weight:400">' + group.levelCn + '</span></div>';
     group.items.forEach(function(item){
       treeHtml += '<a class="org-node" data-dept="' + item.key + '">' +
-        item.name + '<span class="en">' + item.cn + '</span>' +
-        '<span class="desc">' + item.desc + '</span></a>';
+        item.name + '<span class="en">' + item.cn + '</span></a>';
     });
   });
   document.getElementById('org-tree').innerHTML = treeHtml;
 
   // 渲染详情
   function render(key){
+    if (key === 'asst-chief') key = 'chief';
     var d = DEPTS[key];
     if (!d) return;
-    document.getElementById('d-tag').textContent = d.tag || 'DEPARTMENT PROFILE';
     document.getElementById('d-title').textContent = d.title;
-    document.getElementById('d-sub').textContent = d.sub || '洛圣都警察局下属部门';
+
+    // 部门徽章
+    var badgeEl = document.getElementById('d-badge');
+    if (d.badge) {
+      badgeEl.innerHTML = '<img src="' + d.badge + '" alt="' + d.title + '">';
+      badgeEl.style.display = '';
+    } else {
+      badgeEl.innerHTML = '';
+      badgeEl.style.display = 'none';
+    }
 
     // 指挥官卡片（仿 LAPD 刑侦局部门卡：照片位 + 姓名 + 警衔 + 职务）
-    var cmdHtml;
-    if (typeof d.chief === 'object' && d.chief.name) {
-      var initial = d.chief.name.charAt(0).toUpperCase();
-      cmdHtml = '<div class="dept-cmd"><div class="avatar">' + initial + '</div><div class="cmd-info">' +
-        '<div class="cmd-name">' + d.chief.name + '</div>' +
-        '<div class="cmd-rank">' + (d.chief.rank || 'Commanding Officer') + '</div>' +
-        '<div class="cmd-role">' + (d.chief.role || '主管') + '</div>' +
-        '</div></div>';
-    } else {
-      cmdHtml = '<div class="dept-cmd"><div class="avatar">?</div><div class="cmd-info">' +
-        '<div class="cmd-name">' + (d.chief || '待定') + '</div>' +
-        '<div class="cmd-rank">Commanding Officer</div>' +
-        '<div class="cmd-role">主管</div>' +
-        '</div></div>';
-    }
+    // 支持 d.chief 单人 + d.team 多人并排
+    var cmds = [d.chief].concat(d.team || []);
+    var cmdHtml = '<div class="dept-cmd-wrap">';
+    cmds.forEach(function(c){
+      if (c && c.name) {
+        var initial = (c.en || c.name).charAt(0).toUpperCase();
+        cmdHtml += '<div class="dept-cmd"><div class="avatar">' + initial + '</div><div class="cmd-info">' +
+          '<div class="cmd-name">' + c.name + (c.en ? ' <span class="cmd-en">(' + c.en + ')</span>' : '') + '</div>' +
+          '<div class="cmd-rank">' + (c.rank || 'Commanding Officer') + '</div>' +
+          '<div class="cmd-role">' + (c.role || '主管') + '</div>' +
+          '</div></div>';
+      } else {
+        cmdHtml += '<div class="dept-cmd"><div class="avatar">?</div><div class="cmd-info">' +
+          '<div class="cmd-name">' + (c || '待定') + '</div>' +
+          '<div class="cmd-rank">Commanding Officer</div>' +
+          '<div class="cmd-role">主管</div>' +
+          '</div></div>';
+      }
+    });
+    cmdHtml += '</div>';
     document.getElementById('d-chief').innerHTML = cmdHtml;
 
     var html = '';
-    if (d.intro) html += '<div class="dept-section"><p>' + d.intro + '</p></div>';
+    if (d.intro) html += '<div class="dept-section"><p>' + d.intro.replace(/\n\n/g, '</p><p>') + '</p></div>';
     (d.sections || []).forEach(function(s){
       html += '<div class="dept-section"><h3>' + s.h + '</h3><ul>';
       s.items.forEach(function(it){
@@ -472,11 +601,41 @@ body{
       });
       html += '</ul></div>';
     });
+    if (d.subunits && d.subunits.length) {
+      html += '<div class="dept-section"><h3>旗下部门</h3>';
+      d.subunits.forEach(function(u){
+        html += '<div class="subunit"><div class="subunit-name">' + u.name + '<span class="en">' + (u.en || '') + '</span></div>';
+        if (u.intro) html += '<p>' + u.intro + '</p>';
+        if (u.duties && u.duties.length) {
+          html += '<ul>';
+          u.duties.forEach(function(dt){
+            html += '<li>';
+            if (dt.b) html += '<b>' + dt.b + '</b>' + (dt.t ? ' — ' : '');
+            if (dt.t) html += dt.t;
+            html += '</li>';
+          });
+          html += '</ul>';
+        }
+        if (u.skills && u.skills.length) {
+          html += '<div class="subunit-sub"><b>警员素质与技能</b><ul>';
+          u.skills.forEach(function(s){
+            html += '<li>' + s + '</li>';
+          });
+          html += '</ul></div>';
+        }
+        if (u.summary) html += '<p>' + u.summary + '</p>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
     if (d.summary) html += '<div class="dept-section"><h3>总结</h3><p>' + d.summary + '</p></div>';
     document.getElementById('d-body').innerHTML = html;
 
     document.querySelectorAll('.org-node').forEach(function(el){
-      el.classList.toggle('active', el.getAttribute('data-dept') === key);
+      var k = el.getAttribute('data-dept');
+      // 局长与助理局长联动高亮：点任一，两者同时变红
+      var active = (k === key) || (key === 'chief' && k === 'asst-chief');
+      el.classList.toggle('active', active);
     });
   }
 
