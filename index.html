@@ -748,9 +748,10 @@ body.has-panel{padding-bottom:340px}
   display:none;overflow-y:auto;
 }
 .portal-overlay.show{display:block}
+/* ===== 顶部导航条：改用与子页面同款 .header（sticky 占文档流，不遮大 logo），样式见 .header 定义 ===== */
 .portal-inner{
   min-height:100%;max-width:960px;width:92%;margin:0 auto;box-sizing:border-box;
-  text-align:center;padding:28px 48px 48px;
+  text-align:center;padding:24px 48px 48px;
   display:flex;flex-direction:column;align-items:center;
   background:#ffffff;
 }
@@ -978,6 +979,17 @@ body.has-panel{padding-bottom:340px}
 
 <body>
 <div class="portal-overlay show" id="portal-overlay">
+  <div class="header" id="portal-header">
+    <div class="header-top">
+      <div class="logo-box">
+        <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD" title="Los Santos Police Department">
+      </div>
+      <div class="header-title">
+        <h1>Los Santos Police Department</h1>
+        <div class="motto">"To Protect and to Serve"</div>
+      </div>
+    </div>
+  </div>
   <div class="portal-inner">
     <div class="portal-badge">
       <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD" title="Los Santos Police Department">
