@@ -102,6 +102,10 @@ html,body{background:#f2f4f7;min-height:100%}
 .enlist-option.soon{cursor:default;opacity:.72;border-color:#c8d4e0}
 .enlist-option.soon:hover{transform:none;box-shadow:none;border-color:#c8d4e0}
 .enlist-option.soon .eo-desc{color:#9aa4ae}
+.enlist-option{position:relative}
+.eo-badge{position:absolute;top:0;right:0;background:#c0392b;color:#fff;font-size:11px;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:0}
+.ccw-tip{font-size:13px;color:#5a7a9c;margin:14px 0 18px}
+.ccw-note{margin-top:22px;padding:10px 14px;background:#f5f7fa;border-left:3px solid #012c49;font-size:12px;color:#1a1a1a;line-height:1.7}
 .eo-icon{width:46px;height:46px;color:#012c49}
 .eo-icon svg{width:46px;height:46px}
 .eo-title{font-size:17px;font-weight:800;color:#000000;letter-spacing:3px}
@@ -177,9 +181,11 @@ html,body{background:#f2f4f7;min-height:100%}
 }
 .sentencing-dialog.show{display:flex}
 /* 弹窗挂在 wl-panel 内会被 max-width:960px;margin:auto 钳制，强制全屏铺满 */
-#wl-panel > #pf-notice-dialog{max-width:none;width:auto;margin:0}
+#wl-panel > #pf-notice-dialog,
+#wl-panel > #leo-notice-dialog{max-width:none;width:auto;margin:0}
 body.dialog-open{overflow:hidden}
-#pf-notice-dialog .sentencing-dialog-content{
+#pf-notice-dialog .sentencing-dialog-content,
+#leo-notice-dialog .sentencing-dialog-content{
   background:#ffffff;border:1px solid #d8dde3;border-radius:0;
   width:92%;max-width:620px;max-height:84vh;padding:0;
   box-shadow:0 8px 40px rgba(0,0,0,.15);overflow:hidden;
@@ -329,10 +335,10 @@ body.dialog-open{overflow:hidden}
         <span class="eo-title">PF 武器购买许可证</span>
         <span class="eo-desc">PF License &middot; 合法购买枪支的许可证书</span>
       </button>
-      <button class="enlist-option soon" type="button" data-wl="soon">
+      <button class="enlist-option" type="button" data-wl="ccw">
         <span class="eo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10h-1a2 2 0 0 0 -2 2v0a2 2 0 0 0 2 2h1"/><path d="M7 12h14"/><path d="M18 10v-1a1 1 0 0 0 -1 -1h-2l-4 -3h-2v4"/><path d="M18 14v1a1 1 0 0 1 -1 1h-2l-4 3h-2v-4"/></svg></span>
-        <span class="eo-title">执照类型 2</span>
-        <span class="eo-desc">即将开放，敬请期待</span>
+        <span class="eo-title">CCW 隐蔽携带枪支执照</span>
+        <span class="eo-desc">CCW License &middot; 合法随身携带隐藏武器的许可证书</span>
       </button>
     </div>
   </div>
@@ -345,7 +351,6 @@ body.dialog-open{overflow:hidden}
         <small>Firearm Purchase License &middot; 请仔细阅读以下须知</small>
       </div>
       <div class="pf-notice-body">
-        <p class="nt-lead">是圣安地列斯州公民合法购买枪支的许可证书。</p>
         <h4>办理须知</h4>
         <ol>
           <li>《圣安地列斯州热武器管理法》</li>
@@ -356,7 +361,6 @@ body.dialog-open{overflow:hidden}
         <h4>申领条件</h4>
         <ol>
           <li>美国圣安地列斯州公民。</li>
-          <li>在申领地区有固定住所。</li>
           <li>必须有一栋房屋或者一辆汽车用于存放枪支。</li>
           <li>年满 22 周岁。</li>
           <li>圣安地列斯州境内无任何犯罪记录，包括轻罪拘役记录。</li>
@@ -380,6 +384,76 @@ body.dialog-open{overflow:hidden}
         <button class="pf-agree-btn" type="button" id="pf-notice-agree" disabled>我已阅读并同意（<span class="cd" id="pf-countdown">10</span> 秒）</button>
       </div>
     </div>
+  </div>
+
+  <!-- 须知弹窗（LEO CCW） -->
+  <div class="sentencing-dialog" id="leo-notice-dialog">
+    <div class="sentencing-dialog-content">
+      <div class="pf-notice-head">
+        CCW执照《隐蔽携带枪支许可证》
+        <small>Concealed Carry Weapon &middot; 请仔细阅读以下须知</small>
+      </div>
+      <div class="pf-notice-body">
+        <h4>办理须知</h4>
+        <ol>
+          <li>《圣安地列斯州热武器管理法》</li>
+          <li>CCW执照只允许持证人在其房产、产业、私人领地与车辆内部携带火器；</li>
+          <li>CCW执照只允许持证人行使自卫权、堡垒法与公民逮捕权；</li>
+          <li>CCW执照只允许持证人用衣物将火器隐藏起来携带，不得佩戴外置枪套。</li>
+        </ol>
+        <h4>申领条件</h4>
+        <ol>
+          <li>持有合法的PF执照。</li>
+          <li>洛圣都公职单位、执法机构、安保公司雇员。</li>
+        </ol>
+        <div class="nt-block">---申请---
+请先根据下面的格式，在对应的「CCW申请频道」内提交CCW执照办理申请；
+我们会核实你的信息，审核通过后会有人员联系您进行办理；
+通过后请携带ID卡，以及现金前往办理。</div>
+        <div class="nt-block">---办理---
+当你被通知前往办理，请在规定时间前往警局面试、办理；
+你会被要求出示身份证件，请确保以上物品随身携带；
+你会被要求回答数个问题，以确保你已知晓相关法律事项；
+如果你的回答不尽人意，你的申请将会被否决；
+面试可能在某些不可抗力的因素影响下被拒绝或中断。</div>
+        <div class="nt-block">---费用---
+每次面试将会花费5000美金，不论通过与否，费用不退还；
+证件办理将会花费5000美金，每次办理请准备至少10,000美金。</div>
+      </div>
+      <div class="pf-notice-foot">
+        <button class="pf-cancel-btn" type="button" id="leo-notice-cancel">返回</button>
+        <button class="pf-agree-btn" type="button" id="leo-notice-agree" disabled>我已阅读并同意（<span class="cd" id="leo-countdown">10</span> 秒）</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 步骤1.5：CCW 类型选择 -->
+  <div id="wl-ccw-type" style="display:none">
+    <div class="complaint-head">
+      <div>
+        <div class="complaint-title">CCW 隐蔽携带枪支执照</div>
+        <div class="complaint-sub">CCW License Application</div>
+      </div>
+      <button class="enlist-stepback" type="button" data-stepback="choose">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>返回选择</span>
+      </button>
+    </div>
+    <div class="ccw-tip">请选择您要申请的 CCW 执照类型</div>
+    <div class="enlist-options">
+      <button class="enlist-option" type="button" data-wl="leo-ccw">
+        <span class="eo-badge">公职专用</span>
+        <span class="eo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10h-1a2 2 0 0 0 -2 2v0a2 2 0 0 0 2 2h1"/><path d="M7 12h14"/><path d="M18 10v-1a1 1 0 0 0 -1 -1h-2l-4 -3h-2v4"/><path d="M18 14v1a1 1 0 0 1 -1 1h-2l-4 3h-2v-4"/></svg></span>
+        <span class="eo-title">LEO CCW</span>
+        <span class="eo-desc">Law Enforcement Only &middot; 隐蔽携带枪支</span>
+      </button>
+      <button class="enlist-option" type="button" data-wl="civil-ccw">
+        <span class="eo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10h-1a2 2 0 0 0 -2 2v0a2 2 0 0 0 2 2h1"/><path d="M7 12h14"/><path d="M18 10v-1a1 1 0 0 0 -1 -1h-2l-4 -3h-2v4"/><path d="M18 14v1a1 1 0 0 1 -1 1h-2l-4 3h-2v-4"/></svg></span>
+        <span class="eo-title">CCW</span>
+        <span class="eo-desc">Concealed Carry Weapon &middot; 隐蔽携带枪支</span>
+      </button>
+    </div>
+    <div class="ccw-note">LEO CCW 为公职人员专用，普通市民请选择 CCW。</div>
   </div>
 
   <!-- 步骤2：PF 申请表 -->
@@ -413,10 +487,6 @@ body.dialog-open{overflow:hidden}
         <input class="cf-input" type="tel" id="pf-phone" placeholder="请输入手机号（仅数字与符号）" maxlength="30" autocomplete="off">
       </div>
       <div class="cf-field">
-        <label class="cf-label" for="pf-prop">个人房产<span class="req">*</span></label>
-        <input class="cf-input" type="text" id="pf-prop" placeholder="请输入个人房产" maxlength="60">
-      </div>
-      <div class="cf-field">
         <label class="cf-label" for="pf-veh">个人车辆<span class="req">*</span><span class="hint">填写一个车牌</span></label>
         <input class="cf-input" type="text" id="pf-veh" placeholder="请输入车牌号" maxlength="20">
       </div>
@@ -448,6 +518,69 @@ body.dialog-open{overflow:hidden}
       </div>
     </div>
   </div>
+
+  <!-- 步骤2.5：LEO CCW 申请表 -->
+  <div id="wl-form-leoccw" style="display:none">
+    <div class="complaint-head">
+      <div>
+        <div class="complaint-title">CCW 隐蔽携带枪支执照申请</div>
+        <div class="complaint-sub">CCW Application &middot; Concealed Carry Weapon</div>
+      </div>
+      <button class="enlist-stepback" type="button" data-stepback="ccw">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>返回类型</span>
+      </button>
+    </div>
+    <div class="complaint-form">
+      <div class="cf-tip">请如实填写以下信息，提交后我们将尽快核实，审核通过后会有人员联系您办理。带 * 为必填项。</div>
+      <div class="cf-field">
+        <label class="cf-label" for="leo-name">姓名<span class="req">*</span></label>
+        <input class="cf-input" type="text" id="leo-name" placeholder="请输入姓名" maxlength="30">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="leo-age">年龄<span class="req">*</span></label>
+        <input class="cf-input" type="number" id="leo-age" placeholder="请输入年龄" min="1" max="120" inputmode="numeric">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="leo-ssn">社安号<span class="req">*</span></label>
+        <input class="cf-input" type="text" id="leo-ssn" placeholder="请输入社安号" maxlength="30">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="leo-phone">手机号<span class="req">*</span></label>
+        <input class="cf-input" type="tel" id="leo-phone" placeholder="请输入手机号（仅数字与符号）" maxlength="30" autocomplete="off">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="leo-veh">个人车辆<span class="req">*</span><span class="hint">填写一个车牌</span></label>
+        <input class="cf-input" type="text" id="leo-veh" placeholder="请输入车牌号" maxlength="20">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="leo-job">职业<span class="req">*</span><span class="hint">请填写所在公职单位 / 执法机构 / 安保公司</span></label>
+        <input class="cf-input" type="text" id="leo-job" placeholder="请输入职业及所属单位" maxlength="50">
+      </div>
+      <div class="cf-field">
+        <label class="cf-label">你所持有的案底<span class="req">*</span></label>
+        <div class="cf-radio-group">
+          <label class="cf-radio"><input type="radio" name="leo-record" value="有"><span class="rbox"></span><span>有</span></label>
+          <label class="cf-radio"><input type="radio" name="leo-record" value="无"><span class="rbox"></span><span>无</span></label>
+        </div>
+      </div>
+      <div class="cf-field">
+        <label class="cf-label" for="leo-reason">申请理由<span class="req">*</span></label>
+        <textarea class="cf-textarea" id="leo-reason" placeholder="请输入申请理由" maxlength="300"></textarea>
+      </div>
+      <div class="cf-field">
+        <label class="cf-label">是否知晓办理须知<span class="req">*</span></label>
+        <div class="cf-radio-group">
+          <label class="cf-radio"><input type="radio" name="leo-notice" value="是"><span class="rbox"></span><span>是</span></label>
+          <label class="cf-radio"><input type="radio" name="leo-notice" value="否"><span class="rbox"></span><span>否</span></label>
+        </div>
+      </div>
+      <div class="cf-actions">
+        <button class="cf-btn submit" type="button" id="leo-submit">提 交</button>
+        <button class="cf-btn back" type="button" data-stepback="ccw">取 消</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="portal-toast" id="portal-toast"></div>
@@ -455,7 +588,7 @@ body.dialog-open{overflow:hidden}
 <div class="sentencing-dialog" id="wl-success-dialog">
   <div class="sentencing-dialog-content">
     <div class="complaint-title" style="font-size:17px">提交成功</div>
-    <div class="wl-success-text">
+    <div class="wl-success-text" id="wl-success-text">
       你的 PF 执照申请已提交。<br>
       我们会核实你的信息，审核通过后<br>会有人员联系您进行办理。
     </div>
@@ -467,7 +600,7 @@ body.dialog-open{overflow:hidden}
   <div class="site-footer-inner">
     <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD">
     <span class="foot-brand">by Bradford</span>
-    <span class="foot-tag">LSPD MDT &middot; To Protect and to Serve</span>
+    <span class="foot-tag">LSPD &middot; To Protect and to Serve</span>
   </div>
 </footer>
 
@@ -489,16 +622,25 @@ body.dialog-open{overflow:hidden}
   if (headerBack) headerBack.addEventListener('click', goHome);
 
   var choose = document.getElementById('wl-choose');
+  var ccwType = document.getElementById('wl-ccw-type');
   var pfForm = document.getElementById('wl-form-pf');
+  var leoForm = document.getElementById('wl-form-leoccw');
   var noticeDialog = document.getElementById('pf-notice-dialog');
   var agreeBtn = document.getElementById('pf-notice-agree');
   var countdownEl = document.getElementById('pf-countdown');
   var cdTimer = null;
   var cdLeft = 10;
+  var leoNoticeDialog = document.getElementById('leo-notice-dialog');
+  var leoAgreeBtn = document.getElementById('leo-notice-agree');
+  var leoCountdownEl = document.getElementById('leo-countdown');
+  var leoCdTimer = null;
+  var leoCdLeft = 10;
 
   function showStep(step) {
     if (choose) choose.style.display = step === 'choose' ? '' : 'none';
+    if (ccwType) ccwType.style.display = step === 'ccw' ? '' : 'none';
     if (pfForm) pfForm.style.display = step === 'pf' ? '' : 'none';
+    if (leoForm) leoForm.style.display = step === 'leoccw' ? '' : 'none';
     window.scrollTo(0, 0);
   }
 
@@ -507,7 +649,7 @@ body.dialog-open{overflow:hidden}
   if (panel) {
     panel.addEventListener('click', function(e){
       var sb = e.target.closest('[data-stepback]');
-      if (sb) { showStep('choose'); return; }
+      if (sb) { showStep(sb.getAttribute('data-stepback')); return; }
       var opt = e.target.closest('.enlist-option');
       if (!opt || !opt.dataset.wl) return;
       if (opt.classList.contains('soon') || opt.dataset.wl === 'soon') {
@@ -515,6 +657,9 @@ body.dialog-open{overflow:hidden}
         return;
       }
       if (opt.dataset.wl === 'pf') openNotice();
+      if (opt.dataset.wl === 'ccw') showStep('ccw');
+      if (opt.dataset.wl === 'leo-ccw') openLeoNotice();
+      if (opt.dataset.wl === 'civil-ccw') openLeoNotice();
     });
   }
 
@@ -560,6 +705,47 @@ body.dialog-open{overflow:hidden}
     });
   }
 
+  // LEO CCW 须知弹窗 + 10 秒倒计时（在表单页弹出）
+  function openLeoNotice() {
+    if (!leoNoticeDialog) return;
+    showStep('leoccw');   // 先切到 LEO CCW 表单页，弹窗盖在表单上
+    document.body.classList.add('dialog-open');
+    var hd = document.querySelector('.header');
+    leoNoticeDialog.style.top = (hd ? hd.getBoundingClientRect().height : 68) + 'px';
+    leoNoticeDialog.classList.add('show');
+    leoCdLeft = 10;
+    leoAgreeBtn.disabled = true;
+    leoAgreeBtn.innerHTML = '我已阅读并同意（<span class="cd" id="leo-countdown">10</span> 秒）';
+    leoCountdownEl = document.getElementById('leo-countdown');
+    clearInterval(leoCdTimer);
+    leoCdTimer = setInterval(function(){
+      leoCdLeft--;
+      if (leoCdLeft <= 0) {
+        clearInterval(leoCdTimer);
+        leoAgreeBtn.disabled = false;
+        leoAgreeBtn.textContent = '我已阅读并同意';
+        return;
+      }
+      if (leoCountdownEl) leoCountdownEl.textContent = leoCdLeft;
+    }, 1000);
+  }
+  function closeLeoNotice() {
+    if (!leoNoticeDialog) return;
+    clearInterval(leoCdTimer);
+    leoNoticeDialog.classList.remove('show');
+    document.body.classList.remove('dialog-open');
+  }
+  var leoCancelBtn = document.getElementById('leo-notice-cancel');
+  if (leoCancelBtn) leoCancelBtn.addEventListener('click', function(){
+    closeLeoNotice();
+    showStep('ccw');   // 放弃申请，回 CCW 类型选择
+  });
+  if (leoAgreeBtn) {
+    leoAgreeBtn.addEventListener('click', function(){
+      closeLeoNotice();   // 已在表单页，直接留在表单填写
+    });
+  }
+
   // 手机号输入拦截汉字和英文字母
   var phoneEl = document.getElementById('pf-phone');
   if (phoneEl) {
@@ -576,7 +762,6 @@ body.dialog-open{overflow:hidden}
       var age = document.getElementById('pf-age').value.trim();
       var ssn = document.getElementById('pf-ssn').value.trim();
       var phone = document.getElementById('pf-phone').value.replace(/[^0-9]/g, '');
-      var prop = document.getElementById('pf-prop').value.trim();
       var veh = document.getElementById('pf-veh').value.trim();
       var job = document.getElementById('pf-job').value.trim();
       var record = document.querySelector('input[name="pf-record"]:checked');
@@ -587,7 +772,6 @@ body.dialog-open{overflow:hidden}
       if (!age) { showToast('请填写年龄'); return; }
       if (!ssn) { showToast('请填写社安号'); return; }
       if (!phone) { showToast('请填写手机号'); return; }
-      if (!prop) { showToast('请填写个人房产'); return; }
       if (!veh) { showToast('请填写个人车辆车牌'); return; }
       if (!job) { showToast('请填写职业'); return; }
       if (!record) { showToast('请选择你所持有的案底'); return; }
@@ -602,7 +786,7 @@ body.dialog-open{overflow:hidden}
       var payload = {
         type: 'pf',
         name: name, age: age, ssn: ssn, phone: phone,
-        property: prop, vehicle: veh, job: job,
+        vehicle: veh, job: job,
         record: record.value, reason: reason, notice: notice.value
       };
       submitBtn.disabled = true;
@@ -624,10 +808,12 @@ body.dialog-open{overflow:hidden}
           submitBtn.disabled = false;
           submitBtn.textContent = '提 交';
           if (data && data.code === 0) {
-            ['pf-name','pf-age','pf-ssn','pf-phone','pf-prop','pf-veh','pf-job','pf-reason'].forEach(function(id){
+            ['pf-name','pf-age','pf-ssn','pf-phone','pf-veh','pf-job','pf-reason'].forEach(function(id){
               var el = document.getElementById(id); if (el) el.value = '';
             });
             document.querySelectorAll('input[name="pf-record"], input[name="pf-notice"]').forEach(function(r){ r.checked = false; });
+            var st = document.getElementById('wl-success-text');
+            if (st) st.innerHTML = '你的 PF 执照申请已提交。<br>我们会核实你的信息，审核通过后<br>会有人员联系您进行办理。';
             var sd = document.getElementById('wl-success-dialog');
             if (sd) sd.classList.add('show');
           } else {
@@ -646,6 +832,91 @@ body.dialog-open{overflow:hidden}
         });
       }
       doSubmit();
+    });
+  }
+
+  // LEO CCW 手机号输入拦截汉字和英文字母
+  var leoPhoneEl = document.getElementById('leo-phone');
+  if (leoPhoneEl) {
+    leoPhoneEl.addEventListener('input', function(){
+      this.value = this.value.replace(/[\u4e00-\u9fa5a-zA-Z]/g, '');
+    });
+  }
+
+  // LEO CCW 提交
+  var leoSubmitBtn = document.getElementById('leo-submit');
+  if (leoSubmitBtn) {
+    leoSubmitBtn.addEventListener('click', function(){
+      var name = document.getElementById('leo-name').value.trim();
+      var age = document.getElementById('leo-age').value.trim();
+      var ssn = document.getElementById('leo-ssn').value.trim();
+      var phone = document.getElementById('leo-phone').value.replace(/[^0-9]/g, '');
+      var veh = document.getElementById('leo-veh').value.trim();
+      var job = document.getElementById('leo-job').value.trim();
+      var record = document.querySelector('input[name="leo-record"]:checked');
+      var reason = document.getElementById('leo-reason').value.trim();
+      var notice = document.querySelector('input[name="leo-notice"]:checked');
+
+      if (!name) { showToast('请填写姓名'); return; }
+      if (!age) { showToast('请填写年龄'); return; }
+      if (!ssn) { showToast('请填写社安号'); return; }
+      if (!phone) { showToast('请填写手机号'); return; }
+      if (!veh) { showToast('请填写个人车辆车牌'); return; }
+      if (!job) { showToast('请填写职业'); return; }
+      if (!record) { showToast('请选择你所持有的案底'); return; }
+      if (!reason) { showToast('请填写申请理由'); return; }
+      if (!notice) { showToast('请选择是否知晓办理须知'); return; }
+      if (notice.value !== '是') { showToast('须确认知晓办理须知后才能提交'); return; }
+
+      var payload = {
+        type: 'leo-ccw',
+        name: name, age: age, ssn: ssn, phone: phone,
+        vehicle: veh, job: job,
+        record: record.value, reason: reason, notice: notice.value
+      };
+      leoSubmitBtn.disabled = true;
+      leoSubmitBtn.textContent = '提交中...';
+      var attempt = 0;
+      function leoDoSubmit(){
+        attempt++;
+        var ctrl = new AbortController();
+        var timer = setTimeout(function(){ ctrl.abort(); }, 30000);
+        fetch('https://bryant-d6g0lr5jrd4c95f00.service.tcloudbase.com/weaponApplication', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: ctrl.signal
+        }).then(function(res){
+          clearTimeout(timer);
+          return res.json();
+        }).then(function(data){
+          leoSubmitBtn.disabled = false;
+          leoSubmitBtn.textContent = '提 交';
+          if (data && data.code === 0) {
+            ['leo-name','leo-age','leo-ssn','leo-phone','leo-veh','leo-job','leo-reason'].forEach(function(id){
+              var el = document.getElementById(id); if (el) el.value = '';
+            });
+            document.querySelectorAll('input[name="leo-record"], input[name="leo-notice"]').forEach(function(r){ r.checked = false; });
+            var st = document.getElementById('wl-success-text');
+            if (st) st.innerHTML = '你的 LEO CCW 执照申请已提交。<br>我们会核实你的信息，审核通过后<br>会有人员联系您进行办理。';
+            var sd = document.getElementById('wl-success-dialog');
+            if (sd) sd.classList.add('show');
+          } else {
+            showToast((data && data.msg) || '提交失败，请重试');
+          }
+        }).catch(function(){
+          clearTimeout(timer);
+          if (attempt < 2) {
+            leoSubmitBtn.textContent = '网络不稳定，重试中...';
+            setTimeout(leoDoSubmit, 800);
+          } else {
+            leoSubmitBtn.disabled = false;
+            leoSubmitBtn.textContent = '提 交';
+            showToast('网络错误，请稍后重试');
+          }
+        });
+      }
+      leoDoSubmit();
     });
   }
 
