@@ -255,6 +255,7 @@ body.dialog-open{overflow:hidden}
   display:none;box-shadow:0 0 16px rgba(201,168,76,.3);pointer-events:none;z-index:6000;
 }
 .portal-toast.show{display:block;animation:fadeIn .2s ease}
+.portal-toast.big{font-size:19px;padding:16px 32px;font-weight:700;letter-spacing:3px;color:#c9a84c;border-width:2px;box-shadow:0 0 26px rgba(201,168,76,.55)}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 /* 页脚 */
 .site-footer{
@@ -603,12 +604,13 @@ body.dialog-open{overflow:hidden}
 (function(){
   var portalToast = document.getElementById('portal-toast');
   var toastTimer = null;
-  function showToast(msg) {
+  function showToast(msg, big) {
     if (!portalToast) return;
     portalToast.textContent = msg;
+    portalToast.classList.toggle('big', !!big);
     portalToast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function(){ portalToast.classList.remove('show'); }, 2200);
+    toastTimer = setTimeout(function(){ portalToast.classList.remove('show'); portalToast.classList.remove('big'); }, big ? 3000 : 2200);
   }
   function goHome(){ location.href = '/'; }
   var logo = document.getElementById('wl-logo');
@@ -651,10 +653,7 @@ body.dialog-open{overflow:hidden}
         showToast('该执照类型暂未开放，敬请期待');
         return;
       }
-      if (opt.dataset.wl === 'pf') openNotice();
-      if (opt.dataset.wl === 'ccw') showStep('ccw');
-      if (opt.dataset.wl === 'leo-ccw') openLeoNotice();
-      if (opt.dataset.wl === 'civil-ccw') openLeoNotice();
+      showToast('请联系司法部办理！', true);
     });
   }
 
