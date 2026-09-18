@@ -44,7 +44,7 @@ body{
 }
 .logo-box{display:flex;align-items:center;gap:10px;cursor:pointer}
 .logo-box img{height:48px;width:48px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(59,130,246,.3))}
-.header-title{flex:1}
+.header-title{flex:1;text-decoration:none;cursor:pointer}
 .header-title h1{
   font-size:18px;font-weight:700;letter-spacing:2px;
   color:#fff;text-shadow:none;white-space:nowrap;
@@ -306,10 +306,10 @@ body.dialog-open{overflow:hidden}
     <div class="logo-box" id="wl-logo">
       <img src="https://6272-bryant-d6g0lr5jrd4c95f00-1468635164.tcb.qcloud.la/badges/lspd_badge.png" alt="LSPD" title="Los Santos Police Department">
     </div>
-    <div class="header-title">
+    <a class="header-title" href="/" onclick="location.href='/?t='+Date.now();return false;" title="返回首页">
       <h1>Los Santos Police Department</h1>
       <div class="motto">"To Protect and to Serve"</div>
-    </div>
+    </a>
     <a class="home-btn" href="/understandinglspd/" title="了解LSPD">
       <span>了解LSPD</span>
     </a>
