@@ -284,6 +284,7 @@ body{
       levelCn: '局长办公室',
       items: [
         { key: 'chief', name: 'Chief of Police', cn: '局长' },
+        { key: 'dep-chief', name: 'Deputy Chief', cn: '副局长' },
         { key: 'asst-chief', name: 'Assistant Chief', cn: '助理局长' }
       ]
     },
@@ -313,7 +314,8 @@ body{
       sub: 'LSPD 最高决策与执行核心',
       chief: { role: 'Chief of Police', name: '埃里克·康纳', en: 'Eric Connor', rank: 'Commanding Officer' },
       team: [
-        { role: 'Assistant Chief', name: '兰斯·伊莱亚斯', en: 'Lance Elias', rank: 'Commanding Officer' }
+        { role: 'Deputy Chief', name: '待定', en: 'TBD', rank: 'Commanding Officer' },
+        { role: 'Assistant Chief', name: '待定', en: 'TBD', rank: 'Commanding Officer' }
       ],
       intro: '局长办公室（Office of the Chief of Police）是部门最高决策与执行核心，直接向洛圣都警察委员会（Board of Police Commissioners）报告，负责统筹战略规划、政策执行及跨部门协调。',
       sections: [
@@ -330,7 +332,8 @@ body{
           h: '高层管理结构',
           items: [
             { b: '局长（Chief of Police）埃里克·康纳', t: '统筹全局，直接向警察委员会汇报，负责重大决策。' },
-            { b: '助理局长（Assistant Chiefs）兰斯·伊莱亚斯', t: '协调内部事务、政策落地及危机应对。' }
+            { b: '副局长（Deputy Chief）待定', t: '协助局长统筹行动与行政事务。' },
+            { b: '助理局长（Assistant Chief）待定', t: '协调内部事务、政策落地及危机应对。' }
           ]
         },
         {
@@ -505,7 +508,7 @@ body{
 
   // 渲染详情
   function render(key){
-    if (key === 'asst-chief') key = 'chief';
+    if (key === 'asst-chief' || key === 'dep-chief') key = 'chief';
     var d = DEPTS[key];
     if (!d) return;
     document.getElementById('d-title').textContent = d.title;
@@ -588,7 +591,7 @@ body{
     document.querySelectorAll('.org-node').forEach(function(el){
       var k = el.getAttribute('data-dept');
       // 局长与助理局长联动高亮：点任一，两者同时变红
-      var active = (k === key) || (key === 'chief' && k === 'asst-chief');
+      var active = (k === key) || (key === 'chief' && (k === 'asst-chief' || k === 'dep-chief'));
       el.classList.toggle('active', active);
     });
   }
