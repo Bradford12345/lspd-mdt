@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>页面跳转中…</title>
+<script>
+(function(){
+  var p = location.pathname;
+  if (p.indexOf('/news/') === 0) {
+    var slug = p.slice('/news/'.length).replace(/\/+$/, '');
+    if (slug) {
+      location.replace('/news/?id=' + encodeURIComponent(slug));
+      return;
+    }
+    location.replace('/news/');
+    return;
+  }
+  location.replace('/?t=' + Date.now());
+})();
+</script>
+</head>
+<body>
+<script>location.replace('/?t=' + Date.now());</script>
+</body>
+</html>
