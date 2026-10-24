@@ -1103,9 +1103,24 @@ function renderDetail(r, mainTr){
       + ' · 切屏 ' + (r.switches || 0) + ' 次 · 用时 ' + fmtDur(r.elapsedMs)
       + ' · ' + (r.transferSubmitted ? '已自动提交至入职系统' : '尚未提交至入职系统')
       + '</div></div>';
+  } else {
+    if (r.type === 'join' || r.qq || r.oocAge) {
+      html += '<div class="tf-sec"><div class="tf-head">入职申请信息</div><div class="tf-grid">'
+        + tfCell('姓名', r.name)
+        + tfCell('电话', r.phone)
+        + tfCell('年龄', r.age)
+        + tfCell('OOC年龄', r.oocAge)
+        + tfCell('QQ号', r.qq)
+        + tfCell('清晰麦克风', r.mic === 'yes' ? '是' : (r.mic === 'no' ? '否' : '-'))
+        + tfCell('犯罪记录', r.crime === 'yes' ? '有' : (r.crime === 'no' ? '无' : '-'))
+        + tfCell('提交邮箱', r.email)
+        + '</div></div>';
+    }
   }
   if (!r.detail || !r.detail.length) {
-    html += '<div class="q-empty">无客观题明细（旧版本记录）</div>';
+    if (r.detail || r.open || isTransfer(r)) {
+      html += '<div class="q-empty">无客观题明细（旧版本记录）</div>';
+    }
   } else {
     html += r.detail.map(function(q){
       var flag = q.ok ? '<span class="q-flag ok">对</span>' : '<span class="q-flag no">错</span>';
@@ -1353,7 +1368,8 @@ async function loadRecords(){
       var tr = document.createElement('tr');
       tr.className = 'row-main';
       var switches = r.switches || 0;
-      var hasDetail = (r.detail && r.detail.length) || (r.open && r.open.length);
+      var hasDetail = (r.detail && r.detail.length) || (r.open && r.open.length)
+        || (r.type === 'join' && (r.qq || r.oocAge || r.phone));
       var isPending = r.status === 'pending';
       var scoreText;
       if (isPending) scoreText = (r.score || 0) + ' / ' + (r.choiceMax || r.maxScore || r.total || 0) + '<span class="dim">（客观）</span>';
@@ -3268,6 +3284,8 @@ async function rstAppsOpen(rid){
         + '<div class="rst-ap-row">申请编号 <b>' + esc(a.id) + '</b>'
         + (a.age ? ' · 年龄 <b>' + esc(a.age) + '</b>' : '')
         + (a.phone ? ' · 联系电话 <b>' + esc(a.phone) + '</b>' : '')
+        + (a.oocAge ? ' · OOC年龄 <b>' + esc(a.oocAge) + '</b>' : '')
+        + (a.qq ? ' · QQ号 <b>' + esc(a.qq) + '</b>' : '')
         + (a.prevCity ? ' · 原城市 <b>' + esc(a.prevCity) + '</b>' : '')
         + (a.prevRank ? ' · 原职级 <b>' + esc(a.prevRank) + '</b>' : '')
         + '</div>';
