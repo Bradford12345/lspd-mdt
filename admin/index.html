@@ -3089,52 +3089,50 @@ function rstRender(){
   if (!list.length) { box.innerHTML = '<div class="ie-empty">没有匹配的警员</div>'; rstFiltersRender(); return; }
   var pn = rstPrimary() ? rstPrimary().name : '';
   var gf1 = fields.filter(function (f) { return /所属分局|分局/.test(f.name) && f.kind === 'select'; })[0] || null;
+  var gf1m = fields.filter(function (f) { return /所属分局|分局/.test(f.name) && f.kind === 'multi'; })[0] || null;
   var gf2 = fields.filter(function (f) { return /状态/.test(f.name) && f.kind === 'select'; })[0] || null;
   var sf = fields.filter(function (f) { return /薪酬|等级|rank/i.test(f.name) && f.kind === 'select'; })[0] || null;
   function optIdx(f, v) {
     if (!f || !f.options) return -1;
     return f.options.indexOf(String(v === null || v === undefined ? '' : v).trim());
   }
-  function sortByOpt(f, desc) {
-    return function (a, b) {
-      var ia = optIdx(f, a.cells[f.name]), ib = optIdx(f, b.cells[f.name]);
-      if (ia < 0 && ib < 0) return 0;
-      if (ia < 0) return 1;
-      if (ib < 0) return -1;
-      return desc ? ib - ia : ia - ib;
-    };
-  }
   function byName(a, b) { return String(a.cells[pn] || '').localeCompare(String(b.cells[pn] || ''), 'zh'); }
-  var groups = [], gmap = {};
-  function gkey(r) {
-    var p = [gf1 ? String(r.cells[gf1.name] || '').trim() || '未分配分局' : '', gf2 ? String(r.cells[gf2.name] || '').trim() || '未知状态' : ''];
-    return p.filter(Boolean).join(' · ');
+  function rankCmp(a, b) {
+    if (!sf) return 0;
+    var ia = optIdx(sf, a.cells[sf.name]), ib = optIdx(sf, b.cells[sf.name]);
+    if (ia < 0 && ib < 0) return 0;
+    if (ia < 0) return 1;
+    if (ib < 0) return -1;
+    return ib - ia;
   }
+  var bureauOrder = [];
+  if (gf1) (gf1.options || []).forEach(function (o) { bureauOrder.push(o); });
+  if (gf1m) (gf1m.options || []).forEach(function (o) { if (bureauOrder.indexOf(o) < 0) bureauOrder.push(o); });
+  var stOrder = gf2 ? (gf2.options || []).slice() : [];
+  function bureauKeys(r) {
+    var out = [];
+    if (gf1) { var s = String(r.cells[gf1.name] === null || r.cells[gf1.name] === undefined ? '' : r.cells[gf1.name]).trim(); if (s) out.push(s); }
+    if (gf1m && Array.isArray(r.cells[gf1m.name])) r.cells[gf1m.name].forEach(function (v) { var s = String(v || '').trim(); if (s && out.indexOf(s) < 0) out.push(s); });
+    if (!out.length) out.push('未分配分局');
+    return out;
+  }
+  function stKey(r) {
+    if (!gf2) return '';
+    var s = String(r.cells[gf2.name] === null || r.cells[gf2.name] === undefined ? '' : r.cells[gf2.name]).trim();
+    return s || '未知状态';
+  }
+  var tree = {};
   list.forEach(function (r) {
-    var k = (gf1 || gf2) ? gkey(r) : '';
-    if (!gmap[k]) { gmap[k] = []; groups.push(k); }
-    gmap[k].push(r);
+    bureauKeys(r).forEach(function (b) {
+      if (!tree[b]) tree[b] = {};
+      var s = stKey(r);
+      if (!tree[b][s]) tree[b][s] = [];
+      tree[b][s].push(r);
+    });
   });
-  groups.sort(function (a, b) {
-    var ra = gmap[a][0], rb = gmap[b][0];
-    var i1 = gf1 ? optIdx(gf1, ra.cells[gf1.name]) : 0, i2 = gf1 ? optIdx(gf1, rb.cells[gf1.name]) : 0;
-    if (i1 !== i2) {
-      if (i1 < 0) return 1;
-      if (i2 < 0) return -1;
-      return i1 - i2;
-    }
-    var j1 = gf2 ? optIdx(gf2, ra.cells[gf2.name]) : 0, j2 = gf2 ? optIdx(gf2, rb.cells[gf2.name]) : 0;
-    if (j1 !== j2) {
-      if (j1 < 0) return 1;
-      if (j2 < 0) return -1;
-      return j1 - j2;
-    }
-    return a.localeCompare(b, 'zh');
-  });
-  groups.forEach(function (k) {
-    gmap[k].sort(function (a, b) {
-      var d = sf ? sortByOpt(sf, true)(a, b) : 0;
-      return d !== 0 ? d : byName(a, b);
+  Object.keys(tree).forEach(function (b) {
+    Object.keys(tree[b]).forEach(function (s) {
+      tree[b][s].sort(function (a, b2) { var d = rankCmp(a, b2); return d !== 0 ? d : byName(a, b2); });
     });
   });
   function rstRow(r) {
@@ -3155,10 +3153,29 @@ function rstRender(){
   var h = '<div class="rst-box"><table class="rst-tb"><thead><tr>';
   fields.forEach(function (f) { h += '<th>' + esc(f.name) + '</th>'; });
   h += '<th class="ops">操作</th></tr></thead><tbody>';
-  if (gf1 || gf2) {
-    groups.forEach(function (k) {
-      h += '<tr class="rst-g"><td colspan="' + (fields.length + 1) + '">' + esc(k) + ' · ' + gmap[k].length + ' 人</td></tr>';
-      gmap[k].forEach(function (r) { h += rstRow(r); });
+  if (gf1 || gf1m) {
+    Object.keys(tree).sort(function (a, b) {
+      if (a === '未分配分局') return 1;
+      if (b === '未分配分局') return -1;
+      var ia = bureauOrder.indexOf(a), ib = bureauOrder.indexOf(b);
+      if (ia < 0 && ib < 0) return a.localeCompare(b, 'zh');
+      if (ia < 0) return 1;
+      if (ib < 0) return -1;
+      return ia - ib;
+    }).forEach(function (b) {
+      var sts = Object.keys(tree[b]).sort(function (a, b2) {
+        var ia = stOrder.indexOf(a), ib = stOrder.indexOf(b2);
+        if (a === '未知状态') return 1;
+        if (b2 === '未知状态') return -1;
+        if (ia < 0 && ib < 0) return a.localeCompare(b2, 'zh');
+        if (ia < 0) return 1;
+        if (ib < 0) return -1;
+        return ia - ib;
+      });
+      sts.forEach(function (s) {
+        h += '<tr class="rst-g"><td colspan="' + (fields.length + 1) + '">' + esc(b) + ' · ' + esc(s) + ' · ' + tree[b][s].length + ' 人</td></tr>';
+        tree[b][s].forEach(function (r) { h += rstRow(r); });
+      });
     });
   } else {
     list.forEach(function (r) { h += rstRow(r); });
