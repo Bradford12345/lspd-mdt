@@ -6,6 +6,10 @@
 <script>
 (function(){
   var p = location.pathname;
+  if (p.indexOf('/feedback') === 0) {
+    location.replace('/bug/');
+    return;
+  }
   if (p.indexOf('/news/') === 0) {
     var slug = p.slice('/news/'.length).replace(/\/+$/, '');
     if (slug) {
