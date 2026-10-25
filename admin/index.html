@@ -718,6 +718,9 @@ function dptCheck(){
     for (var j = 0; j < (g.items || []).length; j++){
       var it = g.items[j];
       if (!it.key) return '「' + (it.cn || it.name || '未命名') + '」缺少标识';
+      var ck = String(it.key).replace(/[^0-9a-zA-Z_-]/g, '');
+      if (!ck) return '「' + (it.cn || it.name || '未命名') + '」的标识「' + it.key + '」不合法，只能用英文字母、数字、下划线和短横线';
+      if (ck !== it.key) return '「' + (it.cn || it.name || '未命名') + '」的标识「' + it.key + '」含非法字符，请改成「' + ck + '」';
       if (seen[it.key]) return '标识重复：' + it.key;
       seen[it.key] = 1;
       if (!it.name && !it.cn) return '条目「' + it.key + '」缺少名称';
