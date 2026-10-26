@@ -3084,7 +3084,7 @@ var RST_APP_TXT = {
   accepted: '已通过，待入职',
   rejected: '未通过本次招募'
 };
-var rstData = null, rstQ = '', rstFilter = {}, rstDraft = null, rstDelId = '', rstBusy = false;
+var rstData = null, rstQ = '', rstFilter = {}, rstDraft = null, rstDelId = '', rstDutyId = '', rstBusy = false;
 
 function rstFields(){ return (rstData && rstData.fields) || []; }
 function rstWritable(){ return rstFields().filter(function(f){ return !f.ro; }); }
@@ -3255,7 +3255,8 @@ function rstRender(){
     });
     h += '<td class="ops"><button type="button" class="rst-op act" data-act="apps" data-rid="' + esc(r.id) + '">申请</button>';
     if (rstCanEdit()) {
-      h += '<button type="button" class="rst-op" data-act="edit" data-rid="' + esc(r.id) + '">编辑</button>'
+      h += '<button type="button" class="rst-op" data-act="duty" data-rid="' + esc(r.id) + '">处分</button>'
+        + '<button type="button" class="rst-op" data-act="edit" data-rid="' + esc(r.id) + '">编辑</button>'
         + '<button type="button" class="rst-op danger" data-act="del" data-rid="' + esc(r.id) + '">删除</button>';
     }
     return h + '</td></tr>';
@@ -3310,13 +3311,14 @@ function rstModalClose(){
   $('rst-modal-f').innerHTML = '';
   rstDraft = null;
   rstDelId = '';
+  rstDutyId = '';
 }
 
 function rstFormHtml(cells){
   var h = '<div class="ie-hint">这些字段直接来自飞书多维表格的列结构。你在飞书里加一列、改个列名，这里刷新一下就会跟着变。主字段是必填，其余可以留空。</div>';
   rstWritable().forEach(function(f){
     var v = cells[f.name];
-    h += '<div class="ie-f grow" style="margin-bottom:12px"><label>' + esc(f.name) + (f.primary ? ' *' : '') + '</label>';
+    h += '<div class="ie-f grow"' + (/知悉/.test(f.name) ? ' data-ackf="1"' : '') + ' style="margin-bottom:12px"><label>' + esc(f.name) + (f.primary ? ' *' : '') + '</label>';
     if (f.kind === 'select') {
       h += '<select id="rf-' + esc(f.id) + '"><option value="">（未填）</option>';
       f.options.forEach(function(o){
@@ -3356,9 +3358,39 @@ function rstFormHtml(cells){
   return h;
 }
 
+function rstBindAck(){
+  var box = $('rst-modal-b');
+  if (!box) return;
+  var ack = box.querySelector('[data-ackf]');
+  if (!ack) return;
+  var stName = '';
+  (rstData && rstData.fields || []).forEach(function(f){
+    if (!stName && /状态|status/i.test(f.name)) stName = f.name;
+  });
+  if (!stName) { ack.style.display = 'none'; return; }
+  var stF = null;
+  (rstData.fields || []).forEach(function(f){ if (f.name === stName) stF = f; });
+  var stEl = stF ? $('rf-' + stF.id) : null;
+  var sync = function(){
+    var val = stEl && stEl.tagName === 'SELECT' ? String(stEl.value || '')
+      : String((rstDraft && rstDraft.cells && rstDraft.cells[stName]) || '');
+    var on = /停职/.test(val);
+    ack.style.display = on ? '' : 'none';
+    if (on) {
+      var s = ack.querySelector('select');
+      if (s && !s.value) s.value = '否';
+    }
+  };
+  if (stEl && stEl.tagName === 'SELECT') stEl.addEventListener('change', sync);
+  sync();
+}
+
 function rstFormCollect(){
   var cells = {};
+  var ackBox = document.querySelector('#rst-modal-b [data-ackf]');
+  var ackOff = ackBox && ackBox.style.display === 'none';
   rstWritable().forEach(function(f){
+    if (ackOff && /知悉/.test(f.name)) return;
     if (f.kind === 'multi') {
       var boxes = document.querySelectorAll('.rf-multi[data-fid="' + f.id + '"]');
       if (boxes.length) {
@@ -3400,6 +3432,7 @@ function rstFormOpen(rid, isNew){
     '<div class="h">点保存会立刻写回飞书多维表格，手机上打开飞书看到的也是同一份。</div>'
     + '<button type="button" class="ie-btn ghost" id="rst-cancel">取消</button>'
     + '<button type="button" class="ie-btn" id="rst-ok">保存</button>');
+  rstBindAck();
 }
 
 async function rstSave(){
@@ -3432,6 +3465,66 @@ async function rstSave(){
   }
   rstBusy = false;
   rstStatus('');
+}
+
+function rstDutyOpen(rid){
+  var r = rstFind(rid);
+  if (!r) return;
+  rstDutyId = rid;
+  var pn = rstPrimary() ? rstPrimary().name : '';
+  var who = String(r.cells[pn] || '这位警员');
+  var ef = (rstData && rstData.emailField) || '';
+  var email = r.email || (ef ? String(r.cells[ef] || '').trim().toLowerCase() : '');
+  var stF = null, ackF = null;
+  (rstData && rstData.fields || []).forEach(function(f){
+    if (!stF && /状态|status/i.test(f.name)) stF = f;
+    if (!ackF && /知悉/.test(f.name)) ackF = f;
+  });
+  var cur = stF ? String(r.cells[stF.name] === null || r.cells[stF.name] === undefined ? '' : r.cells[stF.name]) : '';
+  var body = '<div class="ie-hint">邮件标题统一是「专业与标准分局」，不会写停职或复职。停职邮件带一个确认按钮，本人点过之后名单里的「本人是否知悉」会自动变成「是」。</div>'
+    + '<div class="ie-f grow" style="margin-bottom:12px"><label>通知类型</label><select id="duty-mode"><option value="suspend">停职通知</option><option value="resume">复职通知</option></select></div>'
+    + '<div class="ie-f grow" style="margin-bottom:12px"><label>收件邮箱</label><input type="text" id="duty-mail" autocomplete="off" value="' + esc(email) + '" placeholder="name@example.com"></div>'
+    + '<div class="rst-warn" style="background:#fdf1f3;border-color:#e5b6bd;color:#8f0f1a">当前状态列是「' + esc(cur || '未填') + '」。发停职通知不会自动改状态列，需要的话点「编辑」把状态改成「停职」，权限会跟着收回。</div>'
+    + '<div class="ie-hint" id="duty-ack-hint">' + (ackF ? '名单里已有「' + esc(ackF.name) + '」列，发停职时自动置为「否」，本人确认后变「是」。' : '名单里还没有「本人是否知悉」列，第一次发停职通知时会自动建一列。') + '</div>';
+  rstModalOpen('处分', '处分通知 · ' + who, body,
+    '<div class="h">邮件会直接发到上面的邮箱，发完不会自动再发第二次。</div>'
+    + '<button type="button" class="ie-btn ghost" id="rst-cancel">取消</button>'
+    + '<button type="button" class="ie-btn" id="duty-ok" style="background:#b3121f;border-color:#b3121f">发送通知</button>');
+}
+
+async function rstSendDuty(){
+  var rid = rstDutyId;
+  var box = $('rst-modal-b');
+  var modeEl = $('duty-mode'), mailEl = $('duty-mail'), okEl = $('duty-ok');
+  if (!rid || !modeEl || !mailEl) return;
+  if (rstBusy) return;
+  var mail = String(mailEl.value || '').trim();
+  if (!mail || mail.indexOf('@') < 0) { showToast('邮箱没填对'); return; }
+  rstBusy = true;
+  okEl.disabled = true;
+  okEl.textContent = '发送中…';
+  try {
+    var r = await api('dutyNotice', { recordId: rid, mode: modeEl.value, email: mail });
+    if (r.code !== 0) {
+      rstBusy = false;
+      okEl.disabled = false;
+      okEl.textContent = '发送通知';
+      showToast(r.msg || '发送失败');
+      return;
+    }
+    rstModalClose();
+    rstBusy = false;
+    var tip = modeEl.value === 'resume' ? '复职通知已发出' : '停职通知已发出';
+    if (r.mail === 'queued') tip += '（邮件通道没通，已进待发队列）';
+    rstAlert(tip + ' · ' + esc(r.email || mail) + (r.ack === 'ok' ? '，名单知悉列已更新' : ''), true);
+    setTimeout(function(){ rstAlert(''); }, 3600);
+    await rstLoad(true);
+    return;
+  } catch (e) {
+    showToast('发送失败：' + e.message);
+  }
+  rstBusy = false;
+  if (okEl) { okEl.disabled = false; okEl.textContent = '发送通知'; }
 }
 
 function rstDelOpen(rid){
@@ -3588,6 +3681,7 @@ function rstInitEvents(){
     if (!b) return;
     var rid = b.getAttribute('data-rid'), act = b.getAttribute('data-act');
     if (act === 'apps') rstAppsOpen(rid);
+    else if (act === 'duty') rstDutyOpen(rid);
     else if (act === 'edit') rstFormOpen(rid, false);
     else if (act === 'del') rstDelOpen(rid);
   });
@@ -3597,6 +3691,7 @@ function rstInitEvents(){
     var id = e.target.id;
     if (id === 'rst-cancel' || id === 'rst-modal-x') rstModalClose();
     else if (id === 'rst-ok') { if (rstDelId) rstDoDelete(); else rstSave(); }
+    else if (id === 'duty-ok') rstSendDuty();
   });
   var nb = $('rst-new');
   if (nb) nb.addEventListener('click', function(){ rstFormOpen('', true); });
