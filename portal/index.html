@@ -3503,6 +3503,7 @@ function rstDutyOpen(rid){
   var cur = stF ? String(r.cells[stF.name] === null || r.cells[stF.name] === undefined ? '' : r.cells[stF.name]) : '';
   var body = '<div class="ie-hint">邮件标题统一是「专业与标准分局」，不会写停职或复职。停职邮件带一个确认按钮，本人点过之后名单里的「本人是否知悉」会自动变成「是」。</div>'
     + '<div class="ie-f grow" style="margin-bottom:12px"><label>通知类型</label><select id="duty-mode"><option value="suspend">停职通知</option><option value="resume">复职通知</option></select></div>'
+    + '<div class="ie-f grow" id="duty-days-wrap" style="margin-bottom:12px"><label>停职天数（最多 10 天）</label><input type="number" id="duty-days" min="1" max="10" step="1" value="3"></div>'
     + '<div class="ie-f grow" style="margin-bottom:12px"><label>收件邮箱</label><input type="text" id="duty-mail" autocomplete="off" value="' + esc(email) + '" placeholder="name@example.com"></div>'
     + '<div class="rst-warn" style="background:#fdf1f3;border-color:#e5b6bd;color:#8f0f1a">当前状态列是「' + esc(cur || '未填') + '」。发停职通知不会自动改状态列，需要的话点「编辑」把状态改成「停职」，权限会跟着收回。</div>'
     + '<div class="ie-hint" id="duty-ack-hint">' + (ackF ? '名单里已有「' + esc(ackF.name) + '」列，发停职时自动置为「否」，本人确认后变「是」。' : '名单里还没有「本人是否知悉」列，第一次发停职通知时会自动建一列。') + '</div>';
@@ -3510,6 +3511,10 @@ function rstDutyOpen(rid){
     '<div class="h">邮件会直接发到上面的邮箱，发完不会自动再发第二次。</div>'
     + '<button type="button" class="ie-btn ghost" id="rst-cancel">取消</button>'
     + '<button type="button" class="ie-btn" id="duty-ok" style="background:#b3121f;border-color:#b3121f">发送通知</button>');
+  var dm = $('duty-mode'), dw = $('duty-days-wrap');
+  var dutySync = function(){ if (dw) dw.style.display = (dm && dm.value === 'suspend') ? '' : 'none'; };
+  if (dm) dm.onchange = dutySync;
+  dutySync();
 }
 
 async function rstSendDuty(){
@@ -3520,11 +3525,17 @@ async function rstSendDuty(){
   if (rstBusy) return;
   var mail = String(mailEl.value || '').trim();
   if (!mail || mail.indexOf('@') < 0) { showToast('邮箱没填对'); return; }
+  var dayEl = $('duty-days');
+  var days = 0;
+  if (modeEl.value === 'suspend') {
+    days = parseInt(dayEl ? dayEl.value : '', 10);
+    if (!(days >= 1 && days <= 10)) { showToast('停职天数要填 1 到 10 之间的整数'); return; }
+  }
   rstBusy = true;
   okEl.disabled = true;
   okEl.textContent = '发送中…';
   try {
-    var r = await api('dutyNotice', { recordId: rid, mode: modeEl.value, email: mail });
+    var r = await api('dutyNotice', { recordId: rid, mode: modeEl.value, email: mail, days: days });
     if (r.code !== 0) {
       rstBusy = false;
       okEl.disabled = false;
@@ -3534,7 +3545,7 @@ async function rstSendDuty(){
     }
     rstModalClose();
     rstBusy = false;
-    var tip = modeEl.value === 'resume' ? '复职通知已发出' : '停职通知已发出';
+    var tip = modeEl.value === 'resume' ? '复职通知已发出' : '停职通知已发出（' + days + ' 天）';
     if (r.mail === 'queued') tip += '（邮件通道没通，已进待发队列）';
     rstAlert(tip + ' · ' + esc(r.email || mail) + (r.ack === 'ok' ? '，名单知悉列已更新' : ''), true);
     setTimeout(function(){ rstAlert(''); }, 3600);
