@@ -3580,15 +3580,15 @@ function rstDutyOpen(rid){
     if (!ackF && /知悉/.test(f.name)) ackF = f;
   });
   var cur = stF ? String(r.cells[stF.name] === null || r.cells[stF.name] === undefined ? '' : r.cells[stF.name]) : '';
-  var body = '<div class="ie-hint">提交后会按类型自动改「状态」列：停职→停职，复职→在职，行政休假→行政休假，结束行政休假→在职，行政解雇→离职。邮件标题统一是「专业标准局」，停职与行政休假邮件带确认按钮，本人点过之后「本人是否知悉」会变成「是」。</div>'
-    + '<div class="ie-f grow" style="margin-bottom:12px"><label>通知类型</label><select id="duty-mode"><option value="suspend">停职通知</option><option value="resume">复职通知</option><option value="leave">行政休假通知</option><option value="leaveEnd">结束行政休假</option><option value="dismiss">行政解雇通知</option></select></div>'
+  var body = '<div class="ie-hint">提交后会按类型自动改「状态」列：停职→停职，复职→在职，行政休假→行政休假，结束行政休假→在职，行政解雇→离职，辞职→离职。邮件标题统一是「专业标准局」，辞职信是「招募与就业分局」；停职与行政休假邮件带确认按钮，本人点过之后「本人是否知悉」会变成「是」。</div>'
+    + '<div class="ie-f grow" style="margin-bottom:12px"><label>通知类型</label><select id="duty-mode"><option value="suspend">停职通知</option><option value="resume">复职通知</option><option value="leave">行政休假通知</option><option value="leaveEnd">结束行政休假</option><option value="resign">辞职感谢信</option><option value="dismiss">行政解雇通知</option></select></div>'
     + '<div class="ie-f grow" style="margin-bottom:12px"><label style="display:flex;align-items:center;gap:8px;font-weight:700;cursor:pointer"><input type="checkbox" id="duty-mail-on" checked style="width:16px;height:16px">同时发送邮件通知</label></div>'
     + '<div class="ie-f grow" id="duty-days-wrap" style="margin-bottom:12px"><label>停职天数（最多 10 天）</label><input type="number" id="duty-days" min="1" max="10" step="1" value="3"></div>'
     + '<div class="ie-f grow" style="margin-bottom:12px"><label>收件邮箱</label><input type="text" id="duty-mail" autocomplete="off" value="' + esc(email) + '" placeholder="name@example.com"></div>'
     + '<div class="rst-warn" style="background:#fdf1f3;border-color:#e5b6bd;color:#8f0f1a">当前状态列是「' + esc(cur || '未填') + '」。提交后会自动改成对应状态，不发邮件也照改。</div>'
     + '<div class="ie-hint" id="duty-ack-hint">' + (ackF ? '名单里已有「' + esc(ackF.name) + '」列，发停职或行政休假时自动置为「否」，本人确认后变「是」。' : '名单里还没有「本人是否知悉」列，第一次发停职通知时会自动建一列。') + '</div>';
-  rstModalOpen('处分', '处分通知 · ' + who, body,
-    '<div class="h">生成解雇通知时，状态会自动改成「离职」，需要的话再点「删除」把记录也删掉。</div>'
+  rstModalOpen('处分/人事', '处分 / 人事通知 · ' + who, body,
+    '<div class="h">生成解雇或辞职通知时，状态会自动改成「离职」，需要的话再点「删除」把记录也删掉。</div>'
     + '<button type="button" class="ie-btn ghost" id="rst-cancel">取消</button>'
     + '<button type="button" class="ie-btn" id="duty-ok" style="background:#b3121f;border-color:#b3121f">提交处分</button>');
   var dm = $('duty-mode'), dw = $('duty-days-wrap'), dOk = $('duty-ok'), dMl = $('duty-mail-on'), dIn = $('duty-mail');
@@ -3598,7 +3598,7 @@ function rstDutyOpen(rid){
     var on = dMl ? !!dMl.checked : true;
     if (dIn) { dIn.disabled = !on; dIn.style.opacity = on ? '1' : '.5'; }
     if (dOk) {
-      var c = m === 'dismiss' ? '#4d0a0e' : ((m === 'leave' || m === 'leaveEnd') ? '#3f454c' : '#b3121f');
+      var c = m === 'dismiss' ? '#4d0a0e' : (m === 'resign' ? '#101318' : ((m === 'leave' || m === 'leaveEnd') ? '#3f454c' : '#b3121f'));
       dOk.style.background = c;
       dOk.style.borderColor = c;
       dOk.textContent = on ? '提交并发送' : '只改状态';
@@ -3640,7 +3640,7 @@ async function rstSendDuty(){
     rstModalClose();
     rstBusy = false;
     var mv = modeEl.value;
-    var nameMap = { suspend: '停职', resume: '复职', leave: '行政休假', leaveEnd: '结束行政休假', dismiss: '行政解雇' };
+    var nameMap = { suspend: '停职', resume: '复职', leave: '行政休假', leaveEnd: '结束行政休假', resign: '辞职', dismiss: '行政解雇' };
     var tip = (nameMap[mv] || '处分') + '已提交';
     if (mv === 'suspend' && r.mail !== 'skipped') tip += '（' + days + ' 天）';
     if (r.mail === 'skipped') tip += '，未发邮件';
