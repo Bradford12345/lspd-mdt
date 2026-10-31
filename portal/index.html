@@ -3301,7 +3301,6 @@ function rstRender(){
   if (!list.length) { box.innerHTML = '<div class="ie-empty">没有匹配的警员</div>'; rstFiltersRender(); return; }
   var pn = rstPrimary() ? rstPrimary().name : '';
   var gf1 = fields.filter(function (f) { return /所属分局|分局/.test(f.name) && f.kind === 'select'; })[0] || null;
-  var gf1m = fields.filter(function (f) { return /所属分局|分局/.test(f.name) && f.kind === 'multi'; })[0] || null;
   var gf2 = fields.filter(function (f) { return /状态/.test(f.name) && f.kind === 'select'; })[0] || null;
   var sf = fields.filter(function (f) { return /薪酬|等级|rank/i.test(f.name) && f.kind === 'select'; })[0] || null;
   function optIdx(f, v) {
@@ -3319,12 +3318,10 @@ function rstRender(){
   }
   var bureauOrder = [];
   if (gf1) (gf1.options || []).forEach(function (o) { bureauOrder.push(o); });
-  if (gf1m) (gf1m.options || []).forEach(function (o) { if (bureauOrder.indexOf(o) < 0) bureauOrder.push(o); });
   var stOrder = gf2 ? (gf2.options || []).slice() : [];
   function bureauKeys(r) {
     var out = [];
     if (gf1) { var s = String(r.cells[gf1.name] === null || r.cells[gf1.name] === undefined ? '' : r.cells[gf1.name]).trim(); if (s) out.push(s); }
-    if (gf1m && Array.isArray(r.cells[gf1m.name])) r.cells[gf1m.name].forEach(function (v) { var s = String(v || '').trim(); if (s && out.indexOf(s) < 0) out.push(s); });
     if (!out.length) out.push('未分配分局');
     return out;
   }
@@ -3366,7 +3363,7 @@ function rstRender(){
   var h = '<div class="rst-box"><table class="rst-tb"><thead><tr>';
   fields.forEach(function (f) { h += '<th>' + esc(f.name) + '</th>'; });
   h += '<th class="ops">操作</th></tr></thead><tbody>';
-  if (gf1 || gf1m) {
+  if (gf1) {
     Object.keys(tree).sort(function (a, b) {
       if (a === '未分配分局') return 1;
       if (b === '未分配分局') return -1;
