@@ -3580,27 +3580,32 @@ function rstDutyOpen(rid){
     if (!ackF && /知悉/.test(f.name)) ackF = f;
   });
   var cur = stF ? String(r.cells[stF.name] === null || r.cells[stF.name] === undefined ? '' : r.cells[stF.name]) : '';
-  var body = '<div class="ie-hint">邮件标题统一是「专业标准局」，不会写停职或复职。停职与行政休假邮件带一个确认按钮，本人点过之后名单里的「本人是否知悉」会自动变成「是」。</div>'
-    + '<div class="ie-f grow" style="margin-bottom:12px"><label>通知类型</label><select id="duty-mode"><option value="suspend">停职通知</option><option value="resume">复职通知</option><option value="leave">行政休假通知</option><option value="leaveEnd">结束行政休假</option></select></div>'
+  var body = '<div class="ie-hint">提交后会按类型自动改「状态」列：停职→停职，复职→在职，行政休假→行政休假，结束行政休假→在职，行政解雇→离职。邮件标题统一是「专业标准局」，停职与行政休假邮件带确认按钮，本人点过之后「本人是否知悉」会变成「是」。</div>'
+    + '<div class="ie-f grow" style="margin-bottom:12px"><label>通知类型</label><select id="duty-mode"><option value="suspend">停职通知</option><option value="resume">复职通知</option><option value="leave">行政休假通知</option><option value="leaveEnd">结束行政休假</option><option value="dismiss">行政解雇通知</option></select></div>'
+    + '<div class="ie-f grow" style="margin-bottom:12px"><label style="display:flex;align-items:center;gap:8px;font-weight:700;cursor:pointer"><input type="checkbox" id="duty-mail-on" checked style="width:16px;height:16px">同时发送邮件通知</label></div>'
     + '<div class="ie-f grow" id="duty-days-wrap" style="margin-bottom:12px"><label>停职天数（最多 10 天）</label><input type="number" id="duty-days" min="1" max="10" step="1" value="3"></div>'
     + '<div class="ie-f grow" style="margin-bottom:12px"><label>收件邮箱</label><input type="text" id="duty-mail" autocomplete="off" value="' + esc(email) + '" placeholder="name@example.com"></div>'
-    + '<div class="rst-warn" style="background:#fdf1f3;border-color:#e5b6bd;color:#8f0f1a">当前状态列是「' + esc(cur || '未填') + '」。发通知不会自动改状态列，需要的话点「编辑」把状态改成「停职」或「行政休假」，权限会跟着收回。</div>'
-    + '<div class="ie-hint" id="duty-ack-hint">' + (ackF ? '名单里已有「' + esc(ackF.name) + '」列，发停职时自动置为「否」，本人确认后变「是」。' : '名单里还没有「本人是否知悉」列，第一次发停职通知时会自动建一列。') + '</div>';
+    + '<div class="rst-warn" style="background:#fdf1f3;border-color:#e5b6bd;color:#8f0f1a">当前状态列是「' + esc(cur || '未填') + '」。提交后会自动改成对应状态，不发邮件也照改。</div>'
+    + '<div class="ie-hint" id="duty-ack-hint">' + (ackF ? '名单里已有「' + esc(ackF.name) + '」列，发停职或行政休假时自动置为「否」，本人确认后变「是」。' : '名单里还没有「本人是否知悉」列，第一次发停职通知时会自动建一列。') + '</div>';
   rstModalOpen('处分', '处分通知 · ' + who, body,
-    '<div class="h">邮件会直接发到上面的邮箱，发完不会自动再发第二次。</div>'
+    '<div class="h">生成解雇通知时，状态会自动改成「离职」，需要的话再点「删除」把记录也删掉。</div>'
     + '<button type="button" class="ie-btn ghost" id="rst-cancel">取消</button>'
-    + '<button type="button" class="ie-btn" id="duty-ok" style="background:#b3121f;border-color:#b3121f">发送通知</button>');
-  var dm = $('duty-mode'), dw = $('duty-days-wrap'), dOk = $('duty-ok');
+    + '<button type="button" class="ie-btn" id="duty-ok" style="background:#b3121f;border-color:#b3121f">提交处分</button>');
+  var dm = $('duty-mode'), dw = $('duty-days-wrap'), dOk = $('duty-ok'), dMl = $('duty-mail-on'), dIn = $('duty-mail');
   var dutySync = function(){
     var m = dm ? dm.value : 'suspend';
     if (dw) dw.style.display = m === 'suspend' ? '' : 'none';
+    var on = dMl ? !!dMl.checked : true;
+    if (dIn) { dIn.disabled = !on; dIn.style.opacity = on ? '1' : '.5'; }
     if (dOk) {
-      var c = (m === 'leave' || m === 'leaveEnd') ? '#3f454c' : '#b3121f';
+      var c = m === 'dismiss' ? '#4d0a0e' : ((m === 'leave' || m === 'leaveEnd') ? '#3f454c' : '#b3121f');
       dOk.style.background = c;
       dOk.style.borderColor = c;
+      dOk.textContent = on ? '提交并发送' : '只改状态';
     }
   };
   if (dm) dm.onchange = dutySync;
+  if (dMl) dMl.onchange = dutySync;
   dutySync();
 }
 
@@ -3610,8 +3615,10 @@ async function rstSendDuty(){
   var modeEl = $('duty-mode'), mailEl = $('duty-mail'), okEl = $('duty-ok');
   if (!rid || !modeEl || !mailEl) return;
   if (rstBusy) return;
-  var mail = String(mailEl.value || '').trim();
-  if (!mail || mail.indexOf('@') < 0) { showToast('邮箱没填对'); return; }
+  var mailOnEl = $('duty-mail-on');
+  var sendMail = mailOnEl ? !!mailOnEl.checked : true;
+  var to = String(mailEl.value || '').trim();
+  if (sendMail && (!to || to.indexOf('@') < 0)) { showToast('邮箱没填对'); return; }
   var dayEl = $('duty-days');
   var days = 0;
   if (modeEl.value === 'suspend') {
@@ -3620,32 +3627,37 @@ async function rstSendDuty(){
   }
   rstBusy = true;
   okEl.disabled = true;
-  okEl.textContent = '发送中…';
+  okEl.textContent = sendMail ? '发送中…' : '处理中…';
   try {
-    var r = await api('dutyNotice', { recordId: rid, mode: modeEl.value, email: mail, days: days });
+    var r = await api('dutyNotice', { recordId: rid, mode: modeEl.value, email: to, days: days, mail: sendMail });
     if (r.code !== 0) {
       rstBusy = false;
       okEl.disabled = false;
-      okEl.textContent = '发送通知';
-      showToast(r.msg || '发送失败');
+      okEl.textContent = sendMail ? '提交并发送' : '只改状态';
+      showToast(r.msg || '提交失败');
       return;
     }
     rstModalClose();
     rstBusy = false;
     var mv = modeEl.value;
-    var tip = mv === 'resume' ? '复职通知已发出'
-      : (mv === 'leave' ? '行政休假通知已发出'
-      : (mv === 'leaveEnd' ? '结束行政休假通知已发出' : '停职通知已发出（' + days + ' 天）'));
-    if (r.mail === 'queued') tip += '（邮件通道没通，已进待发队列）';
-    rstAlert(tip + ' · ' + esc(r.email || mail) + (r.ack === 'ok' ? '，名单知悉列已更新' : ''), true);
-    setTimeout(function(){ rstAlert(''); }, 3600);
+    var nameMap = { suspend: '停职', resume: '复职', leave: '行政休假', leaveEnd: '结束行政休假', dismiss: '行政解雇' };
+    var tip = (nameMap[mv] || '处分') + '已提交';
+    if (mv === 'suspend' && r.mail !== 'skipped') tip += '（' + days + ' 天）';
+    if (r.mail === 'skipped') tip += '，未发邮件';
+    else if (r.mail === 'queued') tip += '，通知已进待发队列';
+    else tip += '，通知已发出';
+    if (r.status === 'ok') tip += '，状态已改';
+    else if (r.status && r.status.indexOf('fail') === 0) tip += '，但状态没写进去（' + esc(r.status.slice(5)) + '）';
+    if (r.ack === 'ok' && r.mail !== 'skipped') tip += '，知悉列已更新';
+    rstAlert(tip, true);
+    setTimeout(function(){ rstAlert(''); }, 4200);
     await rstLoad(true);
     return;
   } catch (e) {
-    showToast('发送失败：' + e.message);
+    showToast('提交失败：' + e.message);
   }
   rstBusy = false;
-  if (okEl) { okEl.disabled = false; okEl.textContent = '发送通知'; }
+  if (okEl) { okEl.disabled = false; okEl.textContent = sendMail ? '提交并发送' : '只改状态'; }
 }
 
 function rstDelOpen(rid){
@@ -3653,10 +3665,14 @@ function rstDelOpen(rid){
   if (!r) return;
   var pn = rstPrimary() ? rstPrimary().name : '';
   var who = String(r.cells[pn] || '这条记录');
+  var ef = (rstData && rstData.emailField) || '';
+  var email = r.email || (ef ? String(r.cells[ef] || '').trim().toLowerCase() : '');
   rstDelId = rid;
   rstModalOpen('危险', '删除警员 · ' + who,
-    '<div class="rst-warn">确定要删除「' + esc(who) + '」吗？这会真的从飞书多维表格里删掉这条记录，手机上打开飞书也看不到了，网站这边没法撤销。</div>',
-    '<div class="h">只想停职或者离职，建议改「状态」列，别删记录。</div>'
+    '<div class="rst-warn">确定要删除「' + esc(who) + '」吗？这会真的从飞书多维表格里删掉这条记录，手机上打开飞书也看不到了，网站这边没法撤销。</div>'
+    + '<div class="ie-f grow" style="margin:14px 0 8px"><label style="display:flex;align-items:center;gap:8px;font-weight:700;cursor:pointer"><input type="checkbox" id="del-mail-on" checked style="width:16px;height:16px">同时发送行政解雇通知</label></div>'
+    + '<div class="ie-hint">收件邮箱：' + esc(email || '这条记录没填邮箱') + '。取消勾选就只删记录，不发信。</div>',
+    '<div class="h">只想停职，别删记录，用「处分」改状态。</div>'
     + '<button type="button" class="ie-btn ghost" id="rst-cancel">取消</button>'
     + '<button type="button" class="ie-btn" id="rst-ok" style="background:#b3121f;border-color:#b3121f">确认删除</button>');
 }
@@ -3664,10 +3680,12 @@ function rstDelOpen(rid){
 async function rstDoDelete(){
   var rid = rstDelId;
   if (!rid || rstBusy) return;
+  var mailOnEl = $('del-mail-on');
+  var notify = mailOnEl ? !!mailOnEl.checked : true;
   rstBusy = true;
-  rstStatus('正在删除…');
+  rstStatus(notify ? '正在发送解雇通知…' : '正在删除…');
   try {
-    var r = await api('rosterDelete', { id: rid });
+    var r = await api('rosterDelete', { id: rid, notify: notify });
     if (r.code !== 0) {
       rstStatus('');
       rstAlert(esc(r.msg || '删除失败'), false);
@@ -3676,8 +3694,10 @@ async function rstDoDelete(){
     }
     rstModalClose();
     rstBusy = false;
-    rstAlert('已从飞书多维表格里删除', true);
-    setTimeout(function(){ rstAlert(''); }, 2500);
+    var tip = r.mail === 'sent' ? '已删除，行政解雇通知已发出'
+      : (r.mail === 'queued' ? '已删除，通知已进待发队列' : '已从飞书多维表格里删除');
+    rstAlert(tip, true);
+    setTimeout(function(){ rstAlert(''); }, 3200);
     await rstLoad(true);
     return;
   } catch (e) {
