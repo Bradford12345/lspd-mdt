@@ -3580,7 +3580,7 @@ function rstDutyOpen(rid){
     if (!ackF && /知悉/.test(f.name)) ackF = f;
   });
   var cur = stF ? String(r.cells[stF.name] === null || r.cells[stF.name] === undefined ? '' : r.cells[stF.name]) : '';
-  var body = '<div class="ie-hint">提交后会按类型自动改「状态」列：停职→停职，复职→在职，行政休假→行政休假，结束行政休假→在职，行政解雇→离职，辞职→离职。邮件标题统一是「专业标准局」，辞职信是「招募与就业分局」；停职与行政休假邮件带确认按钮，本人点过之后「本人是否知悉」会变成「是」。</div>'
+  var body = '<div class="ie-hint">提交后会按类型自动改「状态」列：停职→停职，复职→在职，行政休假→行政休假，结束行政休假→在职，行政解雇→离职，辞职→离职。邮件标题统一是「专业标准局」，辞职信是「行政服务局」；停职与行政休假邮件带确认按钮，本人点过之后「本人是否知悉」会变成「是」。</div>'
     + '<div class="ie-f grow" style="margin-bottom:12px"><label>通知类型</label><select id="duty-mode"><option value="suspend">停职通知</option><option value="resume">复职通知</option><option value="leave">行政休假通知</option><option value="leaveEnd">结束行政休假</option><option value="resign">辞职感谢信</option><option value="dismiss">行政解雇通知</option></select></div>'
     + '<div class="ie-f grow" style="margin-bottom:12px"><label style="display:flex;align-items:center;gap:8px;font-weight:700;cursor:pointer"><input type="checkbox" id="duty-mail-on" checked style="width:16px;height:16px">同时发送邮件通知</label></div>'
     + '<div class="ie-f grow" id="duty-days-wrap" style="margin-bottom:12px"><label>停职天数（最多 10 天）</label><input type="number" id="duty-days" min="1" max="10" step="1" value="3"></div>'
