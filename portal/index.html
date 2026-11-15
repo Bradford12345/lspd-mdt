@@ -4087,7 +4087,8 @@ var PT_ITEMS = [
   { v: 'bank', t: '题库管理', cap: 'bankView', d: '调转测验题库、选项池与历史版本回滚' },
   { v: 'news', t: '新闻管理', cap: 'editNews', d: '维护首页新闻与警方公告' },
   { v: 'depts', t: '组织架构', cap: 'editDepts', d: '编辑「了解 LSPD」部门详情与指挥层' },
-  { v: 'groups', t: '身份组管理', cap: 'super', d: '自定义身份组与每个组的能力位' }
+  { v: 'groups', t: '身份组管理', cap: 'super', d: '自定义身份组与每个组的能力位' },
+  { v: 'roles', t: '用户与身份组', cap: 'super', d: '查看全部注册用户，按邮箱或 UID 给用户指派/清空身份组' }
 ];
 
 var PT_RELOAD = {
@@ -4099,7 +4100,8 @@ var PT_RELOAD = {
   bank: function(){ bankData = null; bankLoad(); },
   news: function(){ newsData = null; newsLoad(); },
   depts: function(){ dptsData = null; dptsLoad(); },
-  groups: function(){ loadGroups(); }
+  groups: function(){ loadGroups(); },
+  roles: function(){ loadRoles(); }
 };
 
 function ptStamp(){
