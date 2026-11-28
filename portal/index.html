@@ -1768,13 +1768,14 @@ function applyGraded(r, d, scores, mainTr){
   }
   if (!mainTr || !mainTr.parentNode) return;
   var cells = mainTr.children;
-  if (cells[2]) cells[2].textContent = d.totalScore + ' / ' + d.maxScore;
-  var tag = cells[3] ? cells[3].querySelector('.tag') : null;
+  if (cells[3]) cells[3].textContent = d.totalScore + ' / ' + d.maxScore;
+  var tag = cells[4] ? cells[4].querySelector('.tag') : null;
   if (tag) {
-    tag.className = 'tag pending'; tag.textContent = '已批阅，未给予薪酬等级';
+    if (r.rank) { tag.className = 'tag given'; tag.textContent = r.rank; }
+    else { tag.className = 'tag pending'; tag.textContent = '已批阅，未给予薪酬等级'; }
   }
-  if (cells[6]) cells[6].textContent = '收起 ▴';
   var det = mainTr.nextElementSibling;
+  if (cells[7] && cells[7].textContent !== '-') cells[7].textContent = (det && det.className === 'row-detail') ? '收起 ▴' : '展开 ▾';
   if (det && det.className === 'row-detail') {
     det.parentNode.replaceChild(renderDetail(r, mainTr), det);
   }
